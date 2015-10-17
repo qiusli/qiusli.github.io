@@ -1,0 +1,48 @@
+---
+layout: post
+title: "Git 1 (Basic Concept)"
+date: 2014-05-07 00:27
+comments: true
+categories: 
+---
+原来学过Git,但学得不扎实,而且学过之后也没怎么用,导致每次要用的时候都得重新学一遍.现在再次学习,把学到的记录下来,以后忘了复习起来也方便.
+
+##Centralized Version Control vs Distributed Version Control##
+集中式的版本管理把所有的文件放到一个server上面,所有的其他电脑都从这个server上面得到最新的代码.这样的坏处显而易见,如果server宕机了,其他一切有关的活动都得终止.
+
+<!-- more -->
+
+ {% img /images/git-1_1.png %}
+ 
+此外,在集中式版本管理控制下,用户每次checkout的都是最新版本的文件快照,而对之前版本一无所知,如果用户想查看项目之前其他人做的改变,还得连接server然后从server上得到信息.但是分布式版本管理不同,它在每一次checkout的时候,都是checkout的server上项目的所有内容,相当于一次mirror,这样用户几乎不需要连接server就能知道很多事情,包括项目之前的改变等.
+
+ {% img /images/git-1_2.png %}
+ 
+##Git vs other VCS (Version Control System)##
+对于一般的VCS来说,在不同版本之间它存放的是文件在各个版本之间的差异:
+
+ {% img /images/git-1_3.png %}
+ 
+但是Git在每一个版本存放的都是整体的文件,如果某个文件在版本1和2之间没有改变,那么就只存放一个对上一版本快照的引用.
+
+ {% img /images/git-1_4.png %}
+ 
+同时因为Git在每次checkout的时候都获取的是整个项目包括项目之前的历史,相当于把服务器上所有的东西都拿下来了,而不是像CVS系统一样自取最新版本,所以Git可以在本地做很多事情,例如查看项目历史提交,本地提交等.
+
+##Three States##
+Git的三大state是modified,staged和committed.modified指文件被修改过,staged表示文件被修改过并且在下一次commit的时候自动提交.committed表示已经提交.
+
+比如我们文件A和B,但是这次我只想提交A,我可以stage A并且提交,然后stage B让它在下一次commit的时候提交.Git add 就是把文件stage的指令.
+
+ {% img /images/git-1_5.png %}
+ 
+在上图中的最左边和最右边分别是Working Directory和Git Repository.后者是从server上下载下来的所有文件,前者是后者中的其中一个版本,用户做的修改和增加都在Working Directory里面进行.
+
+总之,Git的提交流程一般分为3部
+
+* 修改文件
+* stage文件 (git add ...)
+* commit文件 (git commit)
+
+
+ 

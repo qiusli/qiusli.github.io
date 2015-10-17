@@ -1,0 +1,116 @@
+---
+layout: post
+title: "Git 2 (Basics)"
+date: 2014-05-07 21:35
+comments: true
+categories: 
+---
+
+##Initialize a repository##
+Git的操作都需要在一个由Git管理的文件下进行,有两种方式使文件被git管理:
+
+* 在文件夹下面执行 `git init`
+* `git clone`一个现成的git文件夹然后在里面操作
+
+如果要在server上面获取现有的项目,可以执行`git clone`.和SVN不同的是这里的关键词是clone,而SVN里面是checkout,这是因为git是clone整个项目,相当于把server上所以东西都搬下来,而git只是checkout最新的版本.
+
+<!-- more -->
+
+```java
+git clone git://github.com/shacon/grit.git
+```
+
+上面这段指令是从github上clone项目,并且把它放在本地,文件夹的名称叫做grit.
+
+在一个由git管理的文件夹下面通常执行的操作包括:
+
+* git add 
+* git commit
+
+
+##Recording changes##
+在一个由git管理的文件夹下面的文件有两种状态:tracked和untracked.可以使用`git add`让文件的状态从untracked变成tracked.`git add`是一个多用途指令,它既可以用来stage也可以用来track文件. 
+
+ {% img /images/git-2_1.png %}
+ 
+例如我现在新建一个文件夹,然后在里面执行`git init`,接着再在里面新建一个文件名为git.rtf,这个时候我执行`git status`:
+
+ {% img /images/git-2_2.png %}
+ 
+然后我执行`git add git.rtf`再执行`git status`:
+
+ {% img /images/git-2_3.png %}
+ 
+现在的状态是被track同时在stage里面,随时可以提交.在提交之前我再做一些改动,然后再执行`git status`:
+
+ {% img /images/git-2_4.png %}
+ 
+我们发现git.rtf既在stage里面又在modified里面,这是因为在上一次modify之前我们stage了文件,然后再去做修改的时候git也会track,所以这时这个文件一部分在stage一部分在modified.这个时候如果再次执行`git add git.rtf`会把最新的改动加到stage里面:
+
+ {% img /images/git-2_5.png %}
+ 
+`git diff`:比较在Working Directory和Stage area里面是否有不同.在上一次add之后我们执行这条命令发现什么都不会出现,因为文件没有再次改动,所以不会有什么不同,如果现在来到git.rtf里面做一些修改再来执行`git diff`:
+
+ {% img /images/git-2_6.png %}
+ 
+所以`git diff`只会显示在modified状态下文件的改变,如果想要查看stage里面文件的状态可移执行`git diff --cached`或者`git diff --staged`.
+
+ {% img /images/git-2_7.png %}
+ 
+`git commit -m "some message"`:提交在stage里面的文件.
+
+##Removing & moving files##
+`git rm file_name`:这个命令是用来在被git管理的文件夹下面删除一个文件,使用这个命令删除的文件不仅会被git untrack而且还会被从项目里面彻底删除.在执行完这个指令后还不算完,需要`git commit`来更新.
+
+`git rm --cached file_name`:这条指令的效果和上一条一样,只不过这一次这个文件只是不再被git track,而不会被从项目里面删除.
+
+`git mv file1 file2`:重命名.把名叫file1的文件更名为file2.
+
+##View the commit history##
+之前我们介绍过`git diff`指令,不过它是用来比较`modified`和`stage`里面的不同.我们知道当`git clone`一个项目的时候,连同这个项目之前的所有信息都获取下来了,这些信息里面就包含了这个项目的所有提交记录,我们可以使用`git log`来查看这些记录.
+
+ {% img /images/git-2_8.png %}
+ 
+如果想看每一次提交的具体内容,可以使用`git log -p`:
+
+ {% img /images/git-2_9.png %}
+ 
+如果只想看最近的5个提交,可以使用`git log -p -2`
+
+pretty是一个非常有用的指令,它能让log信息按照一定的格式输出,而且git内置了很多log信息的格式,比如可以使用%a来输出作者名称,下面就是一个例子:
+
+ {% img /images/git-2_10.png %}
+ 
+同时如果我想要让log信息在一行显示,可以输入`git log pretty=oneline`:
+
+ {% img /images/git-2_11.png %}
+
+下面这张表列举了一些常用的输出格式:
+
+ {% img /images/git-2_12.png %}
+ 
+如果想查看log信息中的branch情况,可以使用`git log --graph`
+
+如果只想看某一特定时间内的log信息,可以使用`--since`或者`--until`.比如如果我想查看最近两天的提交可以使用`git log --since=2.days`,最近一个月的提交`git log --since=1.month`.如果想看在某个事件区间内的提交,可以使用`git log --since='2014-5-5' --before='2014-5-8'`.
+
+gitk:它是git查看log的图形化界面,直接在命令行输入gitk就能打开.
+ 
+##Change last commit && Unstage##
+
+`git commit --amend -m 'revised message here'`:这条指令用来修改上一次提交的提交信息.
+
+`git reset HEAD file_name`:如果有2个文件你修改了,只想提交其中的一个,但是一不小心使用了`git add .`指令把两个一起加到stage里去了,这时可以使用这条指令来unstage其中的一个文件.
+
+`git checkout -- file_name`:当在stage之前对一些文件做了修改,但是并不想保存它们,可以使用这条指令还原.
+
+##Working with remotes##
+
+`git clone  git://github.com/shacon/grit.git`:把在server上的项目clone到本地,保存在名叫grit的文件夹下.
+
+`git remote`:显示server方面相关的信息,一般会输出origin,这个名称是git给server上项目地址的一个别名.可以使用`git remote -v`来查看别名以及其对应的全地址.
+
+`git fetch xxx` && `git pull xxx`:前者是从server上提取但是并不和本地的修改merge,后者会.
+
+`git push origin master`:把master branch push到origin server上去.
+
+`git remote add sc git://github.com/shacon/grit.git`:给server段的地址取个别名(sc),这样每次在操作的时候就不必输入全地址而只需输入sc即可.

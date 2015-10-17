@@ -1,0 +1,139 @@
+---
+layout: post
+title: "iOS Programming 6-1(View Controllers)"
+date: 2014-04-06 19:55
+comments: true
+categories: 
+---
+前面讲过了view和View hierachy,为了让view在window上显示,我们都是直接把一个view加到应用的window里面去,今天要讲的东西比view更高级一层,他叫view controller.他的职责是创建view,响应view的事件,管理view的层级关系,把view加到window里.
+
+我会结合一个实际的应用来阐述view controller,这个应用最后出来的效果会想下面这样:
+
+<!--more-->
+
+ {% img /images/ios-6_1.png 300 600%}
+ 
+屏幕下面有一个tab,可以用来切换屏幕,左边按钮对应的屏幕和上一章讲到的view一样,右边的view是一个计时器.
+
+ {% img /images/ios-6_2.png 300 600%}
+ 
+
+##Subclass UIViewController##
+我们首先创建一个空项目,并把上一章创建的view类引用到这个项目中来,接着创建第一个view controller (WUSTLHypnosisViewController), 让他继承自UIViewController.
+
+```objective-c
+@interface WUSTLHypnosisViewController : UIViewController
+@end
+```
+
+##View of View Controller##
+每一个继承自UIVIewController的类都有一个对应的view,它定义在父类中:
+
+```objective-c
+@property (nonatomic, strong) UIView *view
+```
+
+这个属性指向controller的view hierachy中的root view,所以当一个view controller的root view被加到应用的window中后,这个view controller中在view hierachy中的所有view都被加进去了.
+
+###Lazy Loading###
+View Controller中的view不是应用一启动就全部加载的,而是遇到用户请求才开始加载,这样做的好处是节约了内存,提高了性能.
+
+对于一个View Controller来说,有两种方法可以加载其对应的view:
+
+* 覆写父类UIViewController的loadView方法
+* 如果view是在Interface Builder中创建的,可以通过加载Nib文件来读取view
+
+我们首先使用第一种方法来创建WUSTLHypnosisViewController的view,在`WUSTLHypnosisViewController.m`文件里先import 之前创建的view,然后覆写loadView方法:
+
+```objective-c
+- (void)loadView {
+    BNRHypnosisterView *backgroundView = [[BNRHypnosisterView alloc] init];
+    self.view = backgroundView;
+}
+``` 
+
+##Setting the Root View Controller##
+这一步完成后,我们已经建立了一个view controller并把它和一个view连接起来.如果要想显示这个view controller里面的view,我们只需要把这个view controller加到window里面去即可.我们来到AppDelegate的
+
+```objective-c
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
+```
+
+方法中,在里面创建view controller的实例,然后把这个实例加到应用的window中去:
+
+```objective-c
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
+{
+    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+    // Override point for customization after application launch.
+    WUSTLHypnosisViewController *hvc = [[WUSTLHypnosisViewController alloc] init];
+    self.window.rootViewController = hvc;
+    
+    self.window.backgroundColor = [UIColor whiteColor];
+    [self.window makeKeyAndVisible];
+    return YES;
+}
+```
+
+在之前的教学中,我们是直接把一个view加到window中,例如:
+
+```objective-c
+[self.window addSubview:firstView];
+```
+
+现在我们是把一个view controller加到window的root view controller中,其实在window的setRootViewController方法中,他还是会把view controller里面的view取出来,然后执行上面那段代码.
+
+这样我们就完成了第一个屏幕,接下来应该开始第二个屏幕内容了.首先还是建立一个UIViewController的子类,不过这一次我们选择使用另一种方式创建view -- 读取XIB文件.
+
+##Create a View in Interface Builder##
+首先建立一个XIB文件. 
+
+ {% img /images/ios-6_3.png 300 600%}
+ {% img /images/ios-6_4.png 300 600%}
+
+然后点击XIB文件,拖一个UIView到空白处,这样我们就可以在Interface Builder上面加入各种view了.接下来我们选择DatePicker和UIButton拖到view里面,效果如下:
+
+ {% img /images/ios-6_5.png 300 600%} 
+ 
+接下来我们到对应的.m文件里创建一个DatePicker的property和addReminder方法:
+
+```objective-c
+@interface WUSTLReminderViewController ()
+@property (nonatomic, weak) IBOutlet UIDatePicker *datePicker;
+@end
+```
+
+这里datePicker的属性是weak,这样做的好处是在这个view被销毁的时候,其子类也被销毁了.
+
+
+```objective-c
+- (IBAction)addReminder:(id)sender {
+    NSDate *date = self.datePicker.date;
+}
+```
+
+现在我们有了view,并且在类里面也有对应的属性和方法,接下来就是把他俩连接起来,不过与第一个讲义不同的是,这个XIB文件不是在创建controller的时候创建的,而是后来单独创建的,所以还需要把它和一个view controller连接起来才行.打开view左侧的File's Owner,
+
+ {% img /images/ios-6_6.png 300 600%}
+ 
+然后来到右边的属性栏,在class里面填写对应的view controller即可:
+
+ {% img /images/ios-6_7.png 300 600%}
+
+创建view的最后一步就是把interface builder中的元素和类里面的属性和方法hook起来,方法如第一个讲义里面那样.
+##Loading a Nib File##
+
+我们还是来到AppDelegate那个didFinishLaunch方法里面去,并加上如下的代码:
+
+```objective-c
+NSBundle *appBundle = [NSBundle mainBundle];
+WUSTLReminderViewController *rvc = [[WUSTLReminderViewController alloc] initWithNibName:@"WUSTLReminderViewController" bundle:appBundle];
+```
+
+第一句话的意思是找到应用的bundle,bundle是一个应用里面的一个文件夹,里面主要装着可执行文件和一些资源(XIB文件).第二句话是初始化view controller并读取相应的NIB文件.其实上面的代码和接下来的代码效果是一样的:
+
+```objective-c
+WUSTLReminderViewController *rvc = [[WUSTLReminderViewController alloc] init];
+```
+
+因为如果直接调用init方法,系统最终还是会调用initWithNibName,所以调用init只是相当于把initWithNibName方法的两个参数都设为nil,不过系统会默认到当前应用的bundle下面去找对应的资源,他会去尝试找与当前view controller同名的Nib文件(Nib是XIB编译后的产物),所以为了方便起见,我们一般把XIB文件的名字和view controller的名字保持一致.

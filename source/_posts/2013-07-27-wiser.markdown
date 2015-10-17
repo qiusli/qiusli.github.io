@@ -1,0 +1,104 @@
+---
+layout: post
+title: "使用Wiser测试邮件发送"
+date: 2013-07-27 20:14
+comments: true
+categories: 
+---
+最近在做一个小项目，里面有发送邮件这一功能，本文主要是讲如何通过Spring发送邮件，已经一个邮件测试框架 --- wiser的介绍。
+
+如何使用Spring发送邮件
+首先主要用到的一个类是JavaMailSenderImpl，它位于Spring的org.springframework.mail.
+javamail包中，主要是用来发送邮件的。为了发送邮件，需要提供给它一系列的参数。这些参数我都配置在了resources包下的一个xml文件中
+
+<!-- more -->
+
+``` xml
+<bean id="javaMailSenderImpl" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+        <property name="host" value="smtp.gmail.com"/>
+        <property name="port" value="587"/>
+        <property name="username" value="twufeedmycat@gmail.com"/>
+        <property name="password" value="@twu292012"/>
+
+        <property name="javaMailProperties">
+            <props>
+                <prop key="mail.smtp.auth">true</prop>
+                <prop key="mail.smtp.starttls.enable">true</prop>
+            </props>
+        </property>
+</bean>
+```
+
+host: 邮件发送服务器的地址
+port: 与服务器通信的端口
+username & password: 一个gmail账户即可
+mail.smtp.auth: 提供给邮件服务器，校验发送方的授权，也许是为了组织没有授权的发送方肆意发送垃圾邮件
+mail.smtp.starttls.enable: 将一般连接升级到加密连接，而无需另开一个端口进行加密传输。这里要设为true才能使用gmail的邮件服务器
+
+上面的步骤只是建立了连接，下面聊聊发送的内容。
+建立邮件内容，需要用到SimpleMailMessage这个类，它在org.springframework.mail这个包中。下面的代码展示了如何用它创建邮件内容：
+``` java
+SimpleMailMessage mailMessage = new SimpleMailMessage();
+
+    mailMessage.setTo(emailAddress);
+    mailMessage.setFrom(fromAddress);
+    mailMessage.setSubject(subject);
+    mailMessage.setText(content);
+```
+
+内容建立好后，就应该发送了，直接调用JavaMailSenderImpl的send方法就OK。
+``` java
+mailSender.send(mailMessage);
+```
+这样就完成了邮件的发送过程，下面来聊聊如何测试。我用到了Wiser框架，道理很简单。既然开始我是之间向google的邮件服务器通信，并让它发送邮件，那么现在测试我就应该发到Wiser上去。在测试用的resources文件夹下，我有一个与上面提到的同名的xml文件，但是配置的JavaMailSenderImpl中的配置肯定是不同的，这次是配置的Wiser，需要注意的是Wiser并不是一个邮件服务器，在我看来，它是一个监听一个端口的程序，每一条经过这个端口发送出的信息，都会被它捕获到，然后存在一个队列中，这样我们就能从这个队列中取出消息进行验证：
+
+``` xml
+<bean id="javaMailSenderImple" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+        <property name="host" value="localhost"/>
+        <property name="port" value="25000"/>
+        <property name="username" value="username"/>
+        <property name="password" value="password"/>
+
+        <property name="javaMailProperties">
+            <props>
+                <prop key="mail.smtp.auth">true</prop>
+                <prop key="mail.smtp.starttls.enable">true</prop>
+            </props>
+        </property>
+</bean>
+```
+同时，下面的代码被我用于junit测试中：
+
+``` java
+private Wiser wiser;
+
+    @Before
+    public void setUp() {
+        wiser = new Wiser();
+        wiser.setPort(25000);
+        wiser.start();
+    }
+
+    @After
+    public void tearDown() {
+        wiser.stop();
+}
+```
+setPort: 设置被监听的端口，与xml中给JavaMailSenderImpl配置的一样。
+最后，启动单元测试，读取发送的邮件进行验证：
+``` java
+mailSender.sendEmailToCustomerAfterRegistration(customerNickname, customerEmail);
+
+    WiserMessage wiserMessage = wiser.getMessages().get(0);
+    String expectedReceiver = "adam@test.com";
+    String expectedSender = "admin@thebank.com";
+    String expectedSubject = "Welcome!";
+    String expectedContent = "Dear adam, welcome to the bank";
+
+    assertThat(wiserMessage.getEnvelopeReceiver(), is(expectedReceiver));
+    assertThat(wiserMessage.getEnvelopeSender(), is(expectedSender));
+    assertThat(wiserMessage.getMimeMessage().getContent().toString().trim(), is(expectedContent));
+    assertThat(wiserMessage.getMimeMessage().getSubject().trim(), is(expectedSubject));
+```
+
+这就是我在项目中使用到的发送邮件和其测试的技术。

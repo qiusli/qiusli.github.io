@@ -1,0 +1,122 @@
+---
+layout: post
+title: "Git 3 (Branching)"
+date: 2014-05-31 19:26
+comments: true
+categories: 
+---
+##What is Git Branch##
+
+`分支的好处`: 它允许在不干扰主分支的情况下,从主分支里分离出一条小的分支,在里面进行开发,然后再把修改合并到主分支里.
+
+`什么是分支`: 在Git下提交时,Git会保存每一次提交的快照,并且会保存一个指向祖先的指针.第一次提交时没有祖先,普通提交有一个祖先,由两个或多个分支合并而成的提交则有多个祖先.
+
+<!-- more -->
+
+ {% img /images/git-3_1.png %}
+
+Git中的分支其实只是一个指针,最初的时候它指向master.当你在master上不断提交时,这个指针会随之向后移动,所以它总是指向最近的一次提交.
+
+ {% img /images/git-3_2.png %}
+ 
+当创建一个新的branch时,git会新建一个指针指向这个新建立的branch.比如说你新建了一个名为testing的branch:
+
+ {% img /images/git-3_3.png %}
+ 
+当这个branch被创建后,并不会立即切换到这个分支上去,如果想要切换到新建的分支,可以执行:
+
+`git checkout testing`
+
+如果想在创建分支的时候同时切换到那条分支上去,可以执行:
+
+`git checkout -b testing`
+
+现在就在testing分支上了,接下来的所有操作都会在这个分支上进行,不会干扰到master分支.那么git又是如何知道用户现在到底在哪个分支上呢?原来git保存了另一个名叫`HEAD`的指针,它总是指向用户所在的当前分支,并且会随着用户执行`git checkout`指令后指向另一个分支:
+
+ {% img /images/git-3_4.png %}
+ 
+##Basic Branching and Merging##
+
+试想这样一个场景:为了完成当前工作,你在master上新建了一个分支(iss53)并且切换到上面,然后开始在新的分支上工作,并且进行了一些提交,这时你的老板分配给你一项紧急的任务,让你停掉当前的工作,立马开始新任务.这个时候你需要首先需要切换到master分支上,然后新建另一个分支(hotfix)来处理紧急任务.在修改完成并通过所有测试后,紧急任务总算是完成了,你开心地提交了这个任务.这个时候git里的情况如下:
+
+ {% img /images/git-3_5.png %}
+ 
+这时,应该合并master和紧急任务的分支了,你需要执行下面一系列代码来完成这个操作:
+
+* 切换到master分支: `git checkout master`
+* 合并master和hotfix分支: `git merge hotfix`
+
+由于master分支所在的commit是hotfix分支所在commit的直接上游,只需要向右一直移动指针就行了,这种合并方式叫做快进(`fast forward`).
+
+ {% img /images/git-3_6.png %}
+
+因为hotfix分支使用来修理紧急任务的,这时任务也完成了,可以删除这个分支.
+
+`git branch -d hotfix`
+
+接下来需要回到最初工作的分支上去:
+
+`git checkout iss53`
+
+经过一些提交后:
+
+ {% img /images/git-3_7.png %}
+ 
+##Basic Merging##
+
+Merge分两步:
+
+* checkout到你想要merge进去的branch(e.g. iss53 to master)
+* 运行merge
+
+iss53 merge到master和hotfix merge到master是不同的.后者只需要fast forward就行了,但是前者需要进行一次称为3-way-merge的操作,具体是需要合并3个东西: 两个commit的共同父节点和两个节点本身.
+
+ {% img /images/git-3_8.png %}
+ 
+找到需要合并的节点后再合并:
+
+ {% img /images/git-3_9.png %}
+ 
+###Basic Merge Conflict###
+如果两个需要被merge的节点里面有冲突(e.g. 同时修改了同一个文件的相同部分),git会提示有冲突.
+
+ {% img /images/git-3_10.png %}
+ 
+上图的HEAD部分是当前分支在这一部分的修改,iss53的那部分是在iss53那个分支上对这一部分的修改,如果想要解决这个冲突,可以保留其中的一个,或者全部删掉重写.在解决后需要重新add这个文件.
+
+##Branch Management##
+
+`git branch`: 列出当前的所有分支,当前分支前面会有一个星号(*).
+
+`git branch -v`: 列出所有分支的最近的一次提交.
+
+##Remote Branches##
+
+远程分支是对远程仓库状态的索引,它告诉你自从上一次和服务器交互之后的状态.当从服务器上clone项目的时候,git会创建两个指针,一个是指向服务器的指针(origin/master),并且停留在你最近一次与之交互后的节点上,另一个指针(master)指向同一个节点,不过它是在本地.两个指针最大的不同就是指向服务器上的指针只会在你与服务器进行交互的时候移动(e.g. 提交),它是自动移动的,不能人为控制,可以想象成一个书签,帮你保存上一次的状态.本地的指针是在本地提交的时候移动的.
+
+{% img /images/git-3_11.png %}
+
+例如我在本地进行了一些提交,同时有人往服务器上提交了代码,这时服务器上的那个指针就会向前移动,如果我想从服务器上获取这些更新,可以运行`git fetch origin`,这个指令用来获取最新的代码,但是它不会自动merge,如果想要获取并且让系统自动merge,需要执行`git pull`.运行之后系统的现状:
+
+{% img /images/git-3_12.png %}
+
+##Push##
+
+`git push (remote) (branch)`: 这条指令用来向服务器上推送代码.(e.g. git push origin master) 向名为origin的服务器上的master分支推送代码.
+
+##Tracking Branches##
+
+当我们在push或者pull的时候,git知道应该push到哪里去或者从哪里去pull,即使我们不加任何的参数.这是因为git在我们clone代码的时候建立了一个tracking branch,它和远程仓库有直接联系.
+
+##Rebasing##
+
+rebase是git中另一种合并分支的方法,与merge不同的是,rebase不需要进行3-way-merge,取而代之的是只需要把需要合并的分支的patch打到另一个分支上去就可以了.
+
+{% img /images/git-3_13.png %}
+
+* git checkout experiment
+* git rebase master
+
+他的原理是回到两个分支的共同的祖先,提取你所在分支每次提交时产生的差异(diff),把这些差异保存在临时文件里,然后切换到需要合并到的分支,以此应用每一个patch文件.
+
+{% img /images/git-3_14.png %}

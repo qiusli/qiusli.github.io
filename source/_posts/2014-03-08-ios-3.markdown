@@ -1,0 +1,64 @@
+---
+layout: post
+title: "iOS Programming 3(Managing Memory wih ARC)"
+date: 2014-03-08 18:54
+comments: true
+categories: 
+---
+###栈和堆###
+当一个方法被执行的时候，系统会从栈中分配出一定的内存让代码在其中运行，这一块专门分配出来的内存叫做frame，每一个方法都有一个frame。当方法从main方法中开始执行的时候，main方法的frame被放到了栈上，然后如果在main方法中有其他方法的调用，就会有不断的frame被加到栈上，下图就是在一个栈上不断调用和结束调用方法的对应的frame结构：
+<!--more-->
+{% img /images/ios_stack.png 600 900%}
+
+在内存中有另外一块区域叫做堆。与栈不同，堆并没有顺序可言，他是用来存放对象的地方，你可以想象里面是一大块无序的区域，每一个在其中的对象都有至少一个外部指针指向他。在objective-c中，我们并不需要具体去关心对象的生命周期，因为这一切都由iOS自己经理，对应的机制叫做ARC(Automatic Reference Counting)。
+
+
+
+###对象的所属权(Object Ownership)###
+1. 在一个方法中，如果定义了局部变量指向一个对象，那么这个被指向的对象属于那个局部变量。
+2. 当一个对象的实例变量指向一个对象时，那么包含这个实例变量的对象拥有被实例变量指向的对象。
+
+对象的所属关系到这个对象在内存中的生命周期。如果一个对象存在指向其的指针，那么这个对象就不能被释放，如果一个对象没有其他指针指向他，那么该对象占有的内存可以被释放。
+
+
+###强引用和弱引用(Strong and Weak References)###
+強引用是当一个指针指向一个对象时，这个对象被那个指针所拥有，所以他不会被销毁。在objective-c中，指向一个对象的指针可以选择不拥有其指向的对象，这叫做弱引用。
+
+弱引用的一大好处是可以用来避免强引用循环(Strong reference Cycle)。例如有两个对象，他们互相指向对方，即使你把所有指向这两个对象的指针都设置为nil，这两个对象也不会被释放，因为他们仍然有来自对方的指针。
+
+{% img /images/ios_ownership_1.png 500 800%}
+
+当把所有的指针设为nil后
+
+{% img /images/ios_ownership_2.png 500 800%}
+
+当上述关系出现的时候，可以用把其中一个对象的指针设为弱引用来化解。那么把谁的指针设为弱引用呢？在大部分情况下，两个对象的強引用都可以拆分为一个parent-child关系，这时候我们可以把child指向parent的引用设为weak就行了。例如有一个backpack对象和calculator对象，backpack是parent，calculator是child，我们只需要把calculator指向backpack的引用设为弱引用。当我们完成弱引用的设置后，如果被指向的对象被释放(backpack)，那么发出这个指针的对象也会被释放(calculator)。
+
+
+###Properties###
+当定义一个property属性时，系统会为你做2件事：1、创建一个实例变量 2、创建该实例变量的accessor方法(getter & setter)。所以当你像下面这样定义一个property的时候：
+
+```objective-c
+property int itemName;
+```
+
+系统会为你创建一个名为_itemName的实例变量(注意underscore)，itemName和setItemName:方法。以前objective-c规定定义property必须在implementation中synthesis，但是大概自从xCode 4之后就不需要了，直接定义property就行了。
+
+####Properties的属性####
+1. atomic/nonatomic。主要是在多线程环境下用，一般情况下，考虑到性能一般使用nonatomic。
+2. readwrite/readonly。他告诉编译器这个property的可读和可写的属性。如果定义为readwrite，系统会实现setter和getter方法，如果为readonly，系统只会实现getter方法。
+3. strong/weak/copy/unsafe_unretained。他们都为内存管理属性，strong和weak前面都介绍过了，当一个指针指向的实例有可变子类的时候，应该把这个指针的属性设为copy，这样做是保证他指向的对象不会变化：
+
+```objective-c
+@property (nonatomic, copy) NSString *itemName;
+```
+
+当这样使用后，系统会在后台生成如下代码：
+
+```objective-c
+- (void)setItemName: (NSString *)itemName {
+    _itemName = [itemName copy];
+} 
+```
+
+copy返回一个原类型的不可变string类型，即使原类型是可变的，这里也不用担心。

@@ -1,0 +1,255 @@
+---
+layout: post
+title: "正则表达式必知必会 3"
+date: 2014-05-17 10:43
+comments: true
+categories: 
+---
+
+##使用子表达式##
+
+有些短语虽然中间有空格,但是通常希望被作为一个整体显示在一行以便浏览,比如 Windows 2000.这样通常在Windows和2000之间插入非换行型空格`&nbsp`,它是non-breaking space的缩写.
+
+#
+
+`文本`: Hello, my name is Ben`&nbsp;`Forta, and I am the author on SQL, Coldfusion, WAP, windosw`&nbsp;&nbsp;`2000, and other subjects.
+
+`正则表达式`: `&nbsp;`{2,}
+	
+`结果`: 空
+
+<!-- more -->
+
+我们本想通过这个正则表达式来匹配至少出现两个`&nbsp;`,但是却什么都没有匹配出来,这是因为{2,}只作用于紧跟在它前面的一个字符 -- 那是一个分号,所以这个正则表达式能匹配`&nbsp;;;;`这种字符.
+	
+`子表达式`: 把一系列表达式划分为子表达式的目的是把那些子表达式当作一个个独立的单元来使用.子表达式需要用()括起来.
+
+#
+
+`文本`: Hello, my name is Ben`&nbsp;`Forta, and I am the author on SQL, Coldfusion, WAP, windosw`&nbsp;&nbsp;`2000, and other subjects.
+
+`正则表达式`: (`&nbsp;`){2,}
+	
+`结果`: `&nbsp;&nbsp;`
+
+#
+
+`文本`: 
+
+ID: 042
+
+SEX: M
+
+DOB: 1987-08-17
+
+Status: Active
+
+`正则表达式`: 19|20\d{2}
+	
+`结果`: 19
+
+这里的正则表达式是期望匹配出一个年份,但是结果却不是希望的那样.这是因为这个正则表达式被解释成了匹配19或者20紧接着2个数字.如果想要达到正确的效果,需要把19|20作为一个子表达式.
+
+#
+
+`文本`: 
+
+ID: 042
+
+SEX: M
+
+DOB: 1987-08-17
+
+Status: Active
+
+`正则表达式`: (19|20)\d{2}
+	
+`结果`: 1987
+
+###子表达式的嵌套###
+
+#
+
+`文本`: Pinging hog.forta.com [192.168.46.200] with 32 bytes data.
+
+`正则表达式`: ((\d{1,2}) | (1\d{1,2}) | (2[0-4]\d) | (25[0-5])\.){3}((\d{1,2}) | (1\d{1,2}) | (2[0-4]\d) | (25[0-5]))
+	
+`结果`: 192.168.46.200
+
+这里使用了子表达式的嵌套来匹配IP'地址.子表达式表示的意思分别是:
+
+* 任何一位或两位的数字
+* 任何以1开头的两位或者三位的数字
+* 任何以2开头的第二位为0-4的三位数字
+* 任何以25开头的第三位为0-5的三位数字
+
+这样的一个子表达式排除了其他不可能的情况,例如999.2222.222.0.
+
+##回溯引用:前后一致匹配##
+
+#
+
+`文本`: 
+
+\<H1>Welcome to my homepage \</H1>
+
+Content is divided into two sections
+
+\<H2>ColdFusion\</H2>
+
+Information about macro media coldfusion
+
+\<H2>Wireless\</H2>
+
+Information about 802.11 and more
+
+\<H2>This is not a valid HTML\</H3>
+
+`正则表达式`: <[Hh][1-6]>.*?</[Hh][1-6]>
+
+`结果`:
+
+\<H1>Welcome to my homepage \</H1>
+
+\<H2>ColdFusion\</H2>
+
+\<H2>Wireless\</H2>
+
+\<H2>This is not a valid HTML\</H3>
+
+这个正则表达式看起来很有用,但是在匹配最后一个title的时候得到了我们不想要的结果,把H3和H2匹配成了一对.这是因为正则表达式在匹配后一个tag的时候对前一个tag毫无所知,这时候就是回溯引用能用到的地方.
+
+`回溯引用`: 允许正则表达式模式引用前面匹配的结果.
+
+
+在解决这个问题之前,先看一看一个回溯引用的简单应用.
+
+#
+
+`文本`: this is a block of of text, several words here are are repeated, and and they should not be
+
+`正则表达式`: \s+(\w+)\s+\1
+
+`结果`: of of      are are        and and
+
+这里的正则表达式首先匹配一个或多个空格,然后使用一个子表达式匹配一个或多个字符,但是这里的子表达式不是用来做重复引用.接下来又匹配一个或多个空格,最后跟了一个\1,它的意思是引用第一个子表达式匹配到的字符,所以如果第一个表达式匹配到了A这个正则表达式就能匹配到 A A,\1就是一个回溯引用.\1表示引用第一个子表达式,如果前面有多个子表达式,可以通过\1,\2等来具体引用第几个子表达式.其实我们可以把子表达式想象成一个个变量,后面只是在使用前面定义的变量.
+
+现在我们可以来试图解决前面的问题了.
+#
+
+`文本`: 
+
+\<H1>Welcome to my homepage \</H1>
+
+Content is divided into two sections
+
+\<H2>ColdFusion\</H2>
+
+Information about macro media coldfusion
+
+\<H2>Wireless\</H2>
+
+Information about 802.11 and more
+
+\<H2>This is not a valid HTML\</H3>
+
+`正则表达式`: <[Hh]\([1-6])>.*?</[Hh]\1>
+
+`结果`:
+\<H1>Welcome to my homepage \</H1>
+
+\<H2>ColdFusion\</H2>
+
+\<H2>Wireless\</H2>这里在第二个tag引用了第一个tag后面跟着的数字,所以两个tag的数字就一样了.
+
+`note`: 回溯引用只能引用模式里的子表达式(用()括起来的正则表达式片段).
+
+
+###回溯引用在替换中的应用###
+
+#
+
+`文本`: Hello, my name is Ben Forta, my email address is ben@forta.com
+
+`正则表达式`: \w[\w\.]*@[\w\.]+\.\w+
+
+`结果`: ben@forta.com
+
+这里的正则表达式匹配了一个邮件地址.
+
+如果我想要把邮件地址替换为可点击,需要使用下面这样的语法`\<A href="mailto:ben@forta.com">ben@forta.com\</A>`.
+
+我们可以使用回溯引用来完成这个操作,首先找到需要匹配的文本,然后再你用这个文本填充上面的语法:
+
+#
+
+`文本`: Hello, my name is Ben Forta, my email address is ben@forta.com
+
+`正则表达式`:  (\w[\w\.]*@[\w\.]+\.\w+)    
+
+`替换`: \<A href="mailto:$1">$1\</A>
+
+`结果`: ben@forta.com成为了可点击的链接
+
+这里的正则表达式分为两步,首先匹配到需要的文本,接着再使用回溯引用得到第一步匹配到的文本,然后用这个文本填充.回溯引用可以跨模式使用,第一个模式你们匹配到的文本可以在第二个文本里使用.
+
+`note`: 上面的例子中使用了$1而不是\1,这个是在JavaScript中的语法,比如在ColdFusion中就是\1,根据不同的语言有不同的语法,但效果都一样.
+
+#
+
+`文本`: 
+
+314-683-7956
+
+313-082-0121
+
+010-203-4121
+
+313-123-9921
+
+`正则表达式`: (\d{3})(-)(\d{3})(-)(\d{4})
+	
+`替换`: ($1) $3-$5
+
+`结果`: 
+
+(314) 683-7956
+
+(313) 082-0121
+
+(010) 203-4121
+
+(313) 123-9921
+
+上面这个例子体现了如何回溯引用多个子表达式.达到的效果是替换电话号码的显示效果.
+
+###大小写转换###
+
+有些语言里的正则表达式允许使用一些特殊的元字符对匹配到的文本进行大小写转换
+
+ {% img /images/regex-3_1.png %}
+#
+
+`文本`: 
+
+\<H1>Welcome to my homepage \</H1>
+
+Content is divided into two sections
+
+\<H2>ColdFusion\</H2>
+
+Information about macro media coldfusion
+
+\<H2>Wireless\</H2>
+
+Information about 802.11 and more
+
+\<H2>This is not a valid HTML\</H3>
+
+`正则表达式`: (<[Hh]1>)(.*?)(</[Hh]1>)
+
+`替换`: $1\U$2\E$3
+
+`结果`:
+
+\<H1>WELCOME TO MY HOMEPAGE \</H1>

@@ -1,0 +1,98 @@
+---
+layout: post
+title: "Linux 1"
+date: 2014-05-18 11:36
+comments: true
+categories: 
+---
+
+#INTRODUCTION#
+
+##What is the Shell##
+
+Shell是一个应用程序,它接受用户的键盘输入,然后把这些输入传入到操作系统并返回结果.
+
+
+##What is the Bash##
+
+几乎所有的Linux Distribution都提供一个叫做`bash`的shell应用程序,bash是GNU项目的产物.`bash`的全称是`Bourne Again Shell`,从名称上就能看出它是一般Shell(`sh`)的加强版本.最早期的Shell是由Steve Bourne编写.
+
+<!-- more -->
+
+##Terminal Emulators##
+
+当使用图形用户界面的时候,我们需要另一个程序来与Shell交互,这就是Terminal Emulator.比如在Mac下的iTerm就是一个Terminal.
+
+
+##Some simple commands##
+
+`date`: 显示当前时间.
+
+ {% img /images/linux-1_1.png %}
+ 
+`cal`: 显示这个月的日历.
+
+ {% img /images/linux-1_2.png %}
+ 
+`exit`: 退出当前session,相当于点击关闭.
+
+#NAVIGATION#
+
+`pwd`: 显示当前工作目录.
+
+ {% img /images/linux-1_3.png %}
+
+`cd`: 改变目录.
+
+* 通过绝对路径直接进入另一个目录
+
+ {% img /images/linux-1_5.png %}
+
+* 通过相对目录进入另一个目录
+
+ {% img /images/linux-1_6.png %}
+ 
+ {% img /images/linux-1_7.png %}
+
+`ls`: 列出当前目录下的所有内容.
+
+ {% img /images/linux-1_4.png %}
+ 
+显示另一个目录下的所有文件;
+
+ {% img /images/linux-1_8.png %}
+ 
+同时显示两个目录下的所有文件(在下面是当前目录和根目录):
+
+ {% img /images/linux-1_9.png %}
+ 
+以某种格式(这里是long format)显示当前目录下的所有文件:
+
+ {% img /images/linux-1_10.png %}
+ 
+下面是可以用到的所有指令:
+
+ {% img /images/linux-1_11.png %}
+ 
+当我们在用`-l`显示目录下的所以内容时,发现显示了许多具体的内容,下面这个列表表明了每个区域显示的内容的含义:
+
+ {% img /images/linux-1_12.png %}
+
+`tips`: 在创建新目录的时候,如果文件名之间有空格,最好用下划线代替.
+
+
+#EXPLORING THE SYSTEM#
+
+`file`: 显示当前文件的所属类型.
+
+ {% img /images/linux-1_13.png %}
+
+`less`: 显示文件的具体内容.
+
+ {% img /images/linux-1_14.png %}
+ 
+点击`q`退出浏览模式.
+
+下面是在使用`less`浏览的时候可以使用的快捷键:
+
+ {% img /images/linux-1_15.png %}
