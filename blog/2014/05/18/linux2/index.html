@@ -1,0 +1,142 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Linux 2  | 逆旅，行人</title>
+
+	<meta name="author" content="李秋实"> 
+	
+	<meta name="description" content="Manipulating files and directories 在操作文件的时候,通常都需要首先根据一定的条件来选择想要的文件(比如说以数字结尾的文件或者扩展名为xls的文件).这时我们需要使用通配符,它使用一定的规则帮助快速找到想要的文件. 下面是一些通配符的例子: mkdir: &hellip;"> <meta name="keywords" content="">
+
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="逆旅，行人" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href="/stylesheets/font-awesome.min.css" rel="stylesheet" type="text/css">
+	
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	
+</head>
+
+
+
+<body>
+	<header id="header" class="inner"><h1>逆旅，行人</h1>
+<nav id="main-nav"><ul>
+	<li><a href="/">Blog</a></li>
+	<li><a href="/archives">Archive</a></li>
+	<li><a href="/contact">Contact</a></li>
+</ul>
+</nav>
+
+
+</header>
+
+	<div id="content" class="inner"><article class="post">
+	<h2 class="title">Linux 2</h2>
+	<div class="entry-content"><h2>Manipulating files and directories</h2>
+
+<p>在操作文件的时候,通常都需要首先根据一定的条件来选择想要的文件(比如说以数字结尾的文件或者扩展名为xls的文件).这时我们需要使用通配符,它使用一定的规则帮助快速找到想要的文件.</p>
+
+<!-- more -->
+
+
+<p> <img src="/images/linux-2_1.png"></p>
+
+<p>下面是一些通配符的例子:</p>
+
+<p> <img src="/images/linux-2_2.png"></p>
+
+<p><code>mkdir</code>: 创建新的目录.</p>
+
+<p>#</p>
+
+<p>mkdir dir_name</p>
+
+<p>同时创建多个目录: mkdir dir1 dir2 dir3.</p>
+
+<p><code>cp</code>: 从一个目录拷贝文件到另一个目录.</p>
+
+<p> <img src="/images/linux-2_3.png"></p>
+
+<p> <img src="/images/linux-2_4.png"></p>
+
+<p><code>mv</code>: 移动文件或者修改文件名.不论是在那种情况下使用,原始的文件都不存在了,这是和<code>cp</code>最大的不同,可以想象成剪切.</p>
+
+<p><img src="/images/linux-2_5.png"></p>
+
+<p><code>rm</code>: 删除文件或者目录.删除后的文件或目录不能undelete.</p>
+
+<p><img src="/images/linux-2_6.png"></p>
+
+<p><img src="/images/linux-2_7.png"></p>
+
+<h3>Hard Links vs. Soft(Symbolic) Links</h3>
+
+<p><code>文件储存</code>: linux系统中文件存储在硬盘上,硬盘的最小存储单位叫做扇区(sector),每个扇区存储512个字节(0.5kb).操作系统读取硬盘的时候，不会一个个扇区地读取，这样效率太低，而是一次性连续读取多个扇区，即一次性读取一个"块"（block）。这种由多个扇区组成的"块"，是文件存取的最小单位。"块"的大小，最常见的是4KB，即连续八个 sector组成一个 block.</p>
+
+<p><code>inode</code>: 文件数据都储存在"块"中，那么很显然，我们还必须找到一个地方储存文件的元信息，比如文件的创建者、文件的创建日期、文件的大小等等。这种储存文件元信息的区域就叫做inode，中文译名为"索引节点"(index node)。存储linux系统中文件的元信息.每个文件都有一个inode.linux系统中的文件没有文件名,不同的文件是通过inode号来区分.虽然在使用linux的时候会看到文件名,但它只是一个inode的别称.比如用户在通过文件名点击文件的时候,系统首先通过文件名找到对应的inode号,然后再找到inode.最后通过inode找到文件储存的相应block,然后提取文件.</p>
+
+<p><code>Hard Link</code>: 一般情况下，文件名和inode号码是"一一对应"关系，每个inode号码对应一个文件名。但是，Unix/Linux系统允许，多个文件名指向同一个inode号码。
+这意味着，可以用不同的文件名访问同样的内容；对文件内容进行修改，会影响到所有文件名；但是，删除一个文件名，不影响另一个文件名的访问。这种情况就被称为"硬链接".(hard link)</p>
+
+<p><code>ln file link</code>: 用来创建Hard link. file是源文件,link是目标文件.</p>
+
+<p><img src="/images/linux-2_8.png"></p>
+
+<p>运行上面这条命令以后，源文件与目标文件的inode号码相同，都指向同一个inode。inode信息中有一项叫做"链接数"，记录指向该inode的文件名总数，这时就会增加1。
+反过来，删除一个文件名，就会使得inode节点中的"链接数"减1。当这个值减到0，表明没有文件名指向这个inode，系统就会回收这个inode号码，以及其所对应block区域。
+这里顺便说一下目录文件的"链接数"。创建目录时，默认会生成两个目录项：".&ldquo;和&rdquo;..&ldquo;。前者的inode号码就是当前目录的inode号码，等同于当前目录的"硬链接"；后者的inode号码就是当前目录的父目录的inode号码，等同于父目录的"硬链接"。所以，任何一个目录的"硬链接"总数，总是等于2加上它的子目录总数（含隐藏目录）。</p>
+
+<p><code>Soft(Symbolic) Link</code>: 除了硬链接以外，还有一种特殊情况。文件A和文件B的inode号码虽然不一样，但是文件A的内容是文件B的路径。读取文件A时，系统会自动将访问者导向文件B。因此，无论打开哪一个文件，最终读取的都是文件B。这时，文件A就称为文件B的"软链接"（soft link）或者"符号链接（symbolic link）。这意味着，文件A依赖于文件B而存在，如果删除了文件B，打开文件A就会报错："No such file or directory"。这是软链接与硬链接最大的不同：文件A指向文件B的文件名，而不是文件B的inode号码，文件B的inode"链接数"不会因此发生变化。ln -s命令可以创建软链接。</p>
+
+<p><code>ln -s item link</code>: 用来创建soft link.</p>
+
+<p><img src="/images/linux-2_9.png"></p>
+
+<p><code>inode的特殊作用</code>:
+由于inode号码与文件名分离，这种机制导致了一些Unix/Linux系统特有的现象。</p>
+
+<ul>
+<li>有时，文件名包含特殊字符，无法正常删除。这时，直接删除inode节点，就能起到删除文件的作用。</li>
+<li>移动文件或重命名文件，只是改变文件名，不影响inode号码。</li>
+<li>打开一个文件以后，系统就以inode号码来识别这个文件，不再考虑文件名。因此，通常来说，系统无法从inode号码得知文件名。</li>
+</ul>
+
+
+<p>第3点使得软件更新变得简单，可以在不关闭软件的情况下进行更新，不需要重启。因为系统通过inode号码，识别运行中的文件，不通过文件名。更新的时候，新版文件以同样的文件名，生成一个新的inode，不会影响到运行中的文件。等到下一次运行这个软件的时候，文件名就自动指向新版文件，旧版文件的inode则被回收。</p>
+</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+
+<time datetime="2014-05-18T12:32:00-06:00" pubdate data-updated="true">May 18th, 2014</time></div>
+	
+
+
+</div>
+</article>
+</div>
+	<footer id="footer" class="inner">Copyright &copy; 2015
+ 李秋实 
+<br>
+Powered by Octopress.
+</footer>
+	
+
+</body>
+</html>

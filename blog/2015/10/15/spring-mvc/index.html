@@ -1,0 +1,321 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Spring MVC学习笔记  | 逆旅，行人</title>
+
+	<meta name="author" content="李秋实"> 
+	
+	<meta name="description" content="学习Spring很长时间了，但是一直也没有认真地总结一次，总是陷入学习了忘记的怪圈（其实也不是怪圈，就是学习了没有总结）。 今天我就写一点东西来总结我的Spring MVC学习之旅。 这个得从我的Sponsor给我布置的家庭作业讲起，在这里面我学会了很多Spring的知识。 &hellip;"> <meta name="keywords" content="">
+
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="逆旅，行人" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href="/stylesheets/font-awesome.min.css" rel="stylesheet" type="text/css">
+	
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	
+</head>
+
+
+
+<body>
+	<header id="header" class="inner"><h1>逆旅，行人</h1>
+<nav id="main-nav"><ul>
+	<li><a href="/">Blog</a></li>
+	<li><a href="/archives">Archive</a></li>
+	<li><a href="/contact">Contact</a></li>
+</ul>
+</nav>
+
+
+</header>
+
+	<div id="content" class="inner"><article class="post">
+	<h2 class="title">Spring MVC学习笔记</h2>
+	<div class="entry-content"><p>学习Spring很长时间了，但是一直也没有认真地总结一次，总是陷入学习了忘记的怪圈（其实也不是怪圈，就是学习了没有总结）。 今天我就写一点东西来总结我的Spring MVC学习之旅。 这个得从我的Sponsor给我布置的家庭作业讲起，在这里面我学会了很多Spring的知识。</p>
+
+<p>可以假设Spring是一个大的容器，里面放着各种各样的网页、文件等以供一个个的request访问。所以，我想从web.xml的配置说起。</p>
+
+<!-- more -->
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;listener&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;listener-class&gt;</span>org.springframework.web.context.ContextLoaderListener<span class="nt">&lt;/listener-class&gt;</span>
+</span><span class='line'><span class="nt">&lt;/listener&gt;</span>
+</span><span class='line'><span class="nt">&lt;context-param&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;param-name&gt;</span>contextConfigLocation<span class="nt">&lt;/param-name&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;param-value&gt;</span>classpath:applicationContext-servlet.xml
+</span><span class='line'>        classpath:applicationContextDataSource.xml
+</span><span class='line'>    <span class="nt">&lt;/param-value&gt;</span>
+</span><span class='line'><span class="nt">&lt;/context-param&gt;</span>
+</span><span class='line'><span class="nt">&lt;servlet&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;servlet-name&gt;</span>bankingSystem2<span class="nt">&lt;/servlet-name&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;servlet-class&gt;</span>org.springframework.web.servlet.DispatcherServlet<span class="nt">&lt;/servlet-class&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;load-on-startup&gt;</span>1<span class="nt">&lt;/load-on-startup&gt;</span>
+</span><span class='line'><span class="nt">&lt;/servlet&gt;</span>
+</span><span class='line'><span class="nt">&lt;servlet-mapping&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;servlet-name&gt;</span>bankingSystem2<span class="nt">&lt;/servlet-name&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;url-pattern&gt;</span>/<span class="nt">&lt;/url-pattern&gt;</span>
+</span><span class='line'><span class="nt">&lt;/servlet-mapping&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>上面的配置的意思是：servlet-mapping配置了需要被捕获的请求，url-pattern是匹配request中跟的那个地址，例如’/abc’。这里只是一个斜杠，意思是捕获所有的请求，捕获这个请求的servlet名字叫bankingSystem2。 在捕获一个请求后，Spring会根据servlet-name中的名字在这个xml中找到匹配的一个servlet，然后servlet-class是这个servlet文件的所在地。这里的DispatcherServlet是Spring的类，所有发往由Spring 容器管理的资源的请求都由它统一收集，然后它会求助Spring中内置的HandlerMapping已决定该请求被哪个controller处理。最后根据不同的请求目的地再转发给不同的controller，这个后面会讲到。这里有一点值得注意，我们在web.xml中定义了一个名字叫bankingSystem2的servlet，那么就需要在同一个文件夹下面定义一个名叫bankingSystem2-servlet.xml这样一个配置文Spring会默认到里面去读取配置和加载bean，如果没有会报错。</p>
+
+<p>ContextLoaderListener的作用就是启动Web容器时，自动装配ApplicationContext的配置信息。因为它实现了ServletContextListener这个接口，在web.xml配置这个监听器，启动容器时，就会默认执行它实现的方法。 在上面的contextConfigLocation里面配置了想要在Spring容器启动的时候加载的bean。 看完了上述的web.xml，我们进入在那个配置文件中配置的applicationContext-servlet.xml中一探究竟。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;context:component-scan</span> <span class="na">base-package=</span><span class="s">&quot;bank.icbc.controller&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'><span class="nt">&lt;context:component-scan</span> <span class="na">base-package=</span><span class="s">&quot;bank.icbc.domain&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'><span class="nt">&lt;mvc:annotation-driven/&gt;</span>
+</span><span class='line'><span class="nt">&lt;bean</span> <span class="na">class=</span><span class="s">&quot;org.springframework.web.servlet.view.InternalResourceViewResolver&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'><span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;prefix&quot;</span> <span class="na">value=</span><span class="s">&quot;/WEB-INF/jsp/&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'><span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;suffix&quot;</span> <span class="na">value=</span><span class="s">&quot;.jsp&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'><span class="nt">&lt;/bean&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+首先，在这个xml配置文件中定义了一个bean，里面存放着一个resolver，他是Spring中负责显示页面的。即controller处理完一个request后，会返回一个string告诉Spring现在该显示哪个页面了，然后Spring就找到InternalResourceViewResolver，让它告诉该到哪去找到相应的页面来显示。例如，如果一个controller返回字符串abc，那么根据上面的配置，在/WEB-INF/jsp/abc.jsp这个页面就应该被显示。 上面还有一个context:component-scan，它的作用是‘扫描’相应的package，把这些package中的所有类纳入Spring的管理范围来，这样的好处是，如果相应包中有autowire bean中的类，只有主类在Spring的管理范围， 被引用的bean才能被成功地autowire。</p>
+
+<p>同时，有些类（例如服务类）会在类上面表示诸如@Service这样的annotation，它被扫描到后，也会被Spring纳入到管理，这样其他类也能autowire它了。 annotation-driven：表示支持annotation，不写的话所有的annotation注解都无效。</p>
+
+<p>在说完配置后，我们来模拟一个请求，来看看Spring在这个过程中的运行过程。首先，我们来到系统的初始页面：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'>Welcome to the Banking System! <span class="nt">&lt;br/&gt;</span>  <span class="nt">&lt;c:url</span> <span class="na">value=</span><span class="s">&quot;/addCustomer&quot;</span> <span class="na">var=</span><span class="s">&quot;addCustomer&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>1. <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;${addCustomer}&quot;</span><span class="nt">&gt;</span>add Customer<span class="nt">&lt;/a&gt;</span>  <span class="nt">&lt;c:url</span> <span class="na">value=</span><span class="s">&quot;/withdraw&quot;</span> <span class="na">var=</span><span class="s">&quot;withdraw&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>2. <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;${withdraw}&quot;</span><span class="nt">&gt;</span>withdraw<span class="nt">&lt;/a&gt;</span>  <span class="nt">&lt;c:url</span> <span class="na">value=</span><span class="s">&quot;/deposit&quot;</span> <span class="na">var=</span><span class="s">&quot;deposit&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>3. <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;${deposit}&quot;</span><span class="nt">&gt;</span>deposit<span class="nt">&lt;/a&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+在这个页面中，我们定义了3个URL，请求的地址分别是/addCustomer, /withdraw和/deposit。这时就需要有相应的controller来捕获对这些地址的请求，请看下面：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="nd">@Controllerpublic</span>
+</span><span class='line'><span class="kd">class</span> <span class="nc">CustomerController</span> <span class="o">{</span>
+</span><span class='line'>    <span class="nd">@Autowired</span>
+</span><span class='line'>    <span class="nd">@Qualifier</span><span class="o">(</span><span class="s">&quot;bank&quot;</span><span class="o">)</span>
+</span><span class='line'>    <span class="kd">private</span> <span class="n">Bank</span> <span class="n">bank</span><span class="o">;</span>
+</span><span class='line'>    <span class="nd">@Autowired</span>
+</span><span class='line'>    <span class="nd">@Qualifier</span><span class="o">(</span><span class="s">&quot;customer&quot;</span><span class="o">)</span>
+</span><span class='line'>    <span class="kd">private</span> <span class="n">Customer</span> <span class="n">customer</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nd">@RequestMapping</span><span class="o">(</span><span class="n">value</span> <span class="o">=</span> <span class="s">&quot;/addCustomer&quot;</span><span class="o">,</span> <span class="n">method</span> <span class="o">=</span> <span class="n">RequestMethod</span><span class="o">.</span><span class="na">GET</span><span class="o">)</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="n">String</span> <span class="nf">addCustomer</span><span class="o">(</span><span class="nd">@ModelAttribute</span> <span class="n">Customer</span> <span class="n">customer</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="s">&quot;AddCustomer&quot;</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nd">@RequestMapping</span><span class="o">(</span><span class="n">value</span> <span class="o">=</span> <span class="s">&quot;/addCustomer&quot;</span><span class="o">,</span> <span class="n">method</span> <span class="o">=</span> <span class="n">RequestMethod</span><span class="o">.</span><span class="na">POST</span><span class="o">)</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="n">String</span> <span class="nf">saveCustomer</span><span class="o">(</span><span class="nd">@ModelAttribute</span> <span class="n">Customer</span> <span class="n">customer</span><span class="o">,</span> <span class="n">ModelMap</span> <span class="n">modelMap</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">bank</span><span class="o">.</span><span class="na">addCustomer</span><span class="o">(</span><span class="n">customer</span><span class="o">);</span>
+</span><span class='line'>        <span class="n">Customer</span> <span class="n">theCustomer</span> <span class="o">=</span> <span class="n">bank</span><span class="o">.</span><span class="na">getCustomer</span><span class="o">(</span><span class="n">customer</span><span class="o">.</span><span class="na">getNickname</span><span class="o">());</span>
+</span><span class='line'>        <span class="n">modelMap</span><span class="o">.</span><span class="na">addAttribute</span><span class="o">(</span><span class="s">&quot;nickname&quot;</span><span class="o">,</span> <span class="n">theCustomer</span><span class="o">.</span><span class="na">getNickname</span><span class="o">());</span>
+</span><span class='line'>        <span class="n">modelMap</span><span class="o">.</span><span class="na">addAttribute</span><span class="o">(</span><span class="s">&quot;dateOfBirth&quot;</span><span class="o">,</span> <span class="n">theCustomer</span><span class="o">.</span><span class="na">getDateOfBirth</span><span class="o">());</span>
+</span><span class='line'>        <span class="n">modelMap</span><span class="o">.</span><span class="na">addAttribute</span><span class="o">(</span><span class="s">&quot;emailAddress&quot;</span><span class="o">,</span> <span class="n">theCustomer</span><span class="o">.</span><span class="na">getEmailAddress</span><span class="o">());</span>
+</span><span class='line'>        <span class="k">return</span> <span class="s">&quot;ShowCustomer&quot;</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nd">@RequestMapping</span><span class="o">(</span><span class="n">value</span> <span class="o">=</span> <span class="s">&quot;/openAccount&quot;</span><span class="o">,</span> <span class="n">method</span> <span class="o">=</span> <span class="n">RequestMethod</span><span class="o">.</span><span class="na">GET</span><span class="o">)</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="n">String</span> <span class="nf">openAccount</span><span class="o">(</span><span class="nd">@ModelAttribute</span> <span class="n">Account</span> <span class="n">account</span><span class="o">,</span> <span class="n">ModelMap</span> <span class="n">modelMap</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">bank</span><span class="o">.</span><span class="na">addAccount</span><span class="o">(</span><span class="n">customer</span><span class="o">);</span>
+</span><span class='line'>        <span class="n">Account</span> <span class="n">account1</span> <span class="o">=</span> <span class="n">bank</span><span class="o">.</span><span class="na">getAccount</span><span class="o">(</span><span class="n">customer</span><span class="o">.</span><span class="na">getNickname</span><span class="o">());</span>
+</span><span class='line'>        <span class="n">modelMap</span><span class="o">.</span><span class="na">addAttribute</span><span class="o">(</span><span class="s">&quot;nickname&quot;</span><span class="o">,</span> <span class="n">account1</span><span class="o">.</span><span class="na">getBalance</span><span class="o">());</span>
+</span><span class='line'>        <span class="n">modelMap</span><span class="o">.</span><span class="na">addAttribute</span><span class="o">(</span><span class="s">&quot;balance&quot;</span><span class="o">,</span> <span class="n">account1</span><span class="o">.</span><span class="na">getBalance</span><span class="o">());</span>
+</span><span class='line'>        <span class="n">modelMap</span><span class="o">.</span><span class="na">addAttribute</span><span class="o">(</span><span class="s">&quot;joinDate&quot;</span><span class="o">,</span> <span class="n">account1</span><span class="o">.</span><span class="na">getJoinDate</span><span class="o">());</span>
+</span><span class='line'>        <span class="n">modelMap</span><span class="o">.</span><span class="na">addAttribute</span><span class="o">(</span><span class="s">&quot;isPremium&quot;</span><span class="o">,</span> <span class="n">account1</span><span class="o">.</span><span class="na">isPremium</span><span class="o">());</span>
+</span><span class='line'>        <span class="k">return</span> <span class="s">&quot;ShowAccount&quot;</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nd">@RequestMapping</span><span class="o">(</span><span class="n">value</span> <span class="o">=</span> <span class="s">&quot;/withdraw&quot;</span><span class="o">,</span> <span class="n">method</span> <span class="o">=</span> <span class="n">RequestMethod</span><span class="o">.</span><span class="na">GET</span><span class="o">)</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="n">String</span> <span class="nf">goToWithdrawPage</span><span class="o">(</span><span class="nd">@ModelAttribute</span> <span class="n">Customer</span> <span class="n">customer</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="s">&quot;Withdraw&quot;</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nd">@RequestMapping</span><span class="o">(</span><span class="n">value</span> <span class="o">=</span> <span class="s">&quot;/deposit&quot;</span><span class="o">,</span> <span class="n">method</span> <span class="o">=</span> <span class="n">RequestMethod</span><span class="o">.</span><span class="na">GET</span><span class="o">)</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="n">String</span> <span class="nf">goToDepositPage</span><span class="o">(</span><span class="nd">@ModelAttribute</span> <span class="n">Customer</span> <span class="n">customer</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="s">&quot;Deposit&quot;</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nd">@RequestMapping</span><span class="o">(</span><span class="n">value</span> <span class="o">=</span> <span class="s">&quot;/deposit&quot;</span><span class="o">,</span> <span class="n">method</span> <span class="o">=</span> <span class="n">RequestMethod</span><span class="o">.</span><span class="na">POST</span><span class="o">)</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="n">String</span> <span class="nf">deposit</span><span class="o">(</span><span class="kd">final</span> <span class="n">HttpServletRequest</span> <span class="n">request</span><span class="o">,</span> <span class="n">ModelMap</span> <span class="n">modelMap</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">String</span> <span class="n">nickname</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="na">getParameter</span><span class="o">(</span><span class="s">&quot;nickname&quot;</span><span class="o">);</span>
+</span><span class='line'>        <span class="n">Account</span> <span class="n">account</span> <span class="o">=</span> <span class="n">bank</span><span class="o">.</span><span class="na">getAccount</span><span class="o">(</span><span class="n">nickname</span><span class="o">);</span>
+</span><span class='line'>        <span class="n">account</span><span class="o">.</span><span class="na">deposit</span><span class="o">(</span><span class="n">Integer</span><span class="o">.</span><span class="na">parseInt</span><span class="o">(</span><span class="n">request</span><span class="o">.</span><span class="na">getParameter</span><span class="o">(</span><span class="s">&quot;balance&quot;</span><span class="o">)),</span> <span class="n">nickname</span><span class="o">);</span>
+</span><span class='line'>        <span class="n">Account</span> <span class="n">account1</span> <span class="o">=</span> <span class="n">bank</span><span class="o">.</span><span class="na">getAccount</span><span class="o">(</span><span class="n">nickname</span><span class="o">);</span>
+</span><span class='line'>        <span class="n">modelMap</span><span class="o">.</span><span class="na">addAttribute</span><span class="o">(</span><span class="s">&quot;balance&quot;</span><span class="o">,</span> <span class="n">account1</span><span class="o">.</span><span class="na">getBalance</span><span class="o">());</span>
+</span><span class='line'>        <span class="k">return</span> <span class="s">&quot;ShowBalance&quot;</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nd">@RequestMapping</span><span class="o">(</span><span class="n">value</span> <span class="o">=</span> <span class="s">&quot;/withdraw&quot;</span><span class="o">,</span> <span class="n">method</span> <span class="o">=</span> <span class="n">RequestMethod</span><span class="o">.</span><span class="na">POST</span><span class="o">)</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="n">String</span> <span class="nf">withdraw</span><span class="o">(</span><span class="kd">final</span> <span class="n">HttpServletRequest</span> <span class="n">request</span><span class="o">,</span> <span class="n">ModelMap</span> <span class="n">modelMap</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">String</span> <span class="n">nickname</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="na">getParameter</span><span class="o">(</span><span class="s">&quot;nickname&quot;</span><span class="o">);</span>
+</span><span class='line'>        <span class="n">Account</span> <span class="n">account</span> <span class="o">=</span> <span class="n">bank</span><span class="o">.</span><span class="na">getAccount</span><span class="o">(</span><span class="n">nickname</span><span class="o">);</span>
+</span><span class='line'>        <span class="n">account</span><span class="o">.</span><span class="na">withdraw</span><span class="o">(</span><span class="n">account</span><span class="o">.</span><span class="na">getBalance</span><span class="o">(),</span> <span class="n">nickname</span><span class="o">);</span>
+</span><span class='line'>        <span class="n">Account</span> <span class="n">account1</span> <span class="o">=</span> <span class="n">bank</span><span class="o">.</span><span class="na">getAccount</span><span class="o">(</span><span class="n">nickname</span><span class="o">);</span>
+</span><span class='line'>        <span class="n">modelMap</span><span class="o">.</span><span class="na">addAttribute</span><span class="o">(</span><span class="s">&quot;balance&quot;</span><span class="o">,</span> <span class="n">account1</span><span class="o">.</span><span class="na">getBalance</span><span class="o">());</span>
+</span><span class='line'>        <span class="k">return</span> <span class="s">&quot;ShowBalance&quot;</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nd">@RequestMapping</span><span class="o">(</span><span class="n">value</span> <span class="o">=</span> <span class="s">&quot;/welcome&quot;</span><span class="o">)</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="n">String</span> <span class="nf">backToWelcomePage</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="s">&quot;Welcome&quot;</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nd">@ExceptionHandler</span><span class="o">(</span><span class="n">Exception</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="n">String</span> <span class="nf">handleException</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="s">&quot;Exception&quot;</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这个类是一个controller（因为被标注了@Controller 这个注解）。然后，它会捕获上面那个jsp页面发出来的请求，而具体哪个方法捕获对哪一个URL的请求，请看具体方法上面标示的@RequestMapping 注解。它规定了handle的请求的类型和URL。在处理请求的controller方法的签名中，我们看到request和modelmap。它们都被Spring容器管理，所以直接在方法参数中加进来就能直接使用它们了。ModelMap 的左右是存放一些值，用于JSP页面显示。</p>
+
+<p>这就是一次大致的Spring MVC 例子的讲解。</p>
+</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+
+<time datetime="2015-10-15T16:55:12-06:00" pubdate data-updated="true">Oct 15th, 2015</time></div>
+	
+
+<div class="tags">
+
+	<a class='category' href='/blog/categories/technology/'>technology</a>
+
+</div>
+
+
+</div>
+</article>
+</div>
+	<footer id="footer" class="inner">Copyright &copy; 2015
+ 李秋实 
+<br>
+Powered by Octopress.
+</footer>
+	
+
+</body>
+</html>

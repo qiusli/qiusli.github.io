@@ -1,0 +1,236 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>使用Wiser测试邮件发送  | 逆旅，行人</title>
+
+	<meta name="author" content="李秋实"> 
+	
+	<meta name="description" content="最近在做一个小项目，里面有发送邮件这一功能，本文主要是讲如何通过Spring发送邮件，已经一个邮件测试框架 &mdash; wiser的介绍。 如何使用Spring发送邮件
+首先主要用到的一个类是JavaMailSenderImpl，它位于Spring的org.springframework. &hellip;"> <meta name="keywords" content="">
+
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="逆旅，行人" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href="/stylesheets/font-awesome.min.css" rel="stylesheet" type="text/css">
+	
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	
+</head>
+
+
+
+<body>
+	<header id="header" class="inner"><h1>逆旅，行人</h1>
+<nav id="main-nav"><ul>
+	<li><a href="/">Blog</a></li>
+	<li><a href="/archives">Archive</a></li>
+	<li><a href="/contact">Contact</a></li>
+</ul>
+</nav>
+
+
+</header>
+
+	<div id="content" class="inner"><article class="post">
+	<h2 class="title">使用Wiser测试邮件发送</h2>
+	<div class="entry-content"><p>最近在做一个小项目，里面有发送邮件这一功能，本文主要是讲如何通过Spring发送邮件，已经一个邮件测试框架 &mdash; wiser的介绍。</p>
+
+<p>如何使用Spring发送邮件
+首先主要用到的一个类是JavaMailSenderImpl，它位于Spring的org.springframework.mail.
+javamail包中，主要是用来发送邮件的。为了发送邮件，需要提供给它一系列的参数。这些参数我都配置在了resources包下的一个xml文件中</p>
+
+<!-- more -->
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">&quot;javaMailSenderImpl&quot;</span> <span class="na">class=</span><span class="s">&quot;org.springframework.mail.javamail.JavaMailSenderImpl&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;host&quot;</span> <span class="na">value=</span><span class="s">&quot;smtp.gmail.com&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;port&quot;</span> <span class="na">value=</span><span class="s">&quot;587&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;username&quot;</span> <span class="na">value=</span><span class="s">&quot;twufeedmycat@gmail.com&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;password&quot;</span> <span class="na">value=</span><span class="s">&quot;@twu292012&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;javaMailProperties&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;props&gt;</span>
+</span><span class='line'>                <span class="nt">&lt;prop</span> <span class="na">key=</span><span class="s">&quot;mail.smtp.auth&quot;</span><span class="nt">&gt;</span>true<span class="nt">&lt;/prop&gt;</span>
+</span><span class='line'>                <span class="nt">&lt;prop</span> <span class="na">key=</span><span class="s">&quot;mail.smtp.starttls.enable&quot;</span><span class="nt">&gt;</span>true<span class="nt">&lt;/prop&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;/props&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/property&gt;</span>
+</span><span class='line'><span class="nt">&lt;/bean&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>host: 邮件发送服务器的地址
+port: 与服务器通信的端口
+username &amp; password: 一个gmail账户即可
+mail.smtp.auth: 提供给邮件服务器，校验发送方的授权，也许是为了组织没有授权的发送方肆意发送垃圾邮件
+mail.smtp.starttls.enable: 将一般连接升级到加密连接，而无需另开一个端口进行加密传输。这里要设为true才能使用gmail的邮件服务器</p>
+
+<p>上面的步骤只是建立了连接，下面聊聊发送的内容。
+建立邮件内容，需要用到SimpleMailMessage这个类，它在org.springframework.mail这个包中。下面的代码展示了如何用它创建邮件内容：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">SimpleMailMessage</span> <span class="n">mailMessage</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">SimpleMailMessage</span><span class="o">();</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">mailMessage</span><span class="o">.</span><span class="na">setTo</span><span class="o">(</span><span class="n">emailAddress</span><span class="o">);</span>
+</span><span class='line'>    <span class="n">mailMessage</span><span class="o">.</span><span class="na">setFrom</span><span class="o">(</span><span class="n">fromAddress</span><span class="o">);</span>
+</span><span class='line'>    <span class="n">mailMessage</span><span class="o">.</span><span class="na">setSubject</span><span class="o">(</span><span class="n">subject</span><span class="o">);</span>
+</span><span class='line'>    <span class="n">mailMessage</span><span class="o">.</span><span class="na">setText</span><span class="o">(</span><span class="n">content</span><span class="o">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>内容建立好后，就应该发送了，直接调用JavaMailSenderImpl的send方法就OK。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">mailSender</span><span class="o">.</span><span class="na">send</span><span class="o">(</span><span class="n">mailMessage</span><span class="o">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这样就完成了邮件的发送过程，下面来聊聊如何测试。我用到了Wiser框架，道理很简单。既然开始我是之间向google的邮件服务器通信，并让它发送邮件，那么现在测试我就应该发到Wiser上去。在测试用的resources文件夹下，我有一个与上面提到的同名的xml文件，但是配置的JavaMailSenderImpl中的配置肯定是不同的，这次是配置的Wiser，需要注意的是Wiser并不是一个邮件服务器，在我看来，它是一个监听一个端口的程序，每一条经过这个端口发送出的信息，都会被它捕获到，然后存在一个队列中，这样我们就能从这个队列中取出消息进行验证：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">&quot;javaMailSenderImple&quot;</span> <span class="na">class=</span><span class="s">&quot;org.springframework.mail.javamail.JavaMailSenderImpl&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;host&quot;</span> <span class="na">value=</span><span class="s">&quot;localhost&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;port&quot;</span> <span class="na">value=</span><span class="s">&quot;25000&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;username&quot;</span> <span class="na">value=</span><span class="s">&quot;username&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;password&quot;</span> <span class="na">value=</span><span class="s">&quot;password&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;javaMailProperties&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;props&gt;</span>
+</span><span class='line'>                <span class="nt">&lt;prop</span> <span class="na">key=</span><span class="s">&quot;mail.smtp.auth&quot;</span><span class="nt">&gt;</span>true<span class="nt">&lt;/prop&gt;</span>
+</span><span class='line'>                <span class="nt">&lt;prop</span> <span class="na">key=</span><span class="s">&quot;mail.smtp.starttls.enable&quot;</span><span class="nt">&gt;</span>true<span class="nt">&lt;/prop&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;/props&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/property&gt;</span>
+</span><span class='line'><span class="nt">&lt;/bean&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>同时，下面的代码被我用于junit测试中：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">private</span> <span class="n">Wiser</span> <span class="n">wiser</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nd">@Before</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setUp</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">wiser</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">Wiser</span><span class="o">();</span>
+</span><span class='line'>        <span class="n">wiser</span><span class="o">.</span><span class="na">setPort</span><span class="o">(</span><span class="mi">25000</span><span class="o">);</span>
+</span><span class='line'>        <span class="n">wiser</span><span class="o">.</span><span class="na">start</span><span class="o">();</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nd">@After</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">tearDown</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">wiser</span><span class="o">.</span><span class="na">stop</span><span class="o">();</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>setPort: 设置被监听的端口，与xml中给JavaMailSenderImpl配置的一样。
+最后，启动单元测试，读取发送的邮件进行验证：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">mailSender</span><span class="o">.</span><span class="na">sendEmailToCustomerAfterRegistration</span><span class="o">(</span><span class="n">customerNickname</span><span class="o">,</span> <span class="n">customerEmail</span><span class="o">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">WiserMessage</span> <span class="n">wiserMessage</span> <span class="o">=</span> <span class="n">wiser</span><span class="o">.</span><span class="na">getMessages</span><span class="o">().</span><span class="na">get</span><span class="o">(</span><span class="mi">0</span><span class="o">);</span>
+</span><span class='line'>    <span class="n">String</span> <span class="n">expectedReceiver</span> <span class="o">=</span> <span class="s">&quot;adam@test.com&quot;</span><span class="o">;</span>
+</span><span class='line'>    <span class="n">String</span> <span class="n">expectedSender</span> <span class="o">=</span> <span class="s">&quot;admin@thebank.com&quot;</span><span class="o">;</span>
+</span><span class='line'>    <span class="n">String</span> <span class="n">expectedSubject</span> <span class="o">=</span> <span class="s">&quot;Welcome!&quot;</span><span class="o">;</span>
+</span><span class='line'>    <span class="n">String</span> <span class="n">expectedContent</span> <span class="o">=</span> <span class="s">&quot;Dear adam, welcome to the bank&quot;</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">assertThat</span><span class="o">(</span><span class="n">wiserMessage</span><span class="o">.</span><span class="na">getEnvelopeReceiver</span><span class="o">(),</span> <span class="n">is</span><span class="o">(</span><span class="n">expectedReceiver</span><span class="o">));</span>
+</span><span class='line'>    <span class="n">assertThat</span><span class="o">(</span><span class="n">wiserMessage</span><span class="o">.</span><span class="na">getEnvelopeSender</span><span class="o">(),</span> <span class="n">is</span><span class="o">(</span><span class="n">expectedSender</span><span class="o">));</span>
+</span><span class='line'>    <span class="n">assertThat</span><span class="o">(</span><span class="n">wiserMessage</span><span class="o">.</span><span class="na">getMimeMessage</span><span class="o">().</span><span class="na">getContent</span><span class="o">().</span><span class="na">toString</span><span class="o">().</span><span class="na">trim</span><span class="o">(),</span> <span class="n">is</span><span class="o">(</span><span class="n">expectedContent</span><span class="o">));</span>
+</span><span class='line'>    <span class="n">assertThat</span><span class="o">(</span><span class="n">wiserMessage</span><span class="o">.</span><span class="na">getMimeMessage</span><span class="o">().</span><span class="na">getSubject</span><span class="o">().</span><span class="na">trim</span><span class="o">(),</span> <span class="n">is</span><span class="o">(</span><span class="n">expectedSubject</span><span class="o">));</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这就是我在项目中使用到的发送邮件和其测试的技术。</p>
+</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+
+<time datetime="2013-07-27T20:14:00-06:00" pubdate data-updated="true">Jul 27th, 2013</time></div>
+	
+
+
+</div>
+</article>
+</div>
+	<footer id="footer" class="inner">Copyright &copy; 2015
+ 李秋实 
+<br>
+Powered by Octopress.
+</footer>
+	
+
+</body>
+</html>

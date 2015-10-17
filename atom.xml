@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[归去来兮]]></title>
+  <title><![CDATA[逆旅，行人]]></title>
   <link href="http://qiusli.github.io/atom.xml" rel="self"/>
   <link href="http://qiusli.github.io/"/>
-  <updated>2015-10-17T02:06:55-06:00</updated>
+  <updated>2015-10-17T03:22:03-06:00</updated>
   <id>http://qiusli.github.io/</id>
   <author>
     <name><![CDATA[李秋实]]></name>
@@ -14,11 +14,2855 @@
 
   
   <entry>
-    <title type="html"><![CDATA[goldman sachs]]></title>
-    <link href="http://qiusli.github.io/blog/2015/10/17/goldman-sachs/"/>
-    <updated>2015-10-17T00:42:09-06:00</updated>
-    <id>http://qiusli.github.io/blog/2015/10/17/goldman-sachs</id>
-    <content type="html"><![CDATA[<p>测试</p>
+    <title type="html"><![CDATA[如何使用Octopress写博客]]></title>
+    <link href="http://qiusli.github.io/blog/2015/10/17/how-to-blog-with-octopress/"/>
+    <updated>2015-10-17T03:12:48-06:00</updated>
+    <id>http://qiusli.github.io/blog/2015/10/17/how-to-blog-with-octopress</id>
+    <content type="html"><![CDATA[<p>具体的步骤是按照<a href="http://shengmingzhiqing.com/blog/setup-octopress-with-github-pages.html/">这个地址</a>来的。配置什么的都在里面，这里简单说说配置完成后到写博客的步骤</p>
+
+<ol>
+<li>rake new_post[&lsquo;blog title&rsquo;]创建新的文章</li>
+<li>完成编辑后运行rake generate</li>
+<li>然后rake preview在本地查看效果(<a href="http://localhost:4000/">http://localhost:4000/</a>)</li>
+<li>rake deploy到github上</li>
+<li>git add . 来把本地文件并入git管理</li>
+<li>git commit －m ‘whatever’</li>
+<li>git push origin source</li>
+</ol>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Spring MVC学习笔记]]></title>
+    <link href="http://qiusli.github.io/blog/2015/10/15/spring-mvc/"/>
+    <updated>2015-10-15T16:55:12-06:00</updated>
+    <id>http://qiusli.github.io/blog/2015/10/15/spring-mvc</id>
+    <content type="html"><![CDATA[<p>学习Spring很长时间了，但是一直也没有认真地总结一次，总是陷入学习了忘记的怪圈（其实也不是怪圈，就是学习了没有总结）。 今天我就写一点东西来总结我的Spring MVC学习之旅。 这个得从我的Sponsor给我布置的家庭作业讲起，在这里面我学会了很多Spring的知识。</p>
+
+<p>可以假设Spring是一个大的容器，里面放着各种各样的网页、文件等以供一个个的request访问。所以，我想从web.xml的配置说起。</p>
+
+<!-- more -->
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;listener&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;listener-class&gt;</span>org.springframework.web.context.ContextLoaderListener<span class="nt">&lt;/listener-class&gt;</span>
+</span><span class='line'><span class="nt">&lt;/listener&gt;</span>
+</span><span class='line'><span class="nt">&lt;context-param&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;param-name&gt;</span>contextConfigLocation<span class="nt">&lt;/param-name&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;param-value&gt;</span>classpath:applicationContext-servlet.xml
+</span><span class='line'>        classpath:applicationContextDataSource.xml
+</span><span class='line'>    <span class="nt">&lt;/param-value&gt;</span>
+</span><span class='line'><span class="nt">&lt;/context-param&gt;</span>
+</span><span class='line'><span class="nt">&lt;servlet&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;servlet-name&gt;</span>bankingSystem2<span class="nt">&lt;/servlet-name&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;servlet-class&gt;</span>org.springframework.web.servlet.DispatcherServlet<span class="nt">&lt;/servlet-class&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;load-on-startup&gt;</span>1<span class="nt">&lt;/load-on-startup&gt;</span>
+</span><span class='line'><span class="nt">&lt;/servlet&gt;</span>
+</span><span class='line'><span class="nt">&lt;servlet-mapping&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;servlet-name&gt;</span>bankingSystem2<span class="nt">&lt;/servlet-name&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;url-pattern&gt;</span>/<span class="nt">&lt;/url-pattern&gt;</span>
+</span><span class='line'><span class="nt">&lt;/servlet-mapping&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>上面的配置的意思是：servlet-mapping配置了需要被捕获的请求，url-pattern是匹配request中跟的那个地址，例如’/abc’。这里只是一个斜杠，意思是捕获所有的请求，捕获这个请求的servlet名字叫bankingSystem2。 在捕获一个请求后，Spring会根据servlet-name中的名字在这个xml中找到匹配的一个servlet，然后servlet-class是这个servlet文件的所在地。这里的DispatcherServlet是Spring的类，所有发往由Spring 容器管理的资源的请求都由它统一收集，然后它会求助Spring中内置的HandlerMapping已决定该请求被哪个controller处理。最后根据不同的请求目的地再转发给不同的controller，这个后面会讲到。这里有一点值得注意，我们在web.xml中定义了一个名字叫bankingSystem2的servlet，那么就需要在同一个文件夹下面定义一个名叫bankingSystem2-servlet.xml这样一个配置文Spring会默认到里面去读取配置和加载bean，如果没有会报错。</p>
+
+<p>ContextLoaderListener的作用就是启动Web容器时，自动装配ApplicationContext的配置信息。因为它实现了ServletContextListener这个接口，在web.xml配置这个监听器，启动容器时，就会默认执行它实现的方法。 在上面的contextConfigLocation里面配置了想要在Spring容器启动的时候加载的bean。 看完了上述的web.xml，我们进入在那个配置文件中配置的applicationContext-servlet.xml中一探究竟。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;context:component-scan</span> <span class="na">base-package=</span><span class="s">&quot;bank.icbc.controller&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'><span class="nt">&lt;context:component-scan</span> <span class="na">base-package=</span><span class="s">&quot;bank.icbc.domain&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'><span class="nt">&lt;mvc:annotation-driven/&gt;</span>
+</span><span class='line'><span class="nt">&lt;bean</span> <span class="na">class=</span><span class="s">&quot;org.springframework.web.servlet.view.InternalResourceViewResolver&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'><span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;prefix&quot;</span> <span class="na">value=</span><span class="s">&quot;/WEB-INF/jsp/&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'><span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;suffix&quot;</span> <span class="na">value=</span><span class="s">&quot;.jsp&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'><span class="nt">&lt;/bean&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+首先，在这个xml配置文件中定义了一个bean，里面存放着一个resolver，他是Spring中负责显示页面的。即controller处理完一个request后，会返回一个string告诉Spring现在该显示哪个页面了，然后Spring就找到InternalResourceViewResolver，让它告诉该到哪去找到相应的页面来显示。例如，如果一个controller返回字符串abc，那么根据上面的配置，在/WEB-INF/jsp/abc.jsp这个页面就应该被显示。 上面还有一个context:component-scan，它的作用是‘扫描’相应的package，把这些package中的所有类纳入Spring的管理范围来，这样的好处是，如果相应包中有autowire bean中的类，只有主类在Spring的管理范围， 被引用的bean才能被成功地autowire。</p>
+
+<p>同时，有些类（例如服务类）会在类上面表示诸如@Service这样的annotation，它被扫描到后，也会被Spring纳入到管理，这样其他类也能autowire它了。 annotation-driven：表示支持annotation，不写的话所有的annotation注解都无效。</p>
+
+<p>在说完配置后，我们来模拟一个请求，来看看Spring在这个过程中的运行过程。首先，我们来到系统的初始页面：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'>Welcome to the Banking System! <span class="nt">&lt;br/&gt;</span>  <span class="nt">&lt;c:url</span> <span class="na">value=</span><span class="s">&quot;/addCustomer&quot;</span> <span class="na">var=</span><span class="s">&quot;addCustomer&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>1. <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;${addCustomer}&quot;</span><span class="nt">&gt;</span>add Customer<span class="nt">&lt;/a&gt;</span>  <span class="nt">&lt;c:url</span> <span class="na">value=</span><span class="s">&quot;/withdraw&quot;</span> <span class="na">var=</span><span class="s">&quot;withdraw&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>2. <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;${withdraw}&quot;</span><span class="nt">&gt;</span>withdraw<span class="nt">&lt;/a&gt;</span>  <span class="nt">&lt;c:url</span> <span class="na">value=</span><span class="s">&quot;/deposit&quot;</span> <span class="na">var=</span><span class="s">&quot;deposit&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'>3. <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;${deposit}&quot;</span><span class="nt">&gt;</span>deposit<span class="nt">&lt;/a&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+在这个页面中，我们定义了3个URL，请求的地址分别是/addCustomer, /withdraw和/deposit。这时就需要有相应的controller来捕获对这些地址的请求，请看下面：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="nd">@Controllerpublic</span>
+</span><span class='line'><span class="kd">class</span> <span class="nc">CustomerController</span> <span class="o">{</span>
+</span><span class='line'>    <span class="nd">@Autowired</span>
+</span><span class='line'>    <span class="nd">@Qualifier</span><span class="o">(</span><span class="s">&quot;bank&quot;</span><span class="o">)</span>
+</span><span class='line'>    <span class="kd">private</span> <span class="n">Bank</span> <span class="n">bank</span><span class="o">;</span>
+</span><span class='line'>    <span class="nd">@Autowired</span>
+</span><span class='line'>    <span class="nd">@Qualifier</span><span class="o">(</span><span class="s">&quot;customer&quot;</span><span class="o">)</span>
+</span><span class='line'>    <span class="kd">private</span> <span class="n">Customer</span> <span class="n">customer</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nd">@RequestMapping</span><span class="o">(</span><span class="n">value</span> <span class="o">=</span> <span class="s">&quot;/addCustomer&quot;</span><span class="o">,</span> <span class="n">method</span> <span class="o">=</span> <span class="n">RequestMethod</span><span class="o">.</span><span class="na">GET</span><span class="o">)</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="n">String</span> <span class="nf">addCustomer</span><span class="o">(</span><span class="nd">@ModelAttribute</span> <span class="n">Customer</span> <span class="n">customer</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="s">&quot;AddCustomer&quot;</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nd">@RequestMapping</span><span class="o">(</span><span class="n">value</span> <span class="o">=</span> <span class="s">&quot;/addCustomer&quot;</span><span class="o">,</span> <span class="n">method</span> <span class="o">=</span> <span class="n">RequestMethod</span><span class="o">.</span><span class="na">POST</span><span class="o">)</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="n">String</span> <span class="nf">saveCustomer</span><span class="o">(</span><span class="nd">@ModelAttribute</span> <span class="n">Customer</span> <span class="n">customer</span><span class="o">,</span> <span class="n">ModelMap</span> <span class="n">modelMap</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">bank</span><span class="o">.</span><span class="na">addCustomer</span><span class="o">(</span><span class="n">customer</span><span class="o">);</span>
+</span><span class='line'>        <span class="n">Customer</span> <span class="n">theCustomer</span> <span class="o">=</span> <span class="n">bank</span><span class="o">.</span><span class="na">getCustomer</span><span class="o">(</span><span class="n">customer</span><span class="o">.</span><span class="na">getNickname</span><span class="o">());</span>
+</span><span class='line'>        <span class="n">modelMap</span><span class="o">.</span><span class="na">addAttribute</span><span class="o">(</span><span class="s">&quot;nickname&quot;</span><span class="o">,</span> <span class="n">theCustomer</span><span class="o">.</span><span class="na">getNickname</span><span class="o">());</span>
+</span><span class='line'>        <span class="n">modelMap</span><span class="o">.</span><span class="na">addAttribute</span><span class="o">(</span><span class="s">&quot;dateOfBirth&quot;</span><span class="o">,</span> <span class="n">theCustomer</span><span class="o">.</span><span class="na">getDateOfBirth</span><span class="o">());</span>
+</span><span class='line'>        <span class="n">modelMap</span><span class="o">.</span><span class="na">addAttribute</span><span class="o">(</span><span class="s">&quot;emailAddress&quot;</span><span class="o">,</span> <span class="n">theCustomer</span><span class="o">.</span><span class="na">getEmailAddress</span><span class="o">());</span>
+</span><span class='line'>        <span class="k">return</span> <span class="s">&quot;ShowCustomer&quot;</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nd">@RequestMapping</span><span class="o">(</span><span class="n">value</span> <span class="o">=</span> <span class="s">&quot;/openAccount&quot;</span><span class="o">,</span> <span class="n">method</span> <span class="o">=</span> <span class="n">RequestMethod</span><span class="o">.</span><span class="na">GET</span><span class="o">)</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="n">String</span> <span class="nf">openAccount</span><span class="o">(</span><span class="nd">@ModelAttribute</span> <span class="n">Account</span> <span class="n">account</span><span class="o">,</span> <span class="n">ModelMap</span> <span class="n">modelMap</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">bank</span><span class="o">.</span><span class="na">addAccount</span><span class="o">(</span><span class="n">customer</span><span class="o">);</span>
+</span><span class='line'>        <span class="n">Account</span> <span class="n">account1</span> <span class="o">=</span> <span class="n">bank</span><span class="o">.</span><span class="na">getAccount</span><span class="o">(</span><span class="n">customer</span><span class="o">.</span><span class="na">getNickname</span><span class="o">());</span>
+</span><span class='line'>        <span class="n">modelMap</span><span class="o">.</span><span class="na">addAttribute</span><span class="o">(</span><span class="s">&quot;nickname&quot;</span><span class="o">,</span> <span class="n">account1</span><span class="o">.</span><span class="na">getBalance</span><span class="o">());</span>
+</span><span class='line'>        <span class="n">modelMap</span><span class="o">.</span><span class="na">addAttribute</span><span class="o">(</span><span class="s">&quot;balance&quot;</span><span class="o">,</span> <span class="n">account1</span><span class="o">.</span><span class="na">getBalance</span><span class="o">());</span>
+</span><span class='line'>        <span class="n">modelMap</span><span class="o">.</span><span class="na">addAttribute</span><span class="o">(</span><span class="s">&quot;joinDate&quot;</span><span class="o">,</span> <span class="n">account1</span><span class="o">.</span><span class="na">getJoinDate</span><span class="o">());</span>
+</span><span class='line'>        <span class="n">modelMap</span><span class="o">.</span><span class="na">addAttribute</span><span class="o">(</span><span class="s">&quot;isPremium&quot;</span><span class="o">,</span> <span class="n">account1</span><span class="o">.</span><span class="na">isPremium</span><span class="o">());</span>
+</span><span class='line'>        <span class="k">return</span> <span class="s">&quot;ShowAccount&quot;</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nd">@RequestMapping</span><span class="o">(</span><span class="n">value</span> <span class="o">=</span> <span class="s">&quot;/withdraw&quot;</span><span class="o">,</span> <span class="n">method</span> <span class="o">=</span> <span class="n">RequestMethod</span><span class="o">.</span><span class="na">GET</span><span class="o">)</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="n">String</span> <span class="nf">goToWithdrawPage</span><span class="o">(</span><span class="nd">@ModelAttribute</span> <span class="n">Customer</span> <span class="n">customer</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="s">&quot;Withdraw&quot;</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nd">@RequestMapping</span><span class="o">(</span><span class="n">value</span> <span class="o">=</span> <span class="s">&quot;/deposit&quot;</span><span class="o">,</span> <span class="n">method</span> <span class="o">=</span> <span class="n">RequestMethod</span><span class="o">.</span><span class="na">GET</span><span class="o">)</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="n">String</span> <span class="nf">goToDepositPage</span><span class="o">(</span><span class="nd">@ModelAttribute</span> <span class="n">Customer</span> <span class="n">customer</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="s">&quot;Deposit&quot;</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nd">@RequestMapping</span><span class="o">(</span><span class="n">value</span> <span class="o">=</span> <span class="s">&quot;/deposit&quot;</span><span class="o">,</span> <span class="n">method</span> <span class="o">=</span> <span class="n">RequestMethod</span><span class="o">.</span><span class="na">POST</span><span class="o">)</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="n">String</span> <span class="nf">deposit</span><span class="o">(</span><span class="kd">final</span> <span class="n">HttpServletRequest</span> <span class="n">request</span><span class="o">,</span> <span class="n">ModelMap</span> <span class="n">modelMap</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">String</span> <span class="n">nickname</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="na">getParameter</span><span class="o">(</span><span class="s">&quot;nickname&quot;</span><span class="o">);</span>
+</span><span class='line'>        <span class="n">Account</span> <span class="n">account</span> <span class="o">=</span> <span class="n">bank</span><span class="o">.</span><span class="na">getAccount</span><span class="o">(</span><span class="n">nickname</span><span class="o">);</span>
+</span><span class='line'>        <span class="n">account</span><span class="o">.</span><span class="na">deposit</span><span class="o">(</span><span class="n">Integer</span><span class="o">.</span><span class="na">parseInt</span><span class="o">(</span><span class="n">request</span><span class="o">.</span><span class="na">getParameter</span><span class="o">(</span><span class="s">&quot;balance&quot;</span><span class="o">)),</span> <span class="n">nickname</span><span class="o">);</span>
+</span><span class='line'>        <span class="n">Account</span> <span class="n">account1</span> <span class="o">=</span> <span class="n">bank</span><span class="o">.</span><span class="na">getAccount</span><span class="o">(</span><span class="n">nickname</span><span class="o">);</span>
+</span><span class='line'>        <span class="n">modelMap</span><span class="o">.</span><span class="na">addAttribute</span><span class="o">(</span><span class="s">&quot;balance&quot;</span><span class="o">,</span> <span class="n">account1</span><span class="o">.</span><span class="na">getBalance</span><span class="o">());</span>
+</span><span class='line'>        <span class="k">return</span> <span class="s">&quot;ShowBalance&quot;</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nd">@RequestMapping</span><span class="o">(</span><span class="n">value</span> <span class="o">=</span> <span class="s">&quot;/withdraw&quot;</span><span class="o">,</span> <span class="n">method</span> <span class="o">=</span> <span class="n">RequestMethod</span><span class="o">.</span><span class="na">POST</span><span class="o">)</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="n">String</span> <span class="nf">withdraw</span><span class="o">(</span><span class="kd">final</span> <span class="n">HttpServletRequest</span> <span class="n">request</span><span class="o">,</span> <span class="n">ModelMap</span> <span class="n">modelMap</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">String</span> <span class="n">nickname</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="na">getParameter</span><span class="o">(</span><span class="s">&quot;nickname&quot;</span><span class="o">);</span>
+</span><span class='line'>        <span class="n">Account</span> <span class="n">account</span> <span class="o">=</span> <span class="n">bank</span><span class="o">.</span><span class="na">getAccount</span><span class="o">(</span><span class="n">nickname</span><span class="o">);</span>
+</span><span class='line'>        <span class="n">account</span><span class="o">.</span><span class="na">withdraw</span><span class="o">(</span><span class="n">account</span><span class="o">.</span><span class="na">getBalance</span><span class="o">(),</span> <span class="n">nickname</span><span class="o">);</span>
+</span><span class='line'>        <span class="n">Account</span> <span class="n">account1</span> <span class="o">=</span> <span class="n">bank</span><span class="o">.</span><span class="na">getAccount</span><span class="o">(</span><span class="n">nickname</span><span class="o">);</span>
+</span><span class='line'>        <span class="n">modelMap</span><span class="o">.</span><span class="na">addAttribute</span><span class="o">(</span><span class="s">&quot;balance&quot;</span><span class="o">,</span> <span class="n">account1</span><span class="o">.</span><span class="na">getBalance</span><span class="o">());</span>
+</span><span class='line'>        <span class="k">return</span> <span class="s">&quot;ShowBalance&quot;</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nd">@RequestMapping</span><span class="o">(</span><span class="n">value</span> <span class="o">=</span> <span class="s">&quot;/welcome&quot;</span><span class="o">)</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="n">String</span> <span class="nf">backToWelcomePage</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="s">&quot;Welcome&quot;</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nd">@ExceptionHandler</span><span class="o">(</span><span class="n">Exception</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="n">String</span> <span class="nf">handleException</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="s">&quot;Exception&quot;</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这个类是一个controller（因为被标注了@Controller 这个注解）。然后，它会捕获上面那个jsp页面发出来的请求，而具体哪个方法捕获对哪一个URL的请求，请看具体方法上面标示的@RequestMapping 注解。它规定了handle的请求的类型和URL。在处理请求的controller方法的签名中，我们看到request和modelmap。它们都被Spring容器管理，所以直接在方法参数中加进来就能直接使用它们了。ModelMap 的左右是存放一些值，用于JSP页面显示。</p>
+
+<p>这就是一次大致的Spring MVC 例子的讲解。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Git 3 (Branching)]]></title>
+    <link href="http://qiusli.github.io/blog/2014/05/31/git-3/"/>
+    <updated>2014-05-31T19:26:00-06:00</updated>
+    <id>http://qiusli.github.io/blog/2014/05/31/git-3</id>
+    <content type="html"><![CDATA[<h2>What is Git Branch</h2>
+
+<p><code>分支的好处</code>: 它允许在不干扰主分支的情况下,从主分支里分离出一条小的分支,在里面进行开发,然后再把修改合并到主分支里.</p>
+
+<p><code>什么是分支</code>: 在Git下提交时,Git会保存每一次提交的快照,并且会保存一个指向祖先的指针.第一次提交时没有祖先,普通提交有一个祖先,由两个或多个分支合并而成的提交则有多个祖先.</p>
+
+<!-- more -->
+
+
+<p> <img src="http://qiusli.github.io/images/git-3_1.png"></p>
+
+<p>Git中的分支其实只是一个指针,最初的时候它指向master.当你在master上不断提交时,这个指针会随之向后移动,所以它总是指向最近的一次提交.</p>
+
+<p> <img src="http://qiusli.github.io/images/git-3_2.png"></p>
+
+<p>当创建一个新的branch时,git会新建一个指针指向这个新建立的branch.比如说你新建了一个名为testing的branch:</p>
+
+<p> <img src="http://qiusli.github.io/images/git-3_3.png"></p>
+
+<p>当这个branch被创建后,并不会立即切换到这个分支上去,如果想要切换到新建的分支,可以执行:</p>
+
+<p><code>git checkout testing</code></p>
+
+<p>如果想在创建分支的时候同时切换到那条分支上去,可以执行:</p>
+
+<p><code>git checkout -b testing</code></p>
+
+<p>现在就在testing分支上了,接下来的所有操作都会在这个分支上进行,不会干扰到master分支.那么git又是如何知道用户现在到底在哪个分支上呢?原来git保存了另一个名叫<code>HEAD</code>的指针,它总是指向用户所在的当前分支,并且会随着用户执行<code>git checkout</code>指令后指向另一个分支:</p>
+
+<p> <img src="http://qiusli.github.io/images/git-3_4.png"></p>
+
+<h2>Basic Branching and Merging</h2>
+
+<p>试想这样一个场景:为了完成当前工作,你在master上新建了一个分支(iss53)并且切换到上面,然后开始在新的分支上工作,并且进行了一些提交,这时你的老板分配给你一项紧急的任务,让你停掉当前的工作,立马开始新任务.这个时候你需要首先需要切换到master分支上,然后新建另一个分支(hotfix)来处理紧急任务.在修改完成并通过所有测试后,紧急任务总算是完成了,你开心地提交了这个任务.这个时候git里的情况如下:</p>
+
+<p> <img src="http://qiusli.github.io/images/git-3_5.png"></p>
+
+<p>这时,应该合并master和紧急任务的分支了,你需要执行下面一系列代码来完成这个操作:</p>
+
+<ul>
+<li>切换到master分支: <code>git checkout master</code></li>
+<li>合并master和hotfix分支: <code>git merge hotfix</code></li>
+</ul>
+
+
+<p>由于master分支所在的commit是hotfix分支所在commit的直接上游,只需要向右一直移动指针就行了,这种合并方式叫做快进(<code>fast forward</code>).</p>
+
+<p> <img src="http://qiusli.github.io/images/git-3_6.png"></p>
+
+<p>因为hotfix分支使用来修理紧急任务的,这时任务也完成了,可以删除这个分支.</p>
+
+<p><code>git branch -d hotfix</code></p>
+
+<p>接下来需要回到最初工作的分支上去:</p>
+
+<p><code>git checkout iss53</code></p>
+
+<p>经过一些提交后:</p>
+
+<p> <img src="http://qiusli.github.io/images/git-3_7.png"></p>
+
+<h2>Basic Merging</h2>
+
+<p>Merge分两步:</p>
+
+<ul>
+<li>checkout到你想要merge进去的branch(e.g. iss53 to master)</li>
+<li>运行merge</li>
+</ul>
+
+
+<p>iss53 merge到master和hotfix merge到master是不同的.后者只需要fast forward就行了,但是前者需要进行一次称为3-way-merge的操作,具体是需要合并3个东西: 两个commit的共同父节点和两个节点本身.</p>
+
+<p> <img src="http://qiusli.github.io/images/git-3_8.png"></p>
+
+<p>找到需要合并的节点后再合并:</p>
+
+<p> <img src="http://qiusli.github.io/images/git-3_9.png"></p>
+
+<h3>Basic Merge Conflict</h3>
+
+<p>如果两个需要被merge的节点里面有冲突(e.g. 同时修改了同一个文件的相同部分),git会提示有冲突.</p>
+
+<p> <img src="http://qiusli.github.io/images/git-3_10.png"></p>
+
+<p>上图的HEAD部分是当前分支在这一部分的修改,iss53的那部分是在iss53那个分支上对这一部分的修改,如果想要解决这个冲突,可以保留其中的一个,或者全部删掉重写.在解决后需要重新add这个文件.</p>
+
+<h2>Branch Management</h2>
+
+<p><code>git branch</code>: 列出当前的所有分支,当前分支前面会有一个星号(*).</p>
+
+<p><code>git branch -v</code>: 列出所有分支的最近的一次提交.</p>
+
+<h2>Remote Branches</h2>
+
+<p>远程分支是对远程仓库状态的索引,它告诉你自从上一次和服务器交互之后的状态.当从服务器上clone项目的时候,git会创建两个指针,一个是指向服务器的指针(origin/master),并且停留在你最近一次与之交互后的节点上,另一个指针(master)指向同一个节点,不过它是在本地.两个指针最大的不同就是指向服务器上的指针只会在你与服务器进行交互的时候移动(e.g. 提交),它是自动移动的,不能人为控制,可以想象成一个书签,帮你保存上一次的状态.本地的指针是在本地提交的时候移动的.</p>
+
+<p><img src="http://qiusli.github.io/images/git-3_11.png"></p>
+
+<p>例如我在本地进行了一些提交,同时有人往服务器上提交了代码,这时服务器上的那个指针就会向前移动,如果我想从服务器上获取这些更新,可以运行<code>git fetch origin</code>,这个指令用来获取最新的代码,但是它不会自动merge,如果想要获取并且让系统自动merge,需要执行<code>git pull</code>.运行之后系统的现状:</p>
+
+<p><img src="http://qiusli.github.io/images/git-3_12.png"></p>
+
+<h2>Push</h2>
+
+<p><code>git push (remote) (branch)</code>: 这条指令用来向服务器上推送代码.(e.g. git push origin master) 向名为origin的服务器上的master分支推送代码.</p>
+
+<h2>Tracking Branches</h2>
+
+<p>当我们在push或者pull的时候,git知道应该push到哪里去或者从哪里去pull,即使我们不加任何的参数.这是因为git在我们clone代码的时候建立了一个tracking branch,它和远程仓库有直接联系.</p>
+
+<h2>Rebasing</h2>
+
+<p>rebase是git中另一种合并分支的方法,与merge不同的是,rebase不需要进行3-way-merge,取而代之的是只需要把需要合并的分支的patch打到另一个分支上去就可以了.</p>
+
+<p><img src="http://qiusli.github.io/images/git-3_13.png"></p>
+
+<ul>
+<li>git checkout experiment</li>
+<li>git rebase master</li>
+</ul>
+
+
+<p>他的原理是回到两个分支的共同的祖先,提取你所在分支每次提交时产生的差异(diff),把这些差异保存在临时文件里,然后切换到需要合并到的分支,以此应用每一个patch文件.</p>
+
+<p><img src="http://qiusli.github.io/images/git-3_14.png"></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[TG Day 3]]></title>
+    <link href="http://qiusli.github.io/blog/2014/05/23/tg-day-3/"/>
+    <updated>2014-05-23T00:17:00-06:00</updated>
+    <id>http://qiusli.github.io/blog/2014/05/23/tg-day-3</id>
+    <content type="html"><![CDATA[<p>唉,今天过得不爽,因为效率太低了.睡少了,晚上大概只睡了6个小时,导致中午在听Brian讲课的时候都反应不过来.下午想把RabbitMQ看完,但是效率也不高,拖拖拉拉也没看出个明白.</p>
+
+<p>睡眠太重要啦!!!!</p>
+
+<!-- more -->
+
+
+<p>晚上回到家也是拖拖拉拉的,一会浏览下网页,一会看手机,时间就这样过去,这是拖延症,得治!!!!</p>
+
+<p>明天的计划:</p>
+
+<ul>
+<li>总结这几天学到的知识和架构</li>
+</ul>
+
+
+<p>现在的计划: 做俯卧撑 &ndash;> 睡觉!!!!</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[TG Day 2]]></title>
+    <link href="http://qiusli.github.io/blog/2014/05/21/tg-day-2/"/>
+    <updated>2014-05-21T23:46:00-06:00</updated>
+    <id>http://qiusli.github.io/blog/2014/05/21/tg-day-2</id>
+    <content type="html"><![CDATA[<p>首先检查昨天提出的改进是否做好了,</p>
+
+<ul>
+<li>多和同事交流: 这个做得还行,比第一天好多了,主动去找了Kate和Pablo pair,熟悉了项目的开发流程.</li>
+<li>专心做事:这个做得也还可以,在做事的时候没有太多的分心,只是Stemle在讲解business的时候由于前晚没睡好,导致分心了没有听进去.</li>
+<li>搞清楚terminologies,搞懂项目架构:前者感觉做到80%,后者没有太多的时间搞.项目架构是个大活,得一天一天搞.</li>
+</ul>
+
+
+<!-- more -->
+
+
+<p>今天的challenge遇到的不多.主要就是找了Kate和Pablo去pair,其实我也并不是真正想去学什么东西,而是去了解开发流程,开发难度.</p>
+
+<p>上面提到了在stemle讲解的时候有分心,导致没听懂,问题有2:</p>
+
+<ul>
+<li>睡眠分配不足,晚上不想睡,白天不想起.一个良好的睡眠能保证一天的效率,效率好了学东西就快,所以现在晚上一定要在1点之前睡觉.</li>
+<li>缺乏提问的勇气.这个是瑶瑶以前在TW反馈给我的,我一直记着.为什么呢?还是怕别人觉得你笨了,太在乎别人的看法.但是奇怪的是,有时自己很主动去问,但是还是没听懂,这是一种愚勇,提问题之前没有做出充分的准备,有些问题一出口就觉得自己应该能想出来,或者是为了提问而提问.找到这两者的折中点是解决问题的关键.</li>
+</ul>
+
+
+<p>明天改进的地方:</p>
+
+<ul>
+<li>多问问题,不懂就问,但是要在自己不懂的情况下,并且做好了前提工作.</li>
+</ul>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[TG Day 1]]></title>
+    <link href="http://qiusli.github.io/blog/2014/05/20/tg-day-1/"/>
+    <updated>2014-05-20T23:15:00-06:00</updated>
+    <id>http://qiusli.github.io/blog/2014/05/20/tg-day-1</id>
+    <content type="html"><![CDATA[<p>今天是暑期实习的第一天,平时都睡太晚了,昨晚一直睡不着,幸好今天事也不多,没有太多地表现出来.</p>
+
+<p>上午平平淡淡地被溜了一圈分别各自介绍,拿到了电脑,填写了一堆文件.之后带我的人就开始给我灌输一些项目里面用到的知识,东西太多,有点overwhelmed的感觉.但好的是我吸取了在TW的教训,干什么事都拿个小本子遇到重点就记下来,以后也可以照着复习.</p>
+
+<!-- more -->
+
+
+<p>中午去吃了印度菜,勾起了在班加罗尔的辛酸回忆.吃饭的时候同事都在聊着,但感觉自己插不上话,听力和口语不好是一方面,另一方面自己也不善言辞,说着说着就没话了.会不会让人感觉太酷?</p>
+
+<p>下午开始上scrum的培训课程,认真听了,里面的术语也算了解得差不多了.其实我应该更主动地去找办公室另外两个人多看看别人是怎么写代码的,可以熟悉code base,也不至于让人感觉你这人不好接触,</p>
+
+<p>另外有一点我自己感觉比较shame,为什么我老想着回家呢?为什么到了5点半就不想待下去,为什么周围没人了心里就毛躁了?说穿了就是不够投入,心没有静下来.做东西的时候杂念太多了,对自己不够狠.</p>
+
+<p>最后就是一定要在下班的时候列出当天遇到的不懂的地方,然后晚上回家学习.可以列在一个小本子上,搞懂一个就划掉一个.</p>
+
+<p>今天就写到这里,下面是在今天的基础上明天需要改进的地方:</p>
+
+<ul>
+<li>多和同事交流</li>
+<li>做事更加专心,不要一到时间就毛躁,想回家.</li>
+<li>能完全搞明白项目和公司里面的terminology,熟悉项目架构.</li>
+</ul>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Linux 2]]></title>
+    <link href="http://qiusli.github.io/blog/2014/05/18/linux2/"/>
+    <updated>2014-05-18T12:32:00-06:00</updated>
+    <id>http://qiusli.github.io/blog/2014/05/18/linux2</id>
+    <content type="html"><![CDATA[<h2>Manipulating files and directories</h2>
+
+<p>在操作文件的时候,通常都需要首先根据一定的条件来选择想要的文件(比如说以数字结尾的文件或者扩展名为xls的文件).这时我们需要使用通配符,它使用一定的规则帮助快速找到想要的文件.</p>
+
+<!-- more -->
+
+
+<p> <img src="http://qiusli.github.io/images/linux-2_1.png"></p>
+
+<p>下面是一些通配符的例子:</p>
+
+<p> <img src="http://qiusli.github.io/images/linux-2_2.png"></p>
+
+<p><code>mkdir</code>: 创建新的目录.</p>
+
+<p>#</p>
+
+<p>mkdir dir_name</p>
+
+<p>同时创建多个目录: mkdir dir1 dir2 dir3.</p>
+
+<p><code>cp</code>: 从一个目录拷贝文件到另一个目录.</p>
+
+<p> <img src="http://qiusli.github.io/images/linux-2_3.png"></p>
+
+<p> <img src="http://qiusli.github.io/images/linux-2_4.png"></p>
+
+<p><code>mv</code>: 移动文件或者修改文件名.不论是在那种情况下使用,原始的文件都不存在了,这是和<code>cp</code>最大的不同,可以想象成剪切.</p>
+
+<p><img src="http://qiusli.github.io/images/linux-2_5.png"></p>
+
+<p><code>rm</code>: 删除文件或者目录.删除后的文件或目录不能undelete.</p>
+
+<p><img src="http://qiusli.github.io/images/linux-2_6.png"></p>
+
+<p><img src="http://qiusli.github.io/images/linux-2_7.png"></p>
+
+<h3>Hard Links vs. Soft(Symbolic) Links</h3>
+
+<p><code>文件储存</code>: linux系统中文件存储在硬盘上,硬盘的最小存储单位叫做扇区(sector),每个扇区存储512个字节(0.5kb).操作系统读取硬盘的时候，不会一个个扇区地读取，这样效率太低，而是一次性连续读取多个扇区，即一次性读取一个"块"（block）。这种由多个扇区组成的"块"，是文件存取的最小单位。"块"的大小，最常见的是4KB，即连续八个 sector组成一个 block.</p>
+
+<p><code>inode</code>: 文件数据都储存在"块"中，那么很显然，我们还必须找到一个地方储存文件的元信息，比如文件的创建者、文件的创建日期、文件的大小等等。这种储存文件元信息的区域就叫做inode，中文译名为"索引节点"(index node)。存储linux系统中文件的元信息.每个文件都有一个inode.linux系统中的文件没有文件名,不同的文件是通过inode号来区分.虽然在使用linux的时候会看到文件名,但它只是一个inode的别称.比如用户在通过文件名点击文件的时候,系统首先通过文件名找到对应的inode号,然后再找到inode.最后通过inode找到文件储存的相应block,然后提取文件.</p>
+
+<p><code>Hard Link</code>: 一般情况下，文件名和inode号码是"一一对应"关系，每个inode号码对应一个文件名。但是，Unix/Linux系统允许，多个文件名指向同一个inode号码。
+这意味着，可以用不同的文件名访问同样的内容；对文件内容进行修改，会影响到所有文件名；但是，删除一个文件名，不影响另一个文件名的访问。这种情况就被称为"硬链接".(hard link)</p>
+
+<p><code>ln file link</code>: 用来创建Hard link. file是源文件,link是目标文件.</p>
+
+<p><img src="http://qiusli.github.io/images/linux-2_8.png"></p>
+
+<p>运行上面这条命令以后，源文件与目标文件的inode号码相同，都指向同一个inode。inode信息中有一项叫做"链接数"，记录指向该inode的文件名总数，这时就会增加1。
+反过来，删除一个文件名，就会使得inode节点中的"链接数"减1。当这个值减到0，表明没有文件名指向这个inode，系统就会回收这个inode号码，以及其所对应block区域。
+这里顺便说一下目录文件的"链接数"。创建目录时，默认会生成两个目录项：".&ldquo;和&rdquo;..&ldquo;。前者的inode号码就是当前目录的inode号码，等同于当前目录的"硬链接"；后者的inode号码就是当前目录的父目录的inode号码，等同于父目录的"硬链接"。所以，任何一个目录的"硬链接"总数，总是等于2加上它的子目录总数（含隐藏目录）。</p>
+
+<p><code>Soft(Symbolic) Link</code>: 除了硬链接以外，还有一种特殊情况。文件A和文件B的inode号码虽然不一样，但是文件A的内容是文件B的路径。读取文件A时，系统会自动将访问者导向文件B。因此，无论打开哪一个文件，最终读取的都是文件B。这时，文件A就称为文件B的"软链接"（soft link）或者"符号链接（symbolic link）。这意味着，文件A依赖于文件B而存在，如果删除了文件B，打开文件A就会报错："No such file or directory"。这是软链接与硬链接最大的不同：文件A指向文件B的文件名，而不是文件B的inode号码，文件B的inode"链接数"不会因此发生变化。ln -s命令可以创建软链接。</p>
+
+<p><code>ln -s item link</code>: 用来创建soft link.</p>
+
+<p><img src="http://qiusli.github.io/images/linux-2_9.png"></p>
+
+<p><code>inode的特殊作用</code>:
+由于inode号码与文件名分离，这种机制导致了一些Unix/Linux系统特有的现象。</p>
+
+<ul>
+<li>有时，文件名包含特殊字符，无法正常删除。这时，直接删除inode节点，就能起到删除文件的作用。</li>
+<li>移动文件或重命名文件，只是改变文件名，不影响inode号码。</li>
+<li>打开一个文件以后，系统就以inode号码来识别这个文件，不再考虑文件名。因此，通常来说，系统无法从inode号码得知文件名。</li>
+</ul>
+
+
+<p>第3点使得软件更新变得简单，可以在不关闭软件的情况下进行更新，不需要重启。因为系统通过inode号码，识别运行中的文件，不通过文件名。更新的时候，新版文件以同样的文件名，生成一个新的inode，不会影响到运行中的文件。等到下一次运行这个软件的时候，文件名就自动指向新版文件，旧版文件的inode则被回收。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Linux 1]]></title>
+    <link href="http://qiusli.github.io/blog/2014/05/18/linux1/"/>
+    <updated>2014-05-18T11:36:00-06:00</updated>
+    <id>http://qiusli.github.io/blog/2014/05/18/linux1</id>
+    <content type="html"><![CDATA[<h1>INTRODUCTION</h1>
+
+<h2>What is the Shell</h2>
+
+<p>Shell是一个应用程序,它接受用户的键盘输入,然后把这些输入传入到操作系统并返回结果.</p>
+
+<h2>What is the Bash</h2>
+
+<p>几乎所有的Linux Distribution都提供一个叫做<code>bash</code>的shell应用程序,bash是GNU项目的产物.<code>bash</code>的全称是<code>Bourne Again Shell</code>,从名称上就能看出它是一般Shell(<code>sh</code>)的加强版本.最早期的Shell是由Steve Bourne编写.</p>
+
+<!-- more -->
+
+
+<h2>Terminal Emulators</h2>
+
+<p>当使用图形用户界面的时候,我们需要另一个程序来与Shell交互,这就是Terminal Emulator.比如在Mac下的iTerm就是一个Terminal.</p>
+
+<h2>Some simple commands</h2>
+
+<p><code>date</code>: 显示当前时间.</p>
+
+<p> <img src="http://qiusli.github.io/images/linux-1_1.png"></p>
+
+<p><code>cal</code>: 显示这个月的日历.</p>
+
+<p> <img src="http://qiusli.github.io/images/linux-1_2.png"></p>
+
+<p><code>exit</code>: 退出当前session,相当于点击关闭.</p>
+
+<h1>NAVIGATION</h1>
+
+<p><code>pwd</code>: 显示当前工作目录.</p>
+
+<p> <img src="http://qiusli.github.io/images/linux-1_3.png"></p>
+
+<p><code>cd</code>: 改变目录.</p>
+
+<ul>
+<li>通过绝对路径直接进入另一个目录</li>
+</ul>
+
+
+<p> <img src="http://qiusli.github.io/images/linux-1_5.png"></p>
+
+<ul>
+<li>通过相对目录进入另一个目录</li>
+</ul>
+
+
+<p> <img src="http://qiusli.github.io/images/linux-1_6.png"></p>
+
+<p> <img src="http://qiusli.github.io/images/linux-1_7.png"></p>
+
+<p><code>ls</code>: 列出当前目录下的所有内容.</p>
+
+<p> <img src="http://qiusli.github.io/images/linux-1_4.png"></p>
+
+<p>显示另一个目录下的所有文件;</p>
+
+<p> <img src="http://qiusli.github.io/images/linux-1_8.png"></p>
+
+<p>同时显示两个目录下的所有文件(在下面是当前目录和根目录):</p>
+
+<p> <img src="http://qiusli.github.io/images/linux-1_9.png"></p>
+
+<p>以某种格式(这里是long format)显示当前目录下的所有文件:</p>
+
+<p> <img src="http://qiusli.github.io/images/linux-1_10.png"></p>
+
+<p>下面是可以用到的所有指令:</p>
+
+<p> <img src="http://qiusli.github.io/images/linux-1_11.png"></p>
+
+<p>当我们在用<code>-l</code>显示目录下的所以内容时,发现显示了许多具体的内容,下面这个列表表明了每个区域显示的内容的含义:</p>
+
+<p> <img src="http://qiusli.github.io/images/linux-1_12.png"></p>
+
+<p><code>tips</code>: 在创建新目录的时候,如果文件名之间有空格,最好用下划线代替.</p>
+
+<h1>EXPLORING THE SYSTEM</h1>
+
+<p><code>file</code>: 显示当前文件的所属类型.</p>
+
+<p> <img src="http://qiusli.github.io/images/linux-1_13.png"></p>
+
+<p><code>less</code>: 显示文件的具体内容.</p>
+
+<p> <img src="http://qiusli.github.io/images/linux-1_14.png"></p>
+
+<p>点击<code>q</code>退出浏览模式.</p>
+
+<p>下面是在使用<code>less</code>浏览的时候可以使用的快捷键:</p>
+
+<p> <img src="http://qiusli.github.io/images/linux-1_15.png"></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[正则表达式必知必会 4]]></title>
+    <link href="http://qiusli.github.io/blog/2014/05/17/regex4/"/>
+    <updated>2014-05-17T23:25:00-06:00</updated>
+    <id>http://qiusli.github.io/blog/2014/05/17/regex4</id>
+    <content type="html"><![CDATA[<h2>前后查找</h2>
+
+<p>#</p>
+
+<p><code>文本</code>:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;head&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;title&gt;</span>Ben Forta&#39;s Homepage<span class="nt">&lt;/title&gt;</span>
+</span><span class='line'><span class="nt">&lt;/head&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>正则表达式</code>: \&lt;[Tt][Ii][Tt][Ll][Ee]>.*?\&lt;/[Tt][Ii][Tt][Ll][Ee]></p>
+
+<p><code>结果</code>: \<title>Ben Forta&rsquo;s Homepage\</title></p>
+
+<!-- more -->
+
+
+<p>本意是想要匹配出标题里面的文字,但是结果确实连标题的tag也一起匹配出来了,尽管我们可以使用上一章讲到的子表达式来把正则表达式分成3块然后取第2块出来,但是这样不免有些麻烦,这个时候就可以使用前后查找来解决这个问题.</p>
+
+<p><code>向前查找</code>(<code>?=</code>): 指定一个必须匹配但无需在结果中返回的模式.从语法上看,向前查找就是一个以<code>?=</code>开头的子表达式,需要匹配的文本跟在=后面.</p>
+
+<p>#</p>
+
+<p><code>文本</code>:</p>
+
+<p><a href="http://www.forta.com">http://www.forta.com</a></p>
+
+<p><a href="https://mail.forta.com">https://mail.forta.com</a></p>
+
+<p><a href="ftp://ftp.forta.com">ftp://ftp.forta.com</a></p>
+
+<p><code>正则表达式</code>: .+(?=:)</p>
+
+<p><code>结果</code>: http    https     ftp</p>
+
+<p>上面列出的URL地址里,协议和主机名以冒号<code>:</code>相隔.模式<code>.+</code>匹配任意文本,子表达式<code>(?=:)</code>匹配冒号<code>:</code>.值得注意的是被匹配到的<code>:</code>并没有出现在结果中,我们用<code>?=</code>向正则表达式引擎说明只要找到<code>:</code>就行了,不要把它包含在最终的结果里.</p>
+
+<p>#</p>
+
+<p><code>文本</code>:</p>
+
+<p><a href="http://www.forta.com">http://www.forta.com</a></p>
+
+<p><a href="https://mail.forta.com">https://mail.forta.com</a></p>
+
+<p><a href="ftp://ftp.forta.com">ftp://ftp.forta.com</a></p>
+
+<p><code>正则表达式</code>: .+(:)</p>
+
+<p><code>结果</code>: <a href="http:">http:</a>    <a href="https:">https:</a>     <a href="ftp:">ftp:</a></p>
+
+<p>这里的正则表达式没有使用向前查找,在最终的结果里面则包含了冒号.</p>
+
+<h2>向后查找</h2>
+
+<p><code>向后查找</code>(<code>?&lt;=</code>): 与向前查找大同小异.只是这次匹配但不返回的字符在首部了,它必须用在一个子表达式里.</p>
+
+<p>#</p>
+
+<p><code>文本</code>:</p>
+
+<p>ABC01: $23.12</p>
+
+<p>HGG42: $122.81</p>
+
+<p>AIOS98: $981.02</p>
+
+<p>HSW92: $72.33</p>
+
+<p><code>正则表达式</code>: \$[\d.]+</p>
+
+<p><code>结果</code>: $23.12    $122.81    $981.02    $72.33</p>
+
+<p>本想要匹配具体的金额,但是连同<code>$</code>也被返回了,这里就是向后匹配大显身手的时候.</p>
+
+<p>#</p>
+
+<p><code>文本</code>:</p>
+
+<p>ABC01: $23.12</p>
+
+<p>HGG42: $122.81</p>
+
+<p>AIOS98: $981.02</p>
+
+<p>HSW92: $72.33</p>
+
+<p><code>正则表达式</code>: (?&lt;=\$)[\d.]+</p>
+
+<p><code>结果</code>: 23.12    122.81    981.02    72.33</p>
+
+<h2>把向前和向后查找结合起来</h2>
+
+<p>#</p>
+
+<p><code>文本</code>:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;head&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;title&gt;</span>Ben Forta&#39;s Homepage<span class="nt">&lt;/title&gt;</span>
+</span><span class='line'><span class="nt">&lt;/head&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>正则表达式</code>: (?&lt;=\&lt;[Tt][Ii][Tt][Ll][Ee]>).*?(?=\&lt;/[Tt][Ii][Tt][Ll][Ee]>)</p>
+
+<p><code>结果</code>: Ben Forta&rsquo;s Homepage</p>
+
+<p>这里我们在两个tag之前分别使用了向后和向前查找,表明匹配两个tag,但不返回它们,所以最后的结果就只包含字符.</p>
+
+<h2>对前后查找取非</h2>
+
+<p>我们前面遇到的向前查找和向后查找都是使用某个特殊字符来定位然后向前或者向后匹配,这种查找称为正向前查找(positive lookahead)和正向后查找(positive lookbehind).下面讲到的内容与之正好想法,称为负向前查找(negative lookahead)和负向后查找(negative lookbehind),顾名思义我们可以猜到它们其实就是匹配不以某个字符开头或者结尾的模式.</p>
+
+<p> <img src="http://qiusli.github.io/images/regex-4_1.png"></p>
+
+<p>#</p>
+
+<p><code>文本</code>: I paid $30 for 100 apples, 50 oranges and 30 pears. I saved $5 on this order.</p>
+
+<p><code>正则表达式</code>: (?&lt;=\$)\d+</p>
+
+<p><code>结果</code>: 30    5</p>
+
+<p>结果返回了以$开头的数字,既钱数. 接下来,如果我们只想查找水果个数.</p>
+
+<p>#</p>
+
+<p><code>文本</code>: I paid $30 for 100 apples, 50 oranges and 30 pears. I saved $5 on this order.</p>
+
+<p><code>正则表达式</code>: \b(?&lt;!\$)\d+\b</p>
+
+<p><code>结果</code>: 100    50    30</p>
+
+<p>最后的结果只包含那些不以$开头的数字.值得注意的是我在这个正则表达式里面使用了分隔符<code>\b</code>,如果不使用这个,$30中的0也会被匹配.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[正则表达式必知必会 3]]></title>
+    <link href="http://qiusli.github.io/blog/2014/05/17/regex3/"/>
+    <updated>2014-05-17T10:43:00-06:00</updated>
+    <id>http://qiusli.github.io/blog/2014/05/17/regex3</id>
+    <content type="html"><![CDATA[<h2>使用子表达式</h2>
+
+<p>有些短语虽然中间有空格,但是通常希望被作为一个整体显示在一行以便浏览,比如 Windows 2000.这样通常在Windows和2000之间插入非换行型空格<code>&amp;nbsp</code>,它是non-breaking space的缩写.</p>
+
+<p>#</p>
+
+<p><code>文本</code>: Hello, my name is Ben<code>&amp;nbsp;</code>Forta, and I am the author on SQL, Coldfusion, WAP, windosw<code>&amp;nbsp;&amp;nbsp;</code>2000, and other subjects.</p>
+
+<p><code>正则表达式</code>: <code>&amp;nbsp;</code>{2,}</p>
+
+<p><code>结果</code>: 空</p>
+
+<!-- more -->
+
+
+<p>我们本想通过这个正则表达式来匹配至少出现两个<code>&amp;nbsp;</code>,但是却什么都没有匹配出来,这是因为{2,}只作用于紧跟在它前面的一个字符 &ndash; 那是一个分号,所以这个正则表达式能匹配<code>&amp;nbsp;;;;</code>这种字符.</p>
+
+<p><code>子表达式</code>: 把一系列表达式划分为子表达式的目的是把那些子表达式当作一个个独立的单元来使用.子表达式需要用()括起来.</p>
+
+<p>#</p>
+
+<p><code>文本</code>: Hello, my name is Ben<code>&amp;nbsp;</code>Forta, and I am the author on SQL, Coldfusion, WAP, windosw<code>&amp;nbsp;&amp;nbsp;</code>2000, and other subjects.</p>
+
+<p><code>正则表达式</code>: (<code>&amp;nbsp;</code>){2,}</p>
+
+<p><code>结果</code>: <code>&amp;nbsp;&amp;nbsp;</code></p>
+
+<p>#</p>
+
+<p><code>文本</code>:</p>
+
+<p>ID: 042</p>
+
+<p>SEX: M</p>
+
+<p>DOB: 1987-08-17</p>
+
+<p>Status: Active</p>
+
+<p><code>正则表达式</code>: 19|20\d{2}</p>
+
+<p><code>结果</code>: 19</p>
+
+<p>这里的正则表达式是期望匹配出一个年份,但是结果却不是希望的那样.这是因为这个正则表达式被解释成了匹配19或者20紧接着2个数字.如果想要达到正确的效果,需要把19|20作为一个子表达式.</p>
+
+<p>#</p>
+
+<p><code>文本</code>:</p>
+
+<p>ID: 042</p>
+
+<p>SEX: M</p>
+
+<p>DOB: 1987-08-17</p>
+
+<p>Status: Active</p>
+
+<p><code>正则表达式</code>: (19|20)\d{2}</p>
+
+<p><code>结果</code>: 1987</p>
+
+<h3>子表达式的嵌套</h3>
+
+<p>#</p>
+
+<p><code>文本</code>: Pinging hog.forta.com [192.168.46.200] with 32 bytes data.</p>
+
+<p><code>正则表达式</code>: ((\d{1,2}) | (1\d{1,2}) | (2[0-4]\d) | (25[0-5]).){3}((\d{1,2}) | (1\d{1,2}) | (2[0-4]\d) | (25[0-5]))</p>
+
+<p><code>结果</code>: 192.168.46.200</p>
+
+<p>这里使用了子表达式的嵌套来匹配IP'地址.子表达式表示的意思分别是:</p>
+
+<ul>
+<li>任何一位或两位的数字</li>
+<li>任何以1开头的两位或者三位的数字</li>
+<li>任何以2开头的第二位为0-4的三位数字</li>
+<li>任何以25开头的第三位为0-5的三位数字</li>
+</ul>
+
+
+<p>这样的一个子表达式排除了其他不可能的情况,例如999.2222.222.0.</p>
+
+<h2>回溯引用:前后一致匹配</h2>
+
+<p>#</p>
+
+<p><code>文本</code>:</p>
+
+<p>\<H1>Welcome to my homepage \</H1></p>
+
+<p>Content is divided into two sections</p>
+
+<p>\<H2>ColdFusion\</H2></p>
+
+<p>Information about macro media coldfusion</p>
+
+<p>\<H2>Wireless\</H2></p>
+
+<p>Information about 802.11 and more</p>
+
+<p>\<H2>This is not a valid HTML\</H3></p>
+
+<p><code>正则表达式</code>: &lt;[Hh][1-6]>.*?&lt;/[Hh][1-6]></p>
+
+<p><code>结果</code>:</p>
+
+<p>\<H1>Welcome to my homepage \</H1></p>
+
+<p>\<H2>ColdFusion\</H2></p>
+
+<p>\<H2>Wireless\</H2></p>
+
+<p>\<H2>This is not a valid HTML\</H3></p>
+
+<p>这个正则表达式看起来很有用,但是在匹配最后一个title的时候得到了我们不想要的结果,把H3和H2匹配成了一对.这是因为正则表达式在匹配后一个tag的时候对前一个tag毫无所知,这时候就是回溯引用能用到的地方.</p>
+
+<p><code>回溯引用</code>: 允许正则表达式模式引用前面匹配的结果.</p>
+
+<p>在解决这个问题之前,先看一看一个回溯引用的简单应用.</p>
+
+<p>#</p>
+
+<p><code>文本</code>: this is a block of of text, several words here are are repeated, and and they should not be</p>
+
+<p><code>正则表达式</code>: \s+(\w+)\s+\1</p>
+
+<p><code>结果</code>: of of      are are        and and</p>
+
+<p>这里的正则表达式首先匹配一个或多个空格,然后使用一个子表达式匹配一个或多个字符,但是这里的子表达式不是用来做重复引用.接下来又匹配一个或多个空格,最后跟了一个\1,它的意思是引用第一个子表达式匹配到的字符,所以如果第一个表达式匹配到了A这个正则表达式就能匹配到 A A,\1就是一个回溯引用.\1表示引用第一个子表达式,如果前面有多个子表达式,可以通过\1,\2等来具体引用第几个子表达式.其实我们可以把子表达式想象成一个个变量,后面只是在使用前面定义的变量.</p>
+
+<p>现在我们可以来试图解决前面的问题了.
+#</p>
+
+<p><code>文本</code>:</p>
+
+<p>\<H1>Welcome to my homepage \</H1></p>
+
+<p>Content is divided into two sections</p>
+
+<p>\<H2>ColdFusion\</H2></p>
+
+<p>Information about macro media coldfusion</p>
+
+<p>\<H2>Wireless\</H2></p>
+
+<p>Information about 802.11 and more</p>
+
+<p>\<H2>This is not a valid HTML\</H3></p>
+
+<p><code>正则表达式</code>: &lt;[Hh]([1-6])>.*?&lt;/[Hh]\1></p>
+
+<p><code>结果</code>:
+\<H1>Welcome to my homepage \</H1></p>
+
+<p>\<H2>ColdFusion\</H2></p>
+
+<p>\<H2>Wireless\</H2>这里在第二个tag引用了第一个tag后面跟着的数字,所以两个tag的数字就一样了.</p>
+
+<p><code>note</code>: 回溯引用只能引用模式里的子表达式(用()括起来的正则表达式片段).</p>
+
+<h3>回溯引用在替换中的应用</h3>
+
+<p>#</p>
+
+<p><code>文本</code>: Hello, my name is Ben Forta, my email address is <a href="&#x6d;&#x61;&#x69;&#108;&#116;&#x6f;&#58;&#x62;&#x65;&#110;&#x40;&#x66;&#x6f;&#114;&#x74;&#97;&#x2e;&#99;&#111;&#109;">&#98;&#x65;&#x6e;&#x40;&#102;&#x6f;&#114;&#x74;&#97;&#x2e;&#99;&#x6f;&#x6d;</a></p>
+
+<p><code>正则表达式</code>: \w[\w.]*@[\w.]+.\w+</p>
+
+<p><code>结果</code>: <a href="&#x6d;&#x61;&#x69;&#108;&#x74;&#x6f;&#58;&#x62;&#101;&#x6e;&#64;&#x66;&#111;&#114;&#116;&#97;&#x2e;&#99;&#x6f;&#109;">&#x62;&#101;&#110;&#64;&#102;&#111;&#114;&#116;&#97;&#46;&#x63;&#x6f;&#x6d;</a></p>
+
+<p>这里的正则表达式匹配了一个邮件地址.</p>
+
+<p>如果我想要把邮件地址替换为可点击,需要使用下面这样的语法<code>\&lt;A href="mailto:ben@forta.com"&gt;ben@forta.com\&lt;/A&gt;</code>.</p>
+
+<p>我们可以使用回溯引用来完成这个操作,首先找到需要匹配的文本,然后再你用这个文本填充上面的语法:</p>
+
+<p>#</p>
+
+<p><code>文本</code>: Hello, my name is Ben Forta, my email address is <a href="&#109;&#97;&#x69;&#x6c;&#116;&#111;&#58;&#x62;&#x65;&#x6e;&#x40;&#x66;&#x6f;&#x72;&#116;&#x61;&#46;&#x63;&#111;&#109;">&#x62;&#101;&#x6e;&#x40;&#102;&#x6f;&#x72;&#116;&#97;&#x2e;&#99;&#111;&#x6d;</a></p>
+
+<p><code>正则表达式</code>:  (\w[\w.]*@[\w.]+.\w+)</p>
+
+<p><code>替换</code>: \<A href="mailto:$1">$1\</A></p>
+
+<p><code>结果</code>: ben@forta.com成为了可点击的链接</p>
+
+<p>这里的正则表达式分为两步,首先匹配到需要的文本,接着再使用回溯引用得到第一步匹配到的文本,然后用这个文本填充.回溯引用可以跨模式使用,第一个模式你们匹配到的文本可以在第二个文本里使用.</p>
+
+<p><code>note</code>: 上面的例子中使用了$1而不是\1,这个是在JavaScript中的语法,比如在ColdFusion中就是\1,根据不同的语言有不同的语法,但效果都一样.</p>
+
+<p>#</p>
+
+<p><code>文本</code>:</p>
+
+<p>314-683-7956</p>
+
+<p>313-082-0121</p>
+
+<p>010-203-4121</p>
+
+<p>313-123-9921</p>
+
+<p><code>正则表达式</code>: (\d{3})(-)(\d{3})(-)(\d{4})</p>
+
+<p><code>替换</code>: ($1) $3-$5</p>
+
+<p><code>结果</code>:</p>
+
+<p>(314) 683-7956</p>
+
+<p>(313) 082-0121</p>
+
+<p>(010) 203-4121</p>
+
+<p>(313) 123-9921</p>
+
+<p>上面这个例子体现了如何回溯引用多个子表达式.达到的效果是替换电话号码的显示效果.</p>
+
+<h3>大小写转换</h3>
+
+<p>有些语言里的正则表达式允许使用一些特殊的元字符对匹配到的文本进行大小写转换</p>
+
+<p> <img src="http://qiusli.github.io/images/regex-3_1.png">
+#</p>
+
+<p><code>文本</code>:</p>
+
+<p>\<H1>Welcome to my homepage \</H1></p>
+
+<p>Content is divided into two sections</p>
+
+<p>\<H2>ColdFusion\</H2></p>
+
+<p>Information about macro media coldfusion</p>
+
+<p>\<H2>Wireless\</H2></p>
+
+<p>Information about 802.11 and more</p>
+
+<p>\<H2>This is not a valid HTML\</H3></p>
+
+<p><code>正则表达式</code>: (&lt;[Hh]1>)(.*?)(&lt;/[Hh]1>)</p>
+
+<p><code>替换</code>: $1\U$2\E$3</p>
+
+<p><code>结果</code>:</p>
+
+<p>\<H1>WELCOME TO MY HOMEPAGE \</H1></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[正则表达式必知必会 2]]></title>
+    <link href="http://qiusli.github.io/blog/2014/05/16/regex2/"/>
+    <updated>2014-05-16T21:28:00-06:00</updated>
+    <id>http://qiusli.github.io/blog/2014/05/16/regex2</id>
+    <content type="html"><![CDATA[<h2>重复匹配</h2>
+
+<h3>匹配一个或多个字符</h3>
+
+<p><code>+</code>: 匹配一个或多个字符(不匹配零个字符的情况).</p>
+
+<p>#</p>
+
+<p><code>文本</code>: Send personal email to <a href="&#109;&#97;&#105;&#108;&#x74;&#111;&#58;&#x62;&#x65;&#x6e;&#x40;&#x66;&#111;&#x72;&#x74;&#x61;&#x2e;&#99;&#x6f;&#x6d;&#46;">&#x62;&#x65;&#x6e;&#64;&#102;&#111;&#x72;&#116;&#97;&#x2e;&#99;&#x6f;&#109;&#x2e;</a> For questions about the book use <a href="&#109;&#97;&#x69;&#108;&#116;&#111;&#x3a;&#x73;&#x75;&#112;&#112;&#111;&#114;&#x74;&#x40;&#x66;&#x6f;&#114;&#116;&#97;&#x2e;&#99;&#111;&#109;&#x2e;">&#x73;&#117;&#x70;&#112;&#111;&#114;&#116;&#64;&#102;&#111;&#114;&#116;&#x61;&#x2e;&#x63;&#111;&#109;&#x2e;</a> Feel free to send unsolicited email to <a href="&#109;&#x61;&#x69;&#x6c;&#116;&#x6f;&#x3a;&#x73;&#112;&#97;&#x6d;&#x40;&#x66;&#111;&#x72;&#116;&#97;&#x2e;&#x63;&#x6f;&#x6d;&#x2e;">&#x73;&#112;&#x61;&#x6d;&#x40;&#x66;&#x6f;&#x72;&#116;&#x61;&#46;&#x63;&#111;&#x6d;&#x2e;</a></p>
+
+<p><code>正则表达式</code>: \w+@\w+.\w+</p>
+
+<p><code>结果</code>: <a href="&#x6d;&#97;&#x69;&#x6c;&#x74;&#111;&#58;&#98;&#x65;&#x6e;&#64;&#102;&#111;&#x72;&#116;&#x61;&#x2e;&#99;&#111;&#109;">&#x62;&#x65;&#x6e;&#x40;&#102;&#111;&#x72;&#x74;&#97;&#46;&#99;&#x6f;&#109;</a>  <a href="&#109;&#x61;&#105;&#108;&#x74;&#111;&#58;&#115;&#117;&#112;&#112;&#111;&#114;&#x74;&#x40;&#102;&#111;&#x72;&#116;&#x61;&#46;&#x63;&#x6f;&#109;">&#115;&#x75;&#112;&#x70;&#x6f;&#x72;&#x74;&#x40;&#102;&#x6f;&#114;&#116;&#x61;&#46;&#99;&#111;&#109;</a>  <a href="&#x6d;&#97;&#x69;&#108;&#x74;&#x6f;&#58;&#115;&#x70;&#97;&#109;&#64;&#x66;&#111;&#x72;&#116;&#97;&#46;&#99;&#x6f;&#x6d;">&#x73;&#112;&#x61;&#x6d;&#64;&#102;&#x6f;&#114;&#116;&#97;&#x2e;&#99;&#x6f;&#109;</a></p>
+
+<!-- more -->
+
+
+<p><code>*</code>: 匹配零个或多个字符.</p>
+
+<p><code>?</code>: 匹配零个或一个字符.</p>
+
+<p>#</p>
+
+<p><code>文本</code>: The URL is <a href="http://www.forta.com,">http://www.forta.com,</a> to connect securely use <a href="https://www.forta.com.">https://www.forta.com.</a></p>
+
+<p><code>正则表达式</code>: https?://[\w./]+</p>
+
+<p><code>结果</code>:  <a href="http://www.forta.com">http://www.forta.com</a>   <a href="https://www.forta.com">https://www.forta.com</a></p>
+
+<p>这里在s后面加了<code>?</code>,表示s既可以出现一次也可以不出现.</p>
+
+<h2>匹配的重复次数</h2>
+
+<p><code>重复次数 (interval)</code>: 精确定义<code>+</code>,<code>*</code>等元字符代表的字符的重复个数.这个个数定义在{}之间.</p>
+
+<p>#</p>
+
+<p>匹配RGB值(RGB值是由6个连续的任意字符或者0-9间的数字构成)</p>
+
+<p><code>文本</code>: \<body bgcolor="#336655" text="#FFFFFF" height=10 width=20></p>
+
+<p><code>正则表达式</code>: #[a-zA-Z0-9][a-zA-Z0-9][a-zA-Z0-9][a-zA-Z0-9][a-zA-Z0-9][a-zA-Z0-9]</p>
+
+<p><code>结果</code>: #336655, #FFFFFF</p>
+
+<p>修改后:</p>
+
+<p>#</p>
+
+<p>匹配RGB值(RGB值是由6个连续的任意字符或者0-9间的数字构成)</p>
+
+<p><code>文本</code>: \<body bgcolor="#336655" text="#FFFFFF" height=10 width=20></p>
+
+<p><code>正则表达式</code>: #[a-zA-Z0-9]{6}</p>
+
+<p><code>结果</code>: #336655, #FFFFFF</p>
+
+<p>上面的正则表达式规定{6}之前的字符连续出现6次.###为重复次数设定一个区间###</p>
+
+<p>#</p>
+
+<p><code>文本</code>: 4/8/03  10-6-2004  2/2/2  01-01-01</p>
+
+<p><code>正则表达式</code>: \d{1,2}/[-\/]d{1,2}[-\/]\d{2,4}</p>
+
+<p><code>结果</code>: 3/8/03 10-6-2004 01-01-01</p>
+
+<p>上面在\d后面跟上了这个字符具体出现的次数区间,两边都是inclusive.###匹配"至少重复多少次"###</p>
+
+<p>#</p>
+
+<p><code>文本</code>:</p>
+
+<p>1001: $489.02</p>
+
+<p>1002: $42.33</p>
+
+<p>1003: $1003.21</p>
+
+<p>1004: $104.55</p>
+
+<p>1005: $21.21</p>
+
+<p><code>正则表达式</code>: \d+: \$\d{3,}.\d{2}</p>
+
+<p><code>结果</code>: 1001: $489.02    1003: $1003.21    1004: $104.55</p>
+
+<p>上面的正则表达式中\d{3,}表示至少出现3次数字,换句话说就是找金额大于100美元的匹配.</p>
+
+<h2>防止过度匹配</h2>
+
+<p>#</p>
+
+<p><code>文本</code>: This offer is not available for customers living in <B>DC</B> and <B>MO</B></p>
+
+<p><code>正则表达式</code>: &lt;[Bb]>.*&lt;[Bb]></p>
+
+<p><code>结果</code>: <B>DC</B> and <B>MO</B></p>
+
+<p>这样的结果显然不是我们预期的,这时因为<code>.*</code>属于贪婪型匹配,它们进行匹配的模式是多多益善而不是适可而止.它们会尽可能从一段文本的开头一直匹配到这段文本的结尾,而不是从这段文本的开头碰到第一个匹配为止.</p>
+
+<p>为了达到我们想要的效果,我们需要使用元字符的<code>懒惰型</code>版本,这个版本与<code>贪婪型</code>正好相反.<code>懒惰型</code>版本的写法很简单,只需要在后面加上<code>?</code>后缀即可.</p>
+
+<p> <img src="http://qiusli.github.io/images/regex-2_1.png"></p>
+
+<p>所以,我们可以使用<code>懒惰型</code>字符匹配来解决上面的问题.</p>
+
+<p>#</p>
+
+<p><code>文本</code>: This offer is not available for customers living in <B>DC</B> and <B>MO</B></p>
+
+<p><code>正则表达式</code>: &lt;[Bb]>.*?&lt;[Bb]></p>
+
+<p><code>结果</code>: <B>DC</B>     <B>MO</B></p>
+
+<h2>位置匹配</h2>
+
+<p>位置匹配用来解决在什么地方进行字符串匹配操作的问题.</p>
+
+<p>#</p>
+
+<p><code>文本</code>: The cat scattered his food all over the room.</p>
+
+<p><code>正则表达式</code>: cat</p>
+
+<p><code>结果</code>: The <code>cat</code> s<code>cat</code>tered his food all over the room.</p>
+
+<p>这里的cat把一句话中的所有cat都找了出来,无论匹配的字符是单独的还是单词的一部分.</p>
+
+<p>解决这个问题的办法只有一个:使用边界限定符,也就是在正则表达式里用一些特殊的元字符来表明我们想要匹配操作在什么位置发生.</p>
+
+<h3>单词边界</h3>
+
+<p><code>\b</code>: 匹配单词的开始或结尾.</p>
+
+<p>#</p>
+
+<p><code>文本</code>: The cat scattered his food all over the room.</p>
+
+<p><code>正则表达式</code>: \bcat\b</p>
+
+<p><code>结果</code>: The <code>cat</code> scattered his food all over the room.</p>
+
+<p>单词cat的前后都有一个空格,空格是用来分割单词的字符之一.而单词scattered中的cat不能与之匹配,因为scattered中的cat前一个字符是s后一个字符是t,都不能与<code>\b</code>匹配.</p>
+
+<p><code>\b</code>中的b是boundary的意思,它匹配这样一个位置,这个位置位于一个能用来构成单词的字符(字母数字和下划线, 即\w)和不能构成单词的字符(即\W)之间.
+值得注意的是如果想要匹配一个完整的单词,就需要在前后都加上<code>\b</code>.</p>
+
+<p>#</p>
+
+<p><code>文本</code>: The captain wear his cap and cape proudly as he sat and listening to the recap of how his crew saved a men from a capsized vessel.</p>
+
+<p><code>正则表达式</code>: \bcap</p>
+
+<p><code>结果</code>: The <code>cap</code>tain wear his <code>cap</code> and <code>cap</code>e proudly as he sat and listening to the recap of how his crew saved a men from a <code>cap</code>sized vessel.</p>
+
+<p>这里的正则表达式匹配以cap开头的任意单词.</p>
+
+<p>#</p>
+
+<p><code>文本</code>: The captain wear his cap and cape proudly as he sat and listening to the recap of how his crew saved a men from a capsized vessel.</p>
+
+<p><code>正则表达式</code>: cap\b</p>
+
+<p><code>结果</code>: The captain wear his <code>cap</code> and cape proudly as he sat and listening to the re<code>cap</code> of how his crew saved a men from a capsized vessel.</p>
+
+<p>这里的正则表达式匹配以cap结尾的任意单词.</p>
+
+<p>如果想要表面不匹配单词边界,可以使用<code>\B</code>.</p>
+
+<p>#</p>
+
+<p><code>文本</code>: Please enter the nine-digit id as it appeared on your color - coded pass-key.</p>
+
+<p><code>正则表达式</code>: \B-\B</p>
+
+<p><code>结果</code>: color - coded</p>
+
+<p>\B-\B匹配前后都不是单词边界的连字符.</p>
+
+<h3>字符串边界</h3>
+
+<p><code>^</code>: 匹配字符串开头.
+<code>$</code>: 匹配字符串结尾.</p>
+
+<p><code>note</code>: <code>^</code>是一个多用途的元字符.当它在[]之间并且紧跟在[之后的时候,它表示取非.如果在字符集合的外面并在一个模式开头的时候,它将匹配字符串的开头.</p>
+
+<p>#</p>
+
+<p><code>文本</code>:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;</span>
+</span><span class='line'><span class="nt">&lt;person&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;name&gt;</span>Qiushi\<span class="nt">&lt;/name&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;age&gt;</span>25\<span class="nt">&lt;/age&gt;</span>
+</span><span class='line'><span class="nt">&lt;/person&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>正则表达式</code>: \&lt;\?xml .* \?></p>
+
+<p><code>结果</code>: \&lt;?xml version=&ldquo;1.0&rdquo; encoding=&ldquo;UTF-8&rdquo; ?></p>
+
+<p>一个合法的XML文档都需要以文本的第一行作为开始,这里我想用这个正则表达式来匹配这个XML的头行,这里似乎奏效,但是其实不然.因为即使我在第一行前面加上一些支付,这个匹配也能成功.</p>
+
+<p>#</p>
+
+<p><code>文本</code>:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'>some text before
+</span><span class='line'><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;</span>
+</span><span class='line'><span class="nt">&lt;person&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;name&gt;</span>Qiushi<span class="nt">&lt;/name&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;age&gt;</span>25<span class="nt">&lt;/age&gt;</span>
+</span><span class='line'><span class="nt">&lt;/person&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>正则表达式</code>: \&lt;\?xml .* \?></p>
+
+<p><code>结果</code>: \&lt;?xml version=&ldquo;1.0&rdquo; encoding=&ldquo;UTF-8&rdquo; ?></p>
+
+<p>但显然这不是我想要的结果,因为头文件不在第一行,表示这不是一个合法的XML文件.</p>
+
+<p>#</p>
+
+<p><code>文本</code>:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;</span>
+</span><span class='line'><span class="nt">&lt;person&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;name&gt;</span>Qiushi<span class="nt">&lt;/name&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;age&gt;</span>25<span class="nt">&lt;/age&gt;</span>
+</span><span class='line'><span class="nt">&lt;/person&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>正则表达式</code>: ^\s<em> \&lt;\?xml .</em> \?></p>
+
+<p><code>结果</code>: \&lt;?xml version=&ldquo;1.0&rdquo; encoding=&ldquo;UTF-8&rdquo; ?></p>
+
+<p>这一次对了,^\s*表示在文本的开头能有空格(包括回车,换行等), 但不能以其他的字符开头.</p>
+
+<p>#</p>
+
+<p><code>文本</code>: \<html>haha\</html></p>
+
+<p><code>正则表达式</code>: \&lt;/[Hh][Tt][Mm][Ll]>\s$</p>
+
+<p><code>匹配</code>: \</html></p>
+
+<p>这里的正则表达式以\s$结尾,表示能有空格,但不能有其他字符.</p>
+
+<h3>分行匹配模式</h3>
+
+<p><code>?m</code>: 分行匹配模式将把行分割符当作一个字符串分隔符来对待.在分行匹配模式下,<code>^</code>不仅匹配字符串的开头,还匹配分隔符(换行符)后面开始的位置.<code>$</code>不仅匹配字符串的结束,还匹配分隔符(换行符)后面的结束位置.在使用分行匹配模式的时候,<code>?m</code>必须出现在正则表达式的最前面.</p>
+
+<p>#</p>
+
+<p><code>文本</code>:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">function</span> <span class="nx">doSpellCheck</span><span class="p">(</span><span class="nx">form</span><span class="p">,</span> <span class="nx">field</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="c1">// make sure not empty</span>
+</span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="nx">field</span><span class="p">.</span><span class="nx">value</span> <span class="o">==</span> <span class="s2">&quot; &quot;</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">// init</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">windowName</span> <span class="o">=</span> <span class="s2">&quot;spellWindow&quot;</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">...</span>
+</span><span class='line'>  
+</span><span class='line'>  <span class="c1">// Done</span>
+</span><span class='line'>  <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>正则表达式</code>: ?m^\s<em>//.</em>$</p>
+
+<p><code>结果</code>: // make sure not empty        // init       // Done</p>
+
+<p><code>^\s*//.*$</code>匹配一个字符串的开始,然后是任意多的空白字符,然后是//.再往后是任意文本,最后是字符串的结束.不过因为<code>*</code>是贪婪型字符,它将匹配第一条注释开始直到文本的结尾.加上<code>?m</code>之后,<code>?m^\s*//.*$</code>将把换行符作为一个字符串分隔符,这样就可以把每一行注释匹配出来了.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[正则表达式必知必会 1]]></title>
+    <link href="http://qiusli.github.io/blog/2014/05/15/regex/"/>
+    <updated>2014-05-15T22:27:00-06:00</updated>
+    <id>http://qiusli.github.io/blog/2014/05/15/regex</id>
+    <content type="html"><![CDATA[<h2>匹配单个字符</h2>
+
+<h3>匹配纯文本</h3>
+
+<p>#</p>
+
+<p><code>文本</code>: My name is Ben</p>
+
+<p><code>正则表达式</code>:  Ben</p>
+
+<p><code>结果</code>: <code>Ben</code></p>
+
+<p>这里使用的正则表达式是纯文本,匹配原始文本里面的<code>Ben</code>.</p>
+
+<!-- more -->
+
+
+<p>#</p>
+
+<p><code>文本</code>: Hello, my name is Ben, my website is benforta.com</p>
+
+<p><code>正则表达式</code>:  my</p>
+
+<p><code>结果</code>: <code>my</code></p>
+
+<p>这里的正则表达式匹配了第一个<code>my</code>,但忽略了第二个<code>my</code>.默认情况下,正则表达式只匹配第一个匹配的结果,如果想把所有结果找出来,(例如在JavaScript里),可以使用g(global).</p>
+
+<p>此外,正则表达式会区分大小写,my可以匹配my,但不能匹配My.</p>
+
+<h3>匹配任意字符</h3>
+
+<p><code>.</code>在正则表达式里面可以匹配任意字符,甚至是字符本身.</p>
+
+<p>#</p>
+
+<p><code>文本</code>: sales.xls  sales1.xls   sales2.xls   ape.xls   enrope.xls   na1.xls  na2.xls</p>
+
+<p><code>正则表达式</code>: sales.</p>
+
+<p><code>结果</code>: sales.  sales1  sales2</p>
+
+<p>这里的<code>.</code>匹配了sales后的单个字符,所以只有sales1.xls和sales2.xls与之匹配.</p>
+
+<p>#</p>
+
+<p><code>文本</code>: sales.xls  sales1.xls   sales2.xls   ape.xls   enrope.xls   na1.xls  na2.xls</p>
+
+<p><code>正则表达式</code>: .a..xls</p>
+
+<p><code>结果</code>: na1.xls  na2.xls</p>
+
+<p>这里的正则表达式中有一个<code>\</code>,表示转义.转义之后的<code>.</code>字符不再表示其在正则表达式里的意思,而只匹配一个普通的点.</p>
+
+<h2>匹配一组字符</h2>
+
+<h3>匹配多个字符中的某一个</h3>
+
+<p>#</p>
+
+<p><code>文本</code>: sales.xls  sales1.xls   sales2.xls  sa1.xls  ape.xls   enrope.xls   na1.xls  na2.xls</p>
+
+<p><code>正则表达式</code>: [ns]a..xls</p>
+
+<p><code>结果</code>: sa1.xls  na1.xls  na2.xls</p>
+
+<p>这里的正则表达式中的<code>[na]</code>表示匹配n和a中的任意一个字符.</p>
+
+<p>#</p>
+
+<p><code>文本</code>: The phrase &ldquo;regular expression&rdquo; is often abbreviated as &ldquo;regex&rdquo; or &ldquo;RegEx&rdquo;</p>
+
+<p><code>正则表达式</code>: [Rr]eg[Ee]x</p>
+
+<p><code>结果</code>: regex, RegEx</p>
+
+<h3>利用字符集合区间</h3>
+
+<p>#</p>
+
+<p><code>文本</code>: sales.xls  sales1.xls   sales2.xls  sa1.xls  ape.xls   enrope.xls   na1.xls  na2.xls  sam.xls</p>
+
+<p><code>正则表达式</code>: [ns]a[0123456789].xls</p>
+
+<p><code>结果</code>: sa1.xls  na1.xls  na2.xls</p>
+
+<p>这里的文本中新加了一个sam.xls,但是我们只想匹配以n或s开头,以数字结尾的字符串,所以我们定义了一个数字区间来匹配所有的数字.但是这里的字符区间只匹配0-9,不能匹配10,20或者100.</p>
+
+<ul>
+<li>tips: 上面的[0123456789]可以用[0-9]来代替</li>
+<li>还有一些可以也能使用连字符来代替的有: [a-z] [A-Z] 等等.</li>
+</ul>
+
+
+<p><code>note</code>: 连字符<code>-</code>是一个特殊的元字符,作为元字符它只能被用在[]之间,否则它就只是一个普通的字符与-匹配,不需要转义.</p>
+
+<p>在一个字符集合里可以给出多个字符区间,比如下面这个集合里可以匹配任意的字母和数字(0-9之间):</p>
+
+<p><code>[a-zA-Z0-9]</code></p>
+
+<p>#</p>
+
+<p>匹配RGB值(RGB值是由6个连续的任意字符或者0-9间的数字构成)</p>
+
+<p><code>文本</code>: \<body bgcolor="#336655" text="#FFFFFF" height=10 width=20></p>
+
+<p><code>正则表达式</code>: #[a-zA-Z0-9][a-zA-Z0-9][a-zA-Z0-9][a-zA-Z0-9][a-zA-Z0-9][a-zA-Z0-9]</p>
+
+<p><code>结果</code>: #336655, #FFFFFF</p>
+
+<h3>取非匹配</h3>
+
+<p>#</p>
+
+<p><code>文本</code>: sales.xls  sales1.xls   sales2.xls  sa1.xls  ape.xls   enrope.xls   na1.xls  na2.xls  sam.xls</p>
+
+<p><code>正则表达式</code>: [ns]a[^0-9].xls</p>
+
+<p><code>结果</code>: sam.xls</p>
+
+<p>这里的<code>^</code>表示非,所以[^0-9]就表示不是0-9中数字的任意一个.</p>
+
+<h2>使用元字符</h2>
+
+<h3>对特殊字符进行转义</h3>
+
+<p><code>元字符</code>: 在正则表达式里面有特殊含义的字符,例如<code>.</code>是一个元字符,用来匹配任意字符.<code>^</code>是一个元字符,用来取非.</p>
+
+<p><code>转义</code>: 如果想要匹配字面意义上的元字符(而不是其在正则表达式里的意思),就需要进行转义.通常是在元字符前面加上反斜杠<code>\</code>.</p>
+
+<h1></h1>
+
+<p><code>文本</code>:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">myArray</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Array</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">if</span> <span class="p">(</span><span class="nx">myArray</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="p">...</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>正则表达式</code>: myArray[0]</p>
+
+<p><code>结果</code>: myArray</p>
+
+<p>本想匹配整个myArray[0],但却只匹配了myArray.因为[0]在正则表达式里表示集合中的一个,这里就是0,所以它期待的结果是myArray后面跟上0-9之间任意一个数字,这里没有匹配的结果,所以只匹配到了前面的字符串,所以需要对[]进行转义.</p>
+
+<p><code>正确的正则表达式</code>: myArray[0] 或者myArray[[0-9]]来匹配第0个到第9个数组.</p>
+
+<p><code>note</code>: 因为<code>\</code>在正则表达式里面也是一个元字符,如果想要匹配\,也需要对其转义,即<code>\\</code>.</p>
+
+<p>下面的这张图表总结了一些特殊的元字符:</p>
+
+<p> <img src="http://qiusli.github.io/images/regex-1_1.png"></p>
+
+<p><code>tips</code>: 可以使用<code>\r\n</code>来匹配一个回车+换行的组合.</p>
+
+<h3>匹配特定的字符类别</h3>
+
+<h4>匹配数字与非数字</h4>
+
+<p><code>\d</code>: 匹配任意一个数字字符,等价于[0-9]</p>
+
+<p><code>\D</code>: 匹配任意一个非数字字符,等价于[^0-9]</p>
+
+<h4>匹配字母和数字与非字母和数字</h4>
+
+<p><code>字母和数字</code>: A-Z, a-z, 0-9和下划线<code>_</code>.</p>
+
+<p><code>\w</code>: 匹配任意一个字母数字字符或下划线集合(等价于[A-Za-a0-9])</p>
+
+<p><code>\W</code>: 与上面的匹配相反(等价于[^A-Za-a0-9])</p>
+
+<h4>匹配空白字符和飞空白字符</h4>
+
+<p><code>\s</code>: 匹配任意一个空白字符(等价于[\f\n\r\t\v])</p>
+
+<p><code>\S</code>: 匹配任意一个非空白字符(等价于[^\f\n\r\t\v])</p>
+
+<h4>使用POSIX字符类</h4>
+
+<p>POSIX是许多正则表达式(但不是所有,例如JavaScript就不支持POSIX)都支持的一种简写形式.</p>
+
+<p>下面是POSIX字符表:</p>
+
+<p> <img src="http://qiusli.github.io/images/regex-1_2.png"></p>
+
+<p>可以使用POSIX来代替上面的一个例子:</p>
+
+<p>#</p>
+
+<p><code>文本</code>: \<body bgcolor="#336655" text="#FFFFFF" height=10 width=20></p>
+
+<p><code>正则表达式</code>: #[[:xdigit:]][[:xdigit:]][[:xdigit:]][[:xdigit:]][[:xdigit:]][[:xdigit:]]</p>
+
+<p><code>结果</code>: #336655, #FFFFFF</p>
+
+<p>这里的POSIX使用了两层括号,里面的一层表示POSIX字符类,外面的那一层表示字符集和.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[iOS Programming 8 (UITableView &amp; UITableViewController)]]></title>
+    <link href="http://qiusli.github.io/blog/2014/05/09/ios-programming-8-uitableview-and-uitableviewcontroller/"/>
+    <updated>2014-05-09T12:20:00-06:00</updated>
+    <id>http://qiusli.github.io/blog/2014/05/09/ios-programming-8-uitableview-and-uitableviewcontroller</id>
+    <content type="html"><![CDATA[<p><code>UITableView</code>在iOS中是一个很重要的概念,它会把数据像列表一样显示在屏幕上.首先需要介绍几个概念:</p>
+
+<ul>
+<li><code>UITableView</code>: 它是一个view,用于在屏幕上显示数据.它会向其对应的<code>dataSource</code>询问应该显示什么数据,然后再显示.对应的<code>dataShource</code>需要遵循<code>UITableViewDataSource</code>Protocol.</li>
+<li><code>UITableView</code>同时需要一个delegate,用来处理在<code>UITableView</code>上传出来的事件.这个delegate需要遵循<code>UITableViewDelegate</code> Protocol.</li>
+<li><code>UITableView</code>需要一个view controller来与之协作.</li>
+</ul>
+
+
+<!-- more -->
+
+
+<p><code>UITableViewController</code>同时兼顾了view controller, delegate和data source这三个角色.<code>UITableViewController</code>继承自<code>UIViewController</code>,所以它有自己的view,这个view就是<code>UITableView</code>.<code>UITableViewController</code>负责<code>UITableView</code>的准备和显示.同时<code>UITableViewController</code>遵循了<code>UITableViewDataSource</code>和<code>UITableViewDelegate</code>Protocol,所以它既是data source又是delegate.</p>
+
+<p><code>UITableView</code> <code>UITableViewController</code>对应的关系如下:</p>
+
+<p> <img src="http://qiusli.github.io/images/ios-8_1.png"></p>
+
+<p>首先创建一个<code>UITableViewController</code>的子类.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="k">@interface</span> <span class="nc">BNRItemsViewController</span> : <span class="bp">UITableViewController</span>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>UITableViewController</code>默认的初始化方法是<code>initWithStyle:</code>,这里的style可以是<code>UITableViewStylePlain</code>或者<code>UITableViewStyleGrouped</code>,不过在iOS7里面,两者的差别并不大.为了传给它一个style,我们可以让这个默认初始化方法调用另一个init方法,然后再到里面去调用默认的初始化方法:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">instancetype</span><span class="p">)</span> <span class="nf">init</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nb">self</span> <span class="o">=</span> <span class="p">[</span><span class="nb">super</span> <span class="nl">initWithStyle</span><span class="p">:</span><span class="n">UITableViewStylePlain</span><span class="p">];</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nb">self</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">instancetype</span><span class="p">)</span> <span class="nf">initWithStyle:</span><span class="p">(</span><span class="n">UITableViewStyle</span><span class="p">)</span><span class="nv">style</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="p">[</span><span class="nb">self</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这个时候我们只是建立了一个<code>UITableViewController</code>,但是并没有把它加到view hierachy里面去,所以我们来到AppDelegate的<code>application:didFinishLaunchingWithOptions</code>方法,在里面初始化这个<code>BNRItemsViewController</code>并把它作为window的root controller.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="n">BNRItemsViewController</span> <span class="o">*</span><span class="n">itemsViewController</span> <span class="o">=</span> <span class="p">[[</span><span class="n">BNRItemsViewController</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'><span class="nb">self</span><span class="p">.</span><span class="n">window</span><span class="p">.</span><span class="n">rootViewController</span> <span class="o">=</span> <span class="n">itemsViewController</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>现在运行,可以看到已经有table view的效果了,但是里面没有数据</p>
+
+<p> <img src="http://qiusli.github.io/images/ios-8_2.png" width="300" height="600"></p>
+
+<p>接下来我们就应该往里面加数据.需要复用在前几章建立的BNRItem类,这个类代表了具体的商品.接下来还需要建立一个BNRItemStore类,我们的tableview controller会从这个store里面获取数据.具体怎么建立的这里就不阐述了,总之这个store有<code>createItem</code>和<code>allItems</code>两个方法,前者用来创建item后者用来获取所有的item用来显示.现在我们可以创建50个item用于显示:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">instancetype</span><span class="p">)</span> <span class="nf">init</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nb">self</span> <span class="o">=</span> <span class="p">[</span><span class="nb">super</span> <span class="nl">initWithStyle</span><span class="p">:</span><span class="n">UITableViewStylePlain</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">BNRItemStore</span> <span class="o">*</span><span class="n">store</span> <span class="o">=</span> <span class="p">[</span><span class="n">BNRItemStore</span> <span class="n">sharedStore</span><span class="p">];</span>
+</span><span class='line'>    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">50</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="p">[</span><span class="n">store</span> <span class="n">createItem</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nb">self</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>当<code>UITableView</code>需要显示的时候,它会向data source发送一些消息,然后通过这些回馈判断应该显示多少行数据,每行都显示什么等等.<code>UITableViewController</code>有两个必须实现的方法,这两个方法被定义在了Protocol中,它们分别是<code>tableView:numberOfRowsInSection</code>和<code>tableView:cellForRowAtIndexPath</code>,前者是用来得到需要显示多少行,后者是用来告诉每行显示的数据的具体内容.因为我们一共建立了50条数据,所以可以用前面的方法来得到行数:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="bp">NSInteger</span><span class="p">)</span> <span class="nf">tableView:</span><span class="p">(</span><span class="bp">UITableView</span> <span class="o">*</span><span class="p">)</span><span class="nv">tableView</span> <span class="nf">numberOfRowsInSection:</span><span class="p">(</span><span class="bp">NSInteger</span><span class="p">)</span><span class="nv">section</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="p">[[[</span><span class="n">BNRItemStore</span> <span class="n">sharedStore</span><span class="p">]</span> <span class="n">allItems</span><span class="p">]</span> <span class="n">count</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在介绍后者之前,需要插入解释一个概念 &ndash; <code>UITableViewCell</code>,这个对象对应于table中每一行的数据,即table中的每一行都由一个<code>UITableViewCell</code>填充.这个对象有一个subview名叫<code>contentView</code>,它是用来具体显示数据的,以文本或图片的形式.这个<code>contentView</code>里有三个property:<code>detailTextLabel</code> <code>textLabel</code> <code>imageView</code>,今天我们将会用到第二个.</p>
+
+<p>下面是方法的实现:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="bp">UITableViewCell</span> <span class="o">*</span><span class="p">)</span> <span class="nf">tableView:</span><span class="p">(</span><span class="bp">UITableView</span> <span class="o">*</span><span class="p">)</span><span class="nv">tableView</span> <span class="nf">cellForRowAtIndexPath:</span><span class="p">(</span><span class="bp">NSIndexPath</span> <span class="o">*</span><span class="p">)</span><span class="nv">indexPath</span> <span class="p">{</span>
+</span><span class='line'>    <span class="bp">UITableViewCell</span> <span class="o">*</span><span class="n">tableViewCell</span> <span class="o">=</span> <span class="p">[[</span><span class="bp">UITableViewCell</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithStyle</span><span class="p">:</span><span class="n">UITableViewCellStyleDefault</span> <span class="nl">reuseIdentifier</span><span class="p">:</span><span class="s">@&quot;UITableViewCell&quot;</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="bp">NSArray</span> <span class="o">*</span><span class="n">items</span> <span class="o">=</span> <span class="p">[[</span><span class="n">BNRItemStore</span> <span class="n">sharedStore</span><span class="p">]</span> <span class="n">allItems</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">tableViewCell</span><span class="p">.</span><span class="n">textLabel</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="p">[[</span><span class="n">items</span> <span class="nl">objectAtIndex</span><span class="p">:</span><span class="n">indexPath</span><span class="p">.</span><span class="n">row</span><span class="p">]</span> <span class="n">description</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">return</span> <span class="n">tableViewCell</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>首先建立一个cell,然后得到所有items,并根据传进来的indexPath获取到特定的item,然后把item的description赋给cell的textLabel.这个方法是在每一行需要显示的时候被调用,所以indexPath对应于table view中对应的行数.</p>
+
+<p>再次运行,发现tableview被填充了数据:</p>
+
+<p> <img src="http://qiusli.github.io/images/ios-8_3.png" width="300" height="600"></p>
+
+<p>有时候,由于需要显示的内容非常多,如果使用上面的方法需要每次都建立tableviewcell,这样非常耗时耗内存,一个解决方法是建立特定数量的cell把它们放到一个cell pool里,然后当下滑tableview的时候,从pool里面提取cell来显示数据,把刚刚消失的cell放回到pool里去.为了达到上面的效果,我们只需要做两处改变:</p>
+
+<ul>
+<li>注册cell类</li>
+<li>在<code>tableView:cellForRowAtIndexPath</code>方法里面提取</li>
+</ul>
+
+
+<p>我们可以在<code>BNRTableViewController</code>的<code>viewDidLoad</code>方法里注册:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="nf">viewDidLoad</span> <span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="nb">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="nb">self</span><span class="p">.</span><span class="n">tableView</span> <span class="nl">registerClass</span><span class="p">:[</span><span class="bp">UITableViewCell</span> <span class="k">class</span><span class="p">]</span> <span class="nl">forCellReuseIdentifier</span><span class="p">:</span><span class="s">@&quot;UITableViewCell&quot;</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>然后修改<code>tableView:cellForRowAtIndexPath</code>方法:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="bp">UITableViewCell</span> <span class="o">*</span><span class="p">)</span> <span class="nf">tableView:</span><span class="p">(</span><span class="bp">UITableView</span> <span class="o">*</span><span class="p">)</span><span class="nv">tableView</span> <span class="nf">cellForRowAtIndexPath:</span><span class="p">(</span><span class="bp">NSIndexPath</span> <span class="o">*</span><span class="p">)</span><span class="nv">indexPath</span> <span class="p">{</span>
+</span><span class='line'>    <span class="bp">UITableViewCell</span> <span class="o">*</span><span class="n">tableViewCell</span> <span class="o">=</span> <span class="p">[</span><span class="n">tableView</span> <span class="nl">dequeueReusableCellWithIdentifier</span><span class="p">:</span><span class="s">@&quot;UITableViewCell&quot;</span> <span class="nl">forIndexPath</span><span class="p">:</span><span class="n">indexPath</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="bp">NSArray</span> <span class="o">*</span><span class="n">items</span> <span class="o">=</span> <span class="p">[[</span><span class="n">BNRItemStore</span> <span class="n">sharedStore</span><span class="p">]</span> <span class="n">allItems</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">tableViewCell</span><span class="p">.</span><span class="n">textLabel</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="p">[[</span><span class="n">items</span> <span class="nl">objectAtIndex</span><span class="p">:</span><span class="n">indexPath</span><span class="p">.</span><span class="n">row</span><span class="p">]</span> <span class="n">description</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">return</span> <span class="n">tableViewCell</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这里有一个identifier参数叫做UITableViewCell,这是因为我们通常在pool里面会放着各种不同类型的cell,在注册和提取的时候都给identifier标上名相当于给它们贴了标签,想要什么类型的cell只需要在提取的时候带上同样的标签就可以了.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Git 2 (Basics)]]></title>
+    <link href="http://qiusli.github.io/blog/2014/05/07/git-2/"/>
+    <updated>2014-05-07T21:35:00-06:00</updated>
+    <id>http://qiusli.github.io/blog/2014/05/07/git-2</id>
+    <content type="html"><![CDATA[<h2>Initialize a repository</h2>
+
+<p>Git的操作都需要在一个由Git管理的文件下进行,有两种方式使文件被git管理:</p>
+
+<ul>
+<li>在文件夹下面执行 <code>git init</code></li>
+<li><code>git clone</code>一个现成的git文件夹然后在里面操作</li>
+</ul>
+
+
+<p>如果要在server上面获取现有的项目,可以执行<code>git clone</code>.和SVN不同的是这里的关键词是clone,而SVN里面是checkout,这是因为git是clone整个项目,相当于把server上所以东西都搬下来,而git只是checkout最新的版本.</p>
+
+<!-- more -->
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">git</span> <span class="n">clone</span> <span class="nl">git:</span><span class="c1">//github.com/shacon/grit.git</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>上面这段指令是从github上clone项目,并且把它放在本地,文件夹的名称叫做grit.</p>
+
+<p>在一个由git管理的文件夹下面通常执行的操作包括:</p>
+
+<ul>
+<li>git add</li>
+<li>git commit</li>
+</ul>
+
+
+<h2>Recording changes</h2>
+
+<p>在一个由git管理的文件夹下面的文件有两种状态:tracked和untracked.可以使用<code>git add</code>让文件的状态从untracked变成tracked.<code>git add</code>是一个多用途指令,它既可以用来stage也可以用来track文件.</p>
+
+<p> <img src="http://qiusli.github.io/images/git-2_1.png"></p>
+
+<p>例如我现在新建一个文件夹,然后在里面执行<code>git init</code>,接着再在里面新建一个文件名为git.rtf,这个时候我执行<code>git status</code>:</p>
+
+<p> <img src="http://qiusli.github.io/images/git-2_2.png"></p>
+
+<p>然后我执行<code>git add git.rtf</code>再执行<code>git status</code>:</p>
+
+<p> <img src="http://qiusli.github.io/images/git-2_3.png"></p>
+
+<p>现在的状态是被track同时在stage里面,随时可以提交.在提交之前我再做一些改动,然后再执行<code>git status</code>:</p>
+
+<p> <img src="http://qiusli.github.io/images/git-2_4.png"></p>
+
+<p>我们发现git.rtf既在stage里面又在modified里面,这是因为在上一次modify之前我们stage了文件,然后再去做修改的时候git也会track,所以这时这个文件一部分在stage一部分在modified.这个时候如果再次执行<code>git add git.rtf</code>会把最新的改动加到stage里面:</p>
+
+<p> <img src="http://qiusli.github.io/images/git-2_5.png"></p>
+
+<p><code>git diff</code>:比较在Working Directory和Stage area里面是否有不同.在上一次add之后我们执行这条命令发现什么都不会出现,因为文件没有再次改动,所以不会有什么不同,如果现在来到git.rtf里面做一些修改再来执行<code>git diff</code>:</p>
+
+<p> <img src="http://qiusli.github.io/images/git-2_6.png"></p>
+
+<p>所以<code>git diff</code>只会显示在modified状态下文件的改变,如果想要查看stage里面文件的状态可移执行<code>git diff --cached</code>或者<code>git diff --staged</code>.</p>
+
+<p> <img src="http://qiusli.github.io/images/git-2_7.png"></p>
+
+<p><code>git commit -m "some message"</code>:提交在stage里面的文件.</p>
+
+<h2>Removing &amp; moving files</h2>
+
+<p><code>git rm file_name</code>:这个命令是用来在被git管理的文件夹下面删除一个文件,使用这个命令删除的文件不仅会被git untrack而且还会被从项目里面彻底删除.在执行完这个指令后还不算完,需要<code>git commit</code>来更新.</p>
+
+<p><code>git rm --cached file_name</code>:这条指令的效果和上一条一样,只不过这一次这个文件只是不再被git track,而不会被从项目里面删除.</p>
+
+<p><code>git mv file1 file2</code>:重命名.把名叫file1的文件更名为file2.</p>
+
+<h2>View the commit history</h2>
+
+<p>之前我们介绍过<code>git diff</code>指令,不过它是用来比较<code>modified</code>和<code>stage</code>里面的不同.我们知道当<code>git clone</code>一个项目的时候,连同这个项目之前的所有信息都获取下来了,这些信息里面就包含了这个项目的所有提交记录,我们可以使用<code>git log</code>来查看这些记录.</p>
+
+<p> <img src="http://qiusli.github.io/images/git-2_8.png"></p>
+
+<p>如果想看每一次提交的具体内容,可以使用<code>git log -p</code>:</p>
+
+<p> <img src="http://qiusli.github.io/images/git-2_9.png"></p>
+
+<p>如果只想看最近的5个提交,可以使用<code>git log -p -2</code></p>
+
+<p>pretty是一个非常有用的指令,它能让log信息按照一定的格式输出,而且git内置了很多log信息的格式,比如可以使用%a来输出作者名称,下面就是一个例子:</p>
+
+<p> <img src="http://qiusli.github.io/images/git-2_10.png"></p>
+
+<p>同时如果我想要让log信息在一行显示,可以输入<code>git log pretty=oneline</code>:</p>
+
+<p> <img src="http://qiusli.github.io/images/git-2_11.png"></p>
+
+<p>下面这张表列举了一些常用的输出格式:</p>
+
+<p> <img src="http://qiusli.github.io/images/git-2_12.png"></p>
+
+<p>如果想查看log信息中的branch情况,可以使用<code>git log --graph</code></p>
+
+<p>如果只想看某一特定时间内的log信息,可以使用<code>--since</code>或者<code>--until</code>.比如如果我想查看最近两天的提交可以使用<code>git log --since=2.days</code>,最近一个月的提交<code>git log --since=1.month</code>.如果想看在某个事件区间内的提交,可以使用<code>git log --since='2014-5-5' --before='2014-5-8'</code>.</p>
+
+<p>gitk:它是git查看log的图形化界面,直接在命令行输入gitk就能打开.</p>
+
+<h2>Change last commit &amp;&amp; Unstage</h2>
+
+<p><code>git commit --amend -m 'revised message here'</code>:这条指令用来修改上一次提交的提交信息.</p>
+
+<p><code>git reset HEAD file_name</code>:如果有2个文件你修改了,只想提交其中的一个,但是一不小心使用了<code>git add .</code>指令把两个一起加到stage里去了,这时可以使用这条指令来unstage其中的一个文件.</p>
+
+<p><code>git checkout -- file_name</code>:当在stage之前对一些文件做了修改,但是并不想保存它们,可以使用这条指令还原.</p>
+
+<h2>Working with remotes</h2>
+
+<p><code>git clone  git://github.com/shacon/grit.git</code>:把在server上的项目clone到本地,保存在名叫grit的文件夹下.</p>
+
+<p><code>git remote</code>:显示server方面相关的信息,一般会输出origin,这个名称是git给server上项目地址的一个别名.可以使用<code>git remote -v</code>来查看别名以及其对应的全地址.</p>
+
+<p><code>git fetch xxx</code> &amp;&amp; <code>git pull xxx</code>:前者是从server上提取但是并不和本地的修改merge,后者会.</p>
+
+<p><code>git push origin master</code>:把master branch push到origin server上去.</p>
+
+<p><code>git remote add sc git://github.com/shacon/grit.git</code>:给server段的地址取个别名(sc),这样每次在操作的时候就不必输入全地址而只需输入sc即可.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Git 1 (Basic Concept)]]></title>
+    <link href="http://qiusli.github.io/blog/2014/05/07/git-1/"/>
+    <updated>2014-05-07T00:27:00-06:00</updated>
+    <id>http://qiusli.github.io/blog/2014/05/07/git-1</id>
+    <content type="html"><![CDATA[<p>原来学过Git,但学得不扎实,而且学过之后也没怎么用,导致每次要用的时候都得重新学一遍.现在再次学习,把学到的记录下来,以后忘了复习起来也方便.</p>
+
+<h2>Centralized Version Control vs Distributed Version Control</h2>
+
+<p>集中式的版本管理把所有的文件放到一个server上面,所有的其他电脑都从这个server上面得到最新的代码.这样的坏处显而易见,如果server宕机了,其他一切有关的活动都得终止.</p>
+
+<!-- more -->
+
+
+<p> <img src="http://qiusli.github.io/images/git-1_1.png"></p>
+
+<p>此外,在集中式版本管理控制下,用户每次checkout的都是最新版本的文件快照,而对之前版本一无所知,如果用户想查看项目之前其他人做的改变,还得连接server然后从server上得到信息.但是分布式版本管理不同,它在每一次checkout的时候,都是checkout的server上项目的所有内容,相当于一次mirror,这样用户几乎不需要连接server就能知道很多事情,包括项目之前的改变等.</p>
+
+<p> <img src="http://qiusli.github.io/images/git-1_2.png"></p>
+
+<h2>Git vs other VCS (Version Control System)</h2>
+
+<p>对于一般的VCS来说,在不同版本之间它存放的是文件在各个版本之间的差异:</p>
+
+<p> <img src="http://qiusli.github.io/images/git-1_3.png"></p>
+
+<p>但是Git在每一个版本存放的都是整体的文件,如果某个文件在版本1和2之间没有改变,那么就只存放一个对上一版本快照的引用.</p>
+
+<p> <img src="http://qiusli.github.io/images/git-1_4.png"></p>
+
+<p>同时因为Git在每次checkout的时候都获取的是整个项目包括项目之前的历史,相当于把服务器上所有的东西都拿下来了,而不是像CVS系统一样自取最新版本,所以Git可以在本地做很多事情,例如查看项目历史提交,本地提交等.</p>
+
+<h2>Three States</h2>
+
+<p>Git的三大state是modified,staged和committed.modified指文件被修改过,staged表示文件被修改过并且在下一次commit的时候自动提交.committed表示已经提交.</p>
+
+<p>比如我们文件A和B,但是这次我只想提交A,我可以stage A并且提交,然后stage B让它在下一次commit的时候提交.Git add 就是把文件stage的指令.</p>
+
+<p> <img src="http://qiusli.github.io/images/git-1_5.png"></p>
+
+<p>在上图中的最左边和最右边分别是Working Directory和Git Repository.后者是从server上下载下来的所有文件,前者是后者中的其中一个版本,用户做的修改和增加都在Working Directory里面进行.</p>
+
+<p>总之,Git的提交流程一般分为3部</p>
+
+<ul>
+<li>修改文件</li>
+<li>stage文件 (git add &hellip;)</li>
+<li>commit文件 (git commit)</li>
+</ul>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[iOS programming 7 (Delegation and Text Input)]]></title>
+    <link href="http://qiusli.github.io/blog/2014/05/06/ios-programming-7-delegation-and-text-input/"/>
+    <updated>2014-05-06T21:01:00-06:00</updated>
+    <id>http://qiusli.github.io/blog/2014/05/06/ios-programming-7-delegation-and-text-input</id>
+    <content type="html"><![CDATA[<h2>UIResponder</h2>
+
+<p>这一章主要讲解了iOS中的delegation.为了使这个概念更加清楚,我们通过一个例子来讲解.在上一章代码的基础上,我们在UITabBarController的第一个viewcontroller上加一个UITextField,这个textfield允许用户输入. 在创建完UITextField之后,我们把它加到viewcontroller的view中去:</p>
+
+<!-- more -->
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">loadView</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">BNRHypnosisterView</span> <span class="o">*</span><span class="n">backgroundView</span> <span class="o">=</span> <span class="p">[[</span><span class="n">BNRHypnosisterView</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="bp">CGRect</span> <span class="n">rect</span> <span class="o">=</span> <span class="n">CGRectMake</span><span class="p">(</span><span class="mi">40</span><span class="p">,</span> <span class="mi">70</span><span class="p">,</span> <span class="mi">240</span><span class="p">,</span> <span class="mi">30</span><span class="p">);</span>
+</span><span class='line'>    <span class="bp">UITextField</span> <span class="o">*</span><span class="n">textField</span> <span class="o">=</span> <span class="p">[[</span><span class="bp">UITextField</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithFrame</span><span class="p">:</span><span class="n">rect</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">[</span><span class="n">backgroundView</span> <span class="nl">addSubview</span><span class="p">:</span><span class="n">textField</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nb">self</span><span class="p">.</span><span class="n">view</span> <span class="o">=</span> <span class="n">backgroundView</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>运行程序,可以看到屏幕中间有一个输入框:</p>
+
+<p> <img src="http://qiusli.github.io/images/ios-7_1.png" width="300" height="600"></p>
+
+<p>当点击输入框的时候,键盘会自动跳出来,为了理解这个动作,我们首先需要理解一个叫做<code>first  responder</code>的原理.</p>
+
+<p>在UIKit framework中有一个抽象类<code>UIResponder</code>,他是<code>UIView</code>,<code>UIViewController</code>,<code>UIApplication</code>的共同父类.在这个抽象类中定义了许多事件,比如touch event, motion events.由继承这个抽象类的子类选择去实现.在UIWindow中,有一个叫做<code>firstResponder</code>的指针,被它指向的对象用来处理这些事件.</p>
+
+<p><img src="http://qiusli.github.io/images/ios-7_2.png" width="300" height="600"></p>
+
+<p>当用户点击UITextField的时候,这个<code>firstResponder</code>就指向了UITextField,代表这个<code>UITextField</code>变成了一个first responder,这时键盘就会弹出来,当<code>firstResponder</code>不在指向它的时候键盘就退回去.</p>
+
+<h2>Delegation &amp;&amp; Protocol</h2>
+
+<p>在Delegate pattern中主要有object和delegate,它们的关系如下:</p>
+
+<p><img src="http://qiusli.github.io/images/ios-7_3.png" width="300" height="600"></p>
+
+<p>object会有一个指针指向delegate,在object需要做一些事之前或者做完一些事之后会发送消息给delegate,然后delegate再完成一些其他的操作.例如,UITextField在用户输入完成后需要隐藏键盘,这时UITextField会给viewcontroller发送消息,案后这个viewcontroller可以完成隐藏键盘的操作.为了让WUSTLHypnosisViewController成为UITextField的delegate,我们需要加上下面这条语句:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="n">textField</span><span class="p">.</span><span class="n">delegate</span> <span class="o">=</span> <span class="nb">self</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>因为这句话是在WUSTLHypnosisViewController里面,所以self指的是viewcontroller.这里有一个疑问,我们应该基于什么样的消息机制建立object和delegate之间的通信呢,这里就需要引出另外一个概念 &ndash; protocol. Protocol定义了object能发送给delegate的消息,delegate负责实现protocol中的一些方法, 如果一个类实现了Protocol中的一些方法,我们称之为遵守协议.下面是一个Protocol的示例:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="k">@protocol</span> <span class="bp">UITextFieldDelegate</span> <span class="o">&lt;</span><span class="bp">NSObject</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@optional</span>
+</span><span class='line'><span class="o">-</span> <span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span> <span class="nl">textFieldShouldBeginEditing</span><span class="p">:(</span><span class="bp">UITextField</span> <span class="o">*</span><span class="p">)</span><span class="n">textField</span><span class="p">;</span>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span> <span class="nf">textFieldDidBeginEditing:</span><span class="p">(</span><span class="bp">UITextField</span> <span class="o">*</span><span class="p">)</span><span class="nv">textField</span><span class="p">;</span>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span> <span class="nf">textFieldShouldEndEditing:</span><span class="p">(</span><span class="bp">UITextField</span> <span class="o">*</span><span class="p">)</span><span class="nv">textField</span><span class="p">;</span>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span> <span class="nf">textFieldShouldClear:</span><span class="p">(</span><span class="bp">UITextField</span> <span class="o">*</span><span class="p">)</span><span class="nv">textField</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>上面的代码定义了一个Protocol,它其实类似于Java中的interface,都是只声明方法签名,留给子类去实现.它们分别在不同的时候被自动触发,例如<code>textFieldShouldBeginEditing</code>会在用户选中输入框的时候触发.上面<NSObject>的意思是遵守NSObject的协议,即这个Protocol中包含了所有NSObject Protocol中定义的方法.@optional代表下面的方法是可选实现的,非强制.当object尝试给delegate发送消息之前,它会发送另一个消息<code>respondToSelector</code>确认delegate是否实现了相应的方法.</p>
+
+<p>下面我们来实现一个Protocol的方法,在这个方法里面我们调用另一个方法把用户输入随机打印20遍在屏幕上,然后清空输入框并且隐藏键盘.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nf">textFieldShouldReturn:</span><span class="p">(</span><span class="bp">UITextField</span> <span class="o">*</span><span class="p">)</span> <span class="nv">textField</span> <span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="nb">self</span> <span class="nl">drawHypnoticMessage</span><span class="p">:</span><span class="n">textField</span><span class="p">.</span><span class="n">text</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">textField</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="s">@&quot;&quot;</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">textField</span> <span class="n">resignFirstResponder</span><span class="p">];</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nb">YES</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这个方法在用户输入完成点击键盘上Return时候被触发.倒数第二句话是用来通过设置UITextField不为firstResponder来达到隐藏键盘的目的.</p>
+
+<p>下面是随机打印的代码:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="nf">drawHypnoticMessage:</span><span class="p">(</span><span class="bp">NSString</span> <span class="o">*</span><span class="p">)</span> <span class="nv">message</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">20</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="bp">UILabel</span> <span class="o">*</span><span class="n">messageLabel</span> <span class="o">=</span> <span class="p">[[</span><span class="bp">UILabel</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>        <span class="n">messageLabel</span><span class="p">.</span><span class="n">backgroundColor</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIColor</span> <span class="n">clearColor</span><span class="p">];</span>
+</span><span class='line'>        <span class="n">messageLabel</span><span class="p">.</span><span class="n">textColor</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIColor</span> <span class="n">redColor</span><span class="p">];</span>
+</span><span class='line'>        <span class="n">messageLabel</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">message</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="p">[</span><span class="n">messageLabel</span> <span class="n">sizeToFit</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="kt">int</span> <span class="n">width</span> <span class="o">=</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span> <span class="p">(</span><span class="nb">self</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">bounds</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">width</span> <span class="o">-</span> <span class="n">messageLabel</span><span class="p">.</span><span class="n">bounds</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">width</span><span class="p">);</span>
+</span><span class='line'>        <span class="kt">int</span> <span class="n">x</span> <span class="o">=</span> <span class="n">arc4random</span><span class="p">()</span> <span class="o">%</span> <span class="n">width</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="kt">int</span> <span class="n">height</span> <span class="o">=</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span> <span class="p">(</span><span class="nb">self</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">bounds</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">height</span> <span class="o">-</span> <span class="n">messageLabel</span><span class="p">.</span><span class="n">bounds</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">height</span><span class="p">);</span>
+</span><span class='line'>        <span class="kt">int</span> <span class="n">y</span> <span class="o">=</span> <span class="n">arc4random</span><span class="p">()</span> <span class="o">%</span> <span class="n">height</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="bp">CGRect</span> <span class="n">frame</span> <span class="o">=</span> <span class="n">messageLabel</span><span class="p">.</span><span class="n">frame</span><span class="p">;</span>
+</span><span class='line'>        <span class="n">frame</span><span class="p">.</span><span class="n">origin</span> <span class="o">=</span> <span class="n">CGPointMake</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">);</span>
+</span><span class='line'>        <span class="n">messageLabel</span><span class="p">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">frame</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="p">[</span><span class="nb">self</span><span class="p">.</span><span class="n">view</span> <span class="nl">addSubview</span><span class="p">:</span><span class="n">messageLabel</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="bp">UIInterpolatingMotionEffect</span> <span class="o">*</span><span class="n">motionEffect</span> <span class="o">=</span> <span class="p">[[</span><span class="bp">UIInterpolatingMotionEffect</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithKeyPath</span><span class="p">:</span><span class="s">@&quot;center.x&quot;</span> <span class="nl">type</span><span class="p">:</span><span class="n">UIInterpolatingMotionEffectTypeTiltAlongHorizontalAxis</span><span class="p">];</span>
+</span><span class='line'>        <span class="n">motionEffect</span><span class="p">.</span><span class="n">minimumRelativeValue</span> <span class="o">=</span> <span class="l">@(</span><span class="o">-</span><span class="mi">25</span><span class="l">)</span><span class="p">;</span>
+</span><span class='line'>        <span class="n">motionEffect</span><span class="p">.</span><span class="n">maximumRelativeValue</span> <span class="o">=</span> <span class="l">@(</span><span class="mi">25</span><span class="l">)</span><span class="p">;</span>
+</span><span class='line'>        <span class="p">[</span><span class="n">messageLabel</span> <span class="nl">addMotionEffect</span><span class="p">:</span><span class="n">motionEffect</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">motionEffect</span> <span class="o">=</span> <span class="p">[[</span><span class="bp">UIInterpolatingMotionEffect</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithKeyPath</span><span class="p">:</span><span class="s">@&quot;center.y&quot;</span> <span class="nl">type</span><span class="p">:</span>
+</span><span class='line'>                        <span class="n">UIInterpolatingMotionEffectTypeTiltAlongHorizontalAxis</span><span class="p">];</span>
+</span><span class='line'>        <span class="n">motionEffect</span><span class="p">.</span><span class="n">minimumRelativeValue</span> <span class="o">=</span> <span class="l">@(</span><span class="o">-</span><span class="mi">25</span><span class="l">)</span><span class="p">;</span>
+</span><span class='line'>        <span class="n">motionEffect</span><span class="p">.</span><span class="n">maximumRelativeValue</span> <span class="o">=</span> <span class="l">@(</span><span class="mi">25</span><span class="l">)</span><span class="p">;</span>
+</span><span class='line'>        <span class="p">[</span><span class="n">messageLabel</span> <span class="nl">addMotionEffect</span><span class="p">:</span><span class="n">motionEffect</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[iOS Programming 6-2(UITabBarController)]]></title>
+    <link href="http://qiusli.github.io/blog/2014/05/06/ios-programming-6-2-uitabviewcontrollers/"/>
+    <updated>2014-05-06T15:57:00-06:00</updated>
+    <id>http://qiusli.github.io/blog/2014/05/06/ios-programming-6-2-uitabviewcontrollers</id>
+    <content type="html"><![CDATA[<p>我们在上一章中讲到了如何使用viewcontroller,这里我讲讲解一种技术,它可以管理多个viewcontroller,并在这些viewcontroller之间切换,这项技术叫做UITabBarController.</p>
+
+<p>在使用这项技术后,效果如下.我们可以看到在屏幕的下端有两个按钮可以互相切换,他们分别对应一个viewcontroller:</p>
+
+<!-- more -->
+
+
+<p> <img src="http://qiusli.github.io/images/6-2_1.png" width="300" height="600"></p>
+
+<p>我们来到AppDelegate,在里面创建一个UITabBarController,然后把另外两个viewcontroller加到这个UITabBarController里面去.最后把这个UITabBarController作为window的rootViewController,这样就完成了.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="n">WUSTLHypnosisViewController</span> <span class="o">*</span><span class="n">hvc</span> <span class="o">=</span> <span class="p">[[</span><span class="n">WUSTLHypnosisViewController</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'><span class="n">WUSTLReminderViewController</span> <span class="o">*</span><span class="n">rvc</span> <span class="o">=</span> <span class="p">[[</span><span class="n">WUSTLReminderViewController</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="bp">UITabBarController</span> <span class="o">*</span><span class="n">tabBarController</span> <span class="o">=</span> <span class="p">[[</span><span class="bp">UITabBarController</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'><span class="n">tabBarController</span><span class="p">.</span><span class="n">viewControllers</span> <span class="o">=</span> <span class="l">@[</span><span class="n">hvc</span><span class="p">,</span> <span class="n">rvc</span><span class="l">]</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nb">self</span><span class="p">.</span><span class="n">window</span><span class="p">.</span><span class="n">rootViewController</span> <span class="o">=</span> <span class="n">tabBarController</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>我们发现,在每一个tab上都有一个图片,图片下面有一行介绍性的文字,这些都是可以改变和设置的.虽然UITabBarController管理着两个不同的viewcontroller,我们可以把viewcontroller连同tabbar上面的图片和文字想成一个整体,所以图片和文字就需要到相应的viewcontroller里面去设置,我们来到WUSTLHypnosisViewController类,在initWithNibName方法里面进行初始化:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'>    <span class="nb">self</span><span class="p">.</span><span class="n">tabBarItem</span><span class="p">.</span><span class="n">title</span> <span class="o">=</span> <span class="s">@&quot;Hypnosister&quot;</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="bp">UIImage</span> <span class="o">*</span><span class="n">image</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIImage</span> <span class="nl">imageNamed</span><span class="p">:</span><span class="s">@&quot;Hypno.png&quot;</span><span class="p">];</span>
+</span><span class='line'>    <span class="nb">self</span><span class="p">.</span><span class="n">tabBarItem</span><span class="p">.</span><span class="n">image</span> <span class="o">=</span> <span class="n">image</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>到另一个viewcontroller里面做同样的事,到这里为止就算完成了UITabBarController的设置了.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[google analytics]]></title>
+    <link href="http://qiusli.github.io/blog/2014/04/12/google-analytics/"/>
+    <updated>2014-04-12T20:52:00-06:00</updated>
+    <id>http://qiusli.github.io/blog/2014/04/12/google-analytics</id>
+    <content type="html"><![CDATA[<p>最近在iOS的final project中用到了google analytics来分析用户行为,自己也做了一些research,今天就把它记录在这里.</p>
+
+<p>在介绍之前先说说这个iOS app的概况,他是一个时间记录仪,有显示当前时间(ClockViewController)和stopwatch的功能(StopWatchViewController),可以在app下面的tab切换.我今天要做的是首先为显示时间的view加一个track,然后再到stopwatch里面加两个track用户点击按钮的功能.</p>
+
+<!--more-->
+
+
+<p> <img src="http://qiusli.github.io/images/ga-10.png" width="300" height="600"></p>
+
+<h2>什么是Google Analytics</h2>
+
+<p>Google Analytics是一款用来监测网页或者app中用户行为的软件,这里的用户行为包括用户在哪个页面停留了多久,哪些功能用户使用得最多,哪个版本的app最受用户欢迎等内容.</p>
+
+<h2>如何使用Google Analytics</h2>
+
+<h3>Step 1. 点击首页banner上面的Admin,进入管理页面</h3>
+
+<p> <img src="http://qiusli.github.io/images/ga-1.png" width="600" height="1200"></p>
+
+<p>上图是Google Analytics的dashboard,里面有三个column,分别是account,property和view.</p>
+
+<ul>
+<li>account: 一个account可以是其他account的member,比如我的account可以是客户或者其他合作者的account的一个member.今天我不会深入讨论这个,所以可以暂时放一放.</li>
+<li>property: 一个property代表一个被track的网站或者app,所以如果你要对这个account新增一个网页或者app去track,你需要新建一个property.</li>
+<li>view: 如果你的app有多个版本,你可以创建多个view来分别track他们.</li>
+</ul>
+
+
+<h3>Step 2. 新建一个property</h3>
+
+<p>只需要点击property,然后会出来一个下拉框,然后点击里面的<code>create new property</code></p>
+
+<p> <img src="http://qiusli.github.io/images/ga-2.png" width="600" height="1200"></p>
+
+<p>之后你会被带到下面这个页面:</p>
+
+<p> <img src="http://qiusli.github.io/images/ga-3.png" width="600" height="1200"></p>
+
+<p>因为今天我们使用它来track一个iOS app,所以这里选择<code>Mobile app</code>,然后填上<code>App Name</code>,点击<code>Get Tracking ID</code>,然后会被带到下面这个页面:</p>
+
+<p> <img src="http://qiusli.github.io/images/ga-4.png" width="600" height="1200"></p>
+
+<p>在这个页面你会得到你app的专属tracking id,每个应用都有自己的一个tracking id,在你的app中会使用到这个id,之后我们会具体谈到其原理和使用.</p>
+
+<p>现在下载Google Analytics iOS SDK,点击第一个下载连接,而不是<code>Download with admob features</code>.这样你就得到了一个SDK包,接下来就是引用包了.</p>
+
+<h3>Step 3. 引用Google Analytics iOS SDK</h3>
+
+<p>解压刚才下载下来的那个包:</p>
+
+<p> <img src="http://qiusli.github.io/images/ga-5.png" width="600" height="1200"></p>
+
+<p>打开GoogleAnalytics下面的library文件夹:</p>
+
+<p> <img src="http://qiusli.github.io/images/ga-6.png" width="600" height="1200"></p>
+
+<p>把下面几个文件拷贝到你的项目中去,注意在拷贝的时候要选择<code>Copy items into destination group’s folder and Add the files to the Clock target.</code>,这样才能保证文件被真正拷贝到了项目里面,而不是只产生了对文件的引用.</p>
+
+<ul>
+<li> GAI.h</li>
+<li> GAITracker.h</li>
+<li> GAITrackedViewController.h</li>
+<li> GAIDictionaryBuilder.h</li>
+<li> GAIFields.h</li>
+<li> GAILogger.h</li>
+</ul>
+
+
+<p><img src="http://qiusli.github.io/images/ga-7.png" width="300" height="600"></p>
+
+<p>接下来把<code>libGoogleAnalyticsServices.a</code>文件拖到项目的framework文件夹下,其实你把它放到项目的哪儿都无所谓,只是这样更好管理一些.点击项目名称(Clock),然后在右边的窗口中点击<code>build phases</code>,展开<code>Link Binary With Libraries</code>点击左下角的<code>+</code>然后在搜索栏中输入CoreData,然后选中并点击<code>Add</code>.重复上面的过程,并把<code>SystemConfiguration.framework</code>和<code>libz.dylib</code>引用进来.</p>
+
+<p><img src="http://qiusli.github.io/images/ga-8.png" width="600" height="1200"></p>
+
+<p>最后需要修改<code>supporting files</code>文件夹下面的<code>Clock-Prefix.pch</code>文件,把下面两个语句加入到文件中:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="cp">#import &quot;GAI.h&quot;</span>
+</span><span class='line'><span class="cp">#import &quot;GAIFields.h&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>Step 3.1 GAI (Google Analytics for iOS)</h4>
+
+<p>GAI是一个top-class,它利用一个tracking id创建一个共有的tracker,然后这个tracker被暴露给所有类,这样一个项目中就只有一个tracker.</p>
+
+<h3>Step 4. 初始化Tracker</h3>
+
+<p>在AppDelegate类的<code>application:didFinishLaunchingWithOptions:</code>方法中插入以下代码:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="c1">// 1</span>
+</span><span class='line'><span class="p">[</span><span class="n">GAI</span> <span class="n">sharedInstance</span><span class="p">].</span><span class="n">trackUncaughtExceptions</span> <span class="o">=</span> <span class="nb">YES</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 2</span>
+</span><span class='line'><span class="p">[[</span><span class="n">GAI</span> <span class="n">sharedInstance</span><span class="p">].</span><span class="n">logger</span> <span class="nl">setLogLevel</span><span class="p">:</span><span class="n">kGAILogLevelVerbose</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 3</span>
+</span><span class='line'><span class="p">[</span><span class="n">GAI</span> <span class="n">sharedInstance</span><span class="p">].</span><span class="n">dispatchInterval</span> <span class="o">=</span> <span class="mi">20</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 4</span>
+</span><span class='line'><span class="kt">id</span><span class="o">&lt;</span><span class="n">GAITracker</span><span class="o">&gt;</span> <span class="n">tracker</span> <span class="o">=</span> <span class="p">[[</span><span class="n">GAI</span> <span class="n">sharedInstance</span><span class="p">]</span> <span class="nl">trackerWithTrackingId</span><span class="p">:</span><span class="s">@&quot;UA-39787880-2&quot;</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>上面的代码首先把GAI的sharedInstance拿出来,然后往里面设置了一些属性,第一个是处理异常,第二个是设置log的等级,第三个设置了多少时间间隔往Google服务器上传一次数据,这里是20秒.第四个是使用tracking id新建一个tracker.</p>
+
+<h4>Step 4.1. automatic screen tracking</h4>
+
+<p>一个screen相当于app中的一个页面,或者说是view controller中的一个view,它可以用来track用户在一个view上停留了多长时间,还可以track用户在不同view中切换的动作.因为每个view都被一个view controller管理,所以为了实现automatic screen tracking,我们需要修改每个view的view controller.Google Analytics的SDK中提供了一个叫<code>GAITrackedViewController</code>的类,让我们自己的view controller继承它就行了,此外还需要修改这个类的一个内置属性<code>screenName</code>,它代表了当前这个被track的view的名字.</p>
+
+<p>在我们的项目中修改<code>ClockViewController.h</code>,import并让它继承<code>GAITrackedViewController</code>,然后在<code>ClockViewController.m</code>的viewDidLoad方法中设置screenName属性:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="cp">#import &lt;UIKit/UIKit.h&gt;</span>
+</span><span class='line'><span class="cp">#import &quot;GAITrackedViewController.h&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@interface</span> <span class="nc">ClockViewController</span> : <span class="nc">GAITrackedViewController</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span> <span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="nb">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
+</span><span class='line'>    <span class="nb">self</span><span class="p">.</span><span class="n">screenName</span> <span class="o">=</span> <span class="s">@&quot;Clock&quot;</span><span class="p">;</span>
+</span><span class='line'>  <span class="c1">// Do any additional setup after loading the view, typically from a nib.</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在上面的两部做完以后,我们就给这个view绑定了一个名字(Clock),在父类GAITrackedViewController中有一个viewWillAppear的方法,它会注册这个名叫Clock的view,此外在这个方法中还做了如下的几件事:</p>
+
+<ul>
+<li>得到共有的tracker对象</li>
+<li>告诉tracker去track名叫Clock的view(这里的view是Google Analytics中的概念,相当于一个屏幕)</li>
+<li>创建日志</li>
+<li>使用tracker往服务器上传数据.</li>
+</ul>
+
+
+<h4>Step 4.2. manual screen tracking</h4>
+
+<p>4.1中我们实现了自动track,但是它的作用有点局限,现在我们实现一个手动的screen tracking,它让我们对其他的用户行为track(例如点击按钮).</p>
+
+<p>这一步我们在另一个类<code>StopWatchViewController.m</code>中做实验.打开这个类,然后在顶端加上如下引用:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="cp">#import GAIDictionaryBuilder.h</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>然后在<code>viewDidAppear</code>方法中加上下面的代码:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidAppear:</span><span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nv">animated</span> <span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="nb">super</span> <span class="nl">viewDidAppear</span><span class="p">:</span><span class="n">animated</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kt">id</span><span class="o">&lt;</span><span class="n">GAITracker</span><span class="o">&gt;</span> <span class="n">tracker</span> <span class="o">=</span> <span class="p">[[</span><span class="n">GAI</span> <span class="n">sharedInstance</span><span class="p">]</span> <span class="n">defaultTracker</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">tracker</span> <span class="nl">set</span><span class="p">:</span><span class="n">kGAIScreenName</span> <span class="nl">value</span><span class="p">:</span><span class="s">@&quot;Stopwatch&quot;</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">tracker</span> <span class="nl">send</span><span class="p">:[[</span><span class="n">GAIDictionaryBuilder</span> <span class="n">createAppView</span><span class="p">]</span> <span class="n">build</span><span class="p">]];</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>因为我们现在是手动配置,所以需要首先得到默认的tracker,然后设置这个view的screenName,最后一个是创建这个view record,然后send数据给server.之所以把这些步骤放到viewDIdAppear方法中,是因为我们想在每次用户方法这个view的时候都发送数据到server.</p>
+
+<p>运行app,然后不断切换下面的tab(每一次到StopWatchViewController.m中都会调用viewDidAppear方法继而发送数据到server)</p>
+
+<p><img src="http://qiusli.github.io/images/ga-10.png" width="300" height="600"></p>
+
+<p>最后再到Google Analytics的dashboard上看结果:</p>
+
+<p><img src="http://qiusli.github.io/images/ga-9.png" width="600" height="1200"></p>
+
+<h3>Step 5. 其他配置</h3>
+
+<p>接下来我们想要track在stopwatch上面的两个button,只需要做如下的事情:</p>
+
+<ul>
+<li>在<code>StopWatchViewController.m</code>中创建一个logButtonPressed方法:</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="p">-(</span><span class="kt">void</span><span class="p">)</span><span class="nf">logButtonPress:</span><span class="p">(</span><span class="bp">UIButton</span> <span class="o">*</span><span class="p">)</span><span class="nv">button</span><span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kt">id</span><span class="o">&lt;</span><span class="n">GAITracker</span><span class="o">&gt;</span> <span class="n">tracker</span> <span class="o">=</span> <span class="p">[[</span><span class="n">GAI</span> <span class="n">sharedInstance</span><span class="p">]</span> <span class="n">defaultTracker</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">[</span><span class="n">tracker</span> <span class="nl">set</span><span class="p">:</span><span class="n">kGAIScreenName</span> <span class="nl">value</span><span class="p">:</span><span class="s">@&quot;Stopwatch&quot;</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">tracker</span> <span class="nl">send</span><span class="p">:[[</span><span class="n">GAIDictionaryBuilder</span> <span class="nl">createEventWithCategory</span><span class="p">:</span><span class="s">@&quot;UX&quot;</span>
+</span><span class='line'>                                                          <span class="nl">action</span><span class="p">:</span><span class="s">@&quot;touch&quot;</span>
+</span><span class='line'>                                                           <span class="nl">label</span><span class="p">:[</span><span class="n">button</span><span class="p">.</span><span class="n">titleLabel</span> <span class="n">text</span><span class="p">]</span>
+</span><span class='line'>                                                           <span class="nl">value</span><span class="p">:</span><span class="nb">nil</span><span class="p">]</span> <span class="n">build</span><span class="p">]];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">tracker</span> <span class="nl">set</span><span class="p">:</span><span class="n">kGAIScreenName</span> <span class="nl">value</span><span class="p">:</span><span class="nb">nil</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>上面的代码首先得到一个tracker,然后设置当前view的名字,因为这次我们不是记录用户浏览屏幕的行为,所以不像之前那样发送view到server,这次我们track的是用户点击按钮的事件,所以我们创建一个touch事件,这个事件被Google framework归类到了UX事件中,然后我们以被按的按钮的title作为事件的title然后传送到server上去.最后一步把screen name重设为nil是为了防止其他事件使用这个名字,因为tracker是共有的对象,在一个地方设置的state会影响另一个地方的使用,所以除了应该共享的state之外,在设置后应该还原.</p>
+
+<ul>
+<li>在button对应的hooker中调用上面的方法.</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="p">-(</span><span class="kt">IBAction</span><span class="p">)</span><span class="nf">startToggle:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">sender</span><span class="p">{</span>
+</span><span class='line'><span class="p">[</span><span class="nb">self</span> <span class="nl">logButtonPress</span><span class="p">:(</span><span class="bp">UIButton</span> <span class="o">*</span><span class="p">)</span><span class="n">sender</span><span class="p">];</span>
+</span><span class='line'><span class="p">...</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'> <span class="o">-</span><span class="p">(</span><span class="kt">IBAction</span><span class="p">)</span><span class="nl">reset</span><span class="p">:(</span><span class="kt">id</span><span class="p">)</span><span class="n">sender</span><span class="p">{</span>
+</span><span class='line'> <span class="p">[</span><span class="nb">self</span> <span class="nl">logButtonPress</span><span class="p">:(</span><span class="bp">UIButton</span> <span class="o">*</span><span class="p">)</span><span class="n">sender</span><span class="p">];</span>
+</span><span class='line'> <span class="p">...</span>
+</span><span class='line'> <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>运行app,不断点击start和reset按钮,然后来到dashboard上的Behavior->Events->Overview上看运行结果:</p>
+
+<p><img src="http://qiusli.github.io/images/ga-11.png" width="600" height="1200"></p>
+
+<p>值得注意的是track的事件范围默认不包括今天,所以需要在右上角那里修改一下.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[iOS Programming 6-1(View Controllers)]]></title>
+    <link href="http://qiusli.github.io/blog/2014/04/06/ios-6/"/>
+    <updated>2014-04-06T19:55:00-06:00</updated>
+    <id>http://qiusli.github.io/blog/2014/04/06/ios-6</id>
+    <content type="html"><![CDATA[<p>前面讲过了view和View hierachy,为了让view在window上显示,我们都是直接把一个view加到应用的window里面去,今天要讲的东西比view更高级一层,他叫view controller.他的职责是创建view,响应view的事件,管理view的层级关系,把view加到window里.</p>
+
+<p>我会结合一个实际的应用来阐述view controller,这个应用最后出来的效果会想下面这样:</p>
+
+<!--more-->
+
+
+<p> <img src="http://qiusli.github.io/images/ios-6_1.png" width="300" height="600"></p>
+
+<p>屏幕下面有一个tab,可以用来切换屏幕,左边按钮对应的屏幕和上一章讲到的view一样,右边的view是一个计时器.</p>
+
+<p> <img src="http://qiusli.github.io/images/ios-6_2.png" width="300" height="600"></p>
+
+<h2>Subclass UIViewController</h2>
+
+<p>我们首先创建一个空项目,并把上一章创建的view类引用到这个项目中来,接着创建第一个view controller (WUSTLHypnosisViewController), 让他继承自UIViewController.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="k">@interface</span> <span class="nc">WUSTLHypnosisViewController</span> : <span class="bp">UIViewController</span>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>View of View Controller</h2>
+
+<p>每一个继承自UIVIewController的类都有一个对应的view,它定义在父类中:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">strong</span><span class="p">)</span> <span class="bp">UIView</span> <span class="o">*</span><span class="n">view</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这个属性指向controller的view hierachy中的root view,所以当一个view controller的root view被加到应用的window中后,这个view controller中在view hierachy中的所有view都被加进去了.</p>
+
+<h3>Lazy Loading</h3>
+
+<p>View Controller中的view不是应用一启动就全部加载的,而是遇到用户请求才开始加载,这样做的好处是节约了内存,提高了性能.</p>
+
+<p>对于一个View Controller来说,有两种方法可以加载其对应的view:</p>
+
+<ul>
+<li>覆写父类UIViewController的loadView方法</li>
+<li>如果view是在Interface Builder中创建的,可以通过加载Nib文件来读取view</li>
+</ul>
+
+
+<p>我们首先使用第一种方法来创建WUSTLHypnosisViewController的view,在<code>WUSTLHypnosisViewController.m</code>文件里先import 之前创建的view,然后覆写loadView方法:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">loadView</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">BNRHypnosisterView</span> <span class="o">*</span><span class="n">backgroundView</span> <span class="o">=</span> <span class="p">[[</span><span class="n">BNRHypnosisterView</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>    <span class="nb">self</span><span class="p">.</span><span class="n">view</span> <span class="o">=</span> <span class="n">backgroundView</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<h2>Setting the Root View Controller</h2>
+
+<p>这一步完成后,我们已经建立了一个view controller并把它和一个view连接起来.如果要想显示这个view controller里面的view,我们只需要把这个view controller加到window里面去即可.我们来到AppDelegate的</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nf">application:</span><span class="p">(</span><span class="bp">UIApplication</span> <span class="o">*</span><span class="p">)</span><span class="nv">application</span> <span class="nf">didFinishLaunchingWithOptions:</span><span class="p">(</span><span class="bp">NSDictionary</span> <span class="o">*</span><span class="p">)</span><span class="nv">launchOptions</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>方法中,在里面创建view controller的实例,然后把这个实例加到应用的window中去:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nf">application:</span><span class="p">(</span><span class="bp">UIApplication</span> <span class="o">*</span><span class="p">)</span><span class="nv">application</span> <span class="nf">didFinishLaunchingWithOptions:</span><span class="p">(</span><span class="bp">NSDictionary</span> <span class="o">*</span><span class="p">)</span><span class="nv">launchOptions</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="nb">self</span><span class="p">.</span><span class="n">window</span> <span class="o">=</span> <span class="p">[[</span><span class="bp">UIWindow</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithFrame</span><span class="p">:[[</span><span class="bp">UIScreen</span> <span class="n">mainScreen</span><span class="p">]</span> <span class="n">bounds</span><span class="p">]];</span>
+</span><span class='line'>    <span class="c1">// Override point for customization after application launch.</span>
+</span><span class='line'>    <span class="n">WUSTLHypnosisViewController</span> <span class="o">*</span><span class="n">hvc</span> <span class="o">=</span> <span class="p">[[</span><span class="n">WUSTLHypnosisViewController</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>    <span class="nb">self</span><span class="p">.</span><span class="n">window</span><span class="p">.</span><span class="n">rootViewController</span> <span class="o">=</span> <span class="n">hvc</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nb">self</span><span class="p">.</span><span class="n">window</span><span class="p">.</span><span class="n">backgroundColor</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIColor</span> <span class="n">whiteColor</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="nb">self</span><span class="p">.</span><span class="n">window</span> <span class="n">makeKeyAndVisible</span><span class="p">];</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nb">YES</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在之前的教学中,我们是直接把一个view加到window中,例如:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="p">[</span><span class="nb">self</span><span class="p">.</span><span class="n">window</span> <span class="nl">addSubview</span><span class="p">:</span><span class="n">firstView</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>现在我们是把一个view controller加到window的root view controller中,其实在window的setRootViewController方法中,他还是会把view controller里面的view取出来,然后执行上面那段代码.</p>
+
+<p>这样我们就完成了第一个屏幕,接下来应该开始第二个屏幕内容了.首先还是建立一个UIViewController的子类,不过这一次我们选择使用另一种方式创建view &ndash; 读取XIB文件.</p>
+
+<h2>Create a View in Interface Builder</h2>
+
+<p>首先建立一个XIB文件.</p>
+
+<p> <img src="http://qiusli.github.io/images/ios-6_3.png" width="300" height="600">
+ <img src="http://qiusli.github.io/images/ios-6_4.png" width="300" height="600"></p>
+
+<p>然后点击XIB文件,拖一个UIView到空白处,这样我们就可以在Interface Builder上面加入各种view了.接下来我们选择DatePicker和UIButton拖到view里面,效果如下:</p>
+
+<p> <img src="http://qiusli.github.io/images/ios-6_5.png" width="300" height="600"></p>
+
+<p>接下来我们到对应的.m文件里创建一个DatePicker的property和addReminder方法:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="k">@interface</span> <span class="nc">WUSTLReminderViewController</span> <span class="p">()</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">weak</span><span class="p">)</span> <span class="kt">IBOutlet</span> <span class="bp">UIDatePicker</span> <span class="o">*</span><span class="n">datePicker</span><span class="p">;</span>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这里datePicker的属性是weak,这样做的好处是在这个view被销毁的时候,其子类也被销毁了.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">IBAction</span><span class="p">)</span><span class="nf">addReminder:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">sender</span> <span class="p">{</span>
+</span><span class='line'>    <span class="bp">NSDate</span> <span class="o">*</span><span class="n">date</span> <span class="o">=</span> <span class="nb">self</span><span class="p">.</span><span class="n">datePicker</span><span class="p">.</span><span class="n">date</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>现在我们有了view,并且在类里面也有对应的属性和方法,接下来就是把他俩连接起来,不过与第一个讲义不同的是,这个XIB文件不是在创建controller的时候创建的,而是后来单独创建的,所以还需要把它和一个view controller连接起来才行.打开view左侧的File&rsquo;s Owner,</p>
+
+<p> <img src="http://qiusli.github.io/images/ios-6_6.png" width="300" height="600"></p>
+
+<p>然后来到右边的属性栏,在class里面填写对应的view controller即可:</p>
+
+<p> <img src="http://qiusli.github.io/images/ios-6_7.png" width="300" height="600"></p>
+
+<p>创建view的最后一步就是把interface builder中的元素和类里面的属性和方法hook起来,方法如第一个讲义里面那样.</p>
+
+<h2>Loading a Nib File</h2>
+
+<p>我们还是来到AppDelegate那个didFinishLaunch方法里面去,并加上如下的代码:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="bp">NSBundle</span> <span class="o">*</span><span class="n">appBundle</span> <span class="o">=</span> <span class="p">[</span><span class="bp">NSBundle</span> <span class="n">mainBundle</span><span class="p">];</span>
+</span><span class='line'><span class="n">WUSTLReminderViewController</span> <span class="o">*</span><span class="n">rvc</span> <span class="o">=</span> <span class="p">[[</span><span class="n">WUSTLReminderViewController</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithNibName</span><span class="p">:</span><span class="s">@&quot;WUSTLReminderViewController&quot;</span> <span class="nl">bundle</span><span class="p">:</span><span class="n">appBundle</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>第一句话的意思是找到应用的bundle,bundle是一个应用里面的一个文件夹,里面主要装着可执行文件和一些资源(XIB文件).第二句话是初始化view controller并读取相应的NIB文件.其实上面的代码和接下来的代码效果是一样的:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="n">WUSTLReminderViewController</span> <span class="o">*</span><span class="n">rvc</span> <span class="o">=</span> <span class="p">[[</span><span class="n">WUSTLReminderViewController</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>因为如果直接调用init方法,系统最终还是会调用initWithNibName,所以调用init只是相当于把initWithNibName方法的两个参数都设为nil,不过系统会默认到当前应用的bundle下面去找对应的资源,他会去尝试找与当前view controller同名的Nib文件(Nib是XIB编译后的产物),所以为了方便起见,我们一般把XIB文件的名字和view controller的名字保持一致.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[iOS Programming 5(Redrawing and UIScrollView)]]></title>
+    <link href="http://qiusli.github.io/blog/2014/04/04/ios-programming-5/"/>
+    <updated>2014-04-04T13:08:00-06:00</updated>
+    <id>http://qiusli.github.io/blog/2014/04/04/ios-programming-5</id>
+    <content type="html"><![CDATA[<p>在上一篇博客中,我们创建了一个画同心圆的app,这篇博客将继续在那上面扩展,当用户在屏幕上点击的时候同心圆会改变颜色.此外,还将在app里面加上UIScrollView,让用户通过scroll的方式浏览比屏幕本身大的view.</p>
+
+<h2>改变同心圆颜色</h2>
+
+<p>既然是通过点击来改变同心圆的颜色,那么我们肯定会想到用touch event来实现,在用户touch之后需要改变颜色,我们可以通过创建一个公有变量,然后在touch方法里改变他的颜色. 我们现在项目的格局如下:</p>
+
+<!--more-->
+
+
+<p> <img src="http://qiusli.github.io/images/ios-5_1.png" width="300" height="600"></p>
+
+<p>首先我们在<code>BNRHypnosisterView.m</code>的头部创建一个property文件:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="k">@interface</span> <span class="nc">BNRHypnosisterView</span> <span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">strong</span><span class="p">,</span> <span class="k">nonatomic</span><span class="p">)</span> <span class="bp">UIColor</span> <span class="o">*</span><span class="n">circleColor</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@implementation</span> <span class="nc">BNRHypnosisterView</span>
+</span><span class='line'><span class="p">...</span>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在这里创建property而不是在header文件里面创建的原因是隐藏这个变量.一个类的header文件是对所有类可见,一种默认的做法是如果变量是定义在header文件里面,那么就表示他可以和其他所有的类互动,如果我想要这个变量或者方法只在这个类中使用,那么可以把它定义在.m的category里面.这相当于对其他类隐藏了这个变量或方法,即使其子类都不能看到.</p>
+
+<p>声明完之后就应该开始定义了,我们可以到<code>initWithFrame</code>方法里给它首先赋予一个默认值:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">initWithFrame:</span><span class="p">(</span><span class="bp">CGRect</span><span class="p">)</span><span class="nv">frame</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="nb">self</span> <span class="o">=</span> <span class="p">[</span><span class="nb">super</span> <span class="nl">initWithFrame</span><span class="p">:</span><span class="n">frame</span><span class="p">];</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="nb">self</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="c1">// Initialization code</span>
+</span><span class='line'>        <span class="nb">self</span><span class="p">.</span><span class="n">backgroundColor</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIColor</span> <span class="n">clearColor</span><span class="p">];</span>
+</span><span class='line'>        <span class="nb">self</span><span class="p">.</span><span class="n">circleColor</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIColor</span> <span class="n">lightGrayColor</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nb">self</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这样在程序启动的时候同心圆的颜色是灰色.接下来就应该实现touch even了, 当用户点击后就改变<code>circleColor</code>的颜色我们通过实现默认的<code>touchesBegan</code>方法来实现.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="nf">touchesBegan:</span><span class="p">(</span><span class="bp">NSSet</span> <span class="o">*</span><span class="p">)</span><span class="nv">touches</span> <span class="nf">withEvent:</span><span class="p">(</span><span class="bp">UIEvent</span> <span class="o">*</span><span class="p">)</span><span class="nv">event</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kt">float</span> <span class="n">red</span> <span class="o">=</span> <span class="p">(</span><span class="n">arc4random</span><span class="p">()</span> <span class="o">%</span> <span class="mi">100</span><span class="p">)</span> <span class="o">/</span> <span class="mf">100.0</span><span class="p">;</span>
+</span><span class='line'>    <span class="kt">float</span> <span class="n">green</span> <span class="o">=</span> <span class="p">(</span><span class="n">arc4random</span><span class="p">()</span> <span class="o">%</span> <span class="mi">100</span><span class="p">)</span> <span class="o">/</span> <span class="mf">100.0</span><span class="p">;</span>
+</span><span class='line'>    <span class="kt">float</span> <span class="n">blue</span> <span class="o">=</span> <span class="p">(</span><span class="n">arc4random</span><span class="p">()</span> <span class="o">%</span> <span class="mi">100</span><span class="p">)</span> <span class="o">/</span> <span class="mf">100.0</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="bp">UIColor</span> <span class="o">*</span><span class="n">randomColor</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIColor</span> <span class="nl">colorWithRed</span><span class="p">:</span><span class="n">red</span> <span class="nl">green</span><span class="p">:</span><span class="n">green</span> <span class="nl">blue</span><span class="p">:</span><span class="n">blue</span> <span class="nl">alpha</span><span class="p">:</span><span class="mi">1</span><span class="p">];</span>
+</span><span class='line'>    <span class="nb">self</span><span class="p">.</span><span class="n">circleColor</span> <span class="o">=</span> <span class="n">randomColor</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>上面这个方法就是在每次用户点击的时候都重新开始算rgb在<code>randomColor</code>中的分量,然后得到一个新的<code>randomColor</code>并把它赋值给circleColor.这样<code>circleColor</code>的颜色就变了,现在我们可以运行看看效果:</p>
+
+<p> <img src="http://qiusli.github.io/images/ios-5_2.png" width="300" height="600"></p>
+
+<p>我们发现无论怎么点击屏幕,颜色都不会改变,这是为什么呢?这里有两个原因:</p>
+
+<ul>
+<li>UIView的drawRect方法默认情况下只在加载的时候被调用,所以无论我们怎么点击屏幕,这个方法都不会被再次调用,所以所有的view都没有被重新render.</li>
+<li>在drawRect方法里面没有改变同心圆的颜色,改变的代码如下:</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'> <span class="c1">// [[UIColor lightGrayColor] setStroke];</span>
+</span><span class='line'>    <span class="p">[</span><span class="nb">self</span><span class="p">.</span><span class="n">circleColor</span> <span class="n">setStroke</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这里又涉及到iOS的一种机制:<code>run loop</code>. 它指的是当iOS app 在运行的时候,他会开始一个<code>run loop</code>,这个loop是专门用来监听事件的.当一次事件发生时(例如touch),<code>run loop</code>会找到相应的handler来处理这次事件,当这个事件被处理后,<code>run loop</code>继续执行. 在我们这个程序中,当<code>run loop</code>发现touch事件时,会停下来调用<code>touchesBegan</code>方法处理它,在处理完后重新回到<code>tun loop</code>中.在重新回到<code>run loop</code>后,它会检查那些在上次执行handler之后有改变并且需要重新render的view,然后<code>run loop</code>会发送drawRect:方法给这些view,然他们重新去render.但是为什么我们在点击屏幕后view并没有被重新render呢?原来这是因为需要被重新render的view不是系统默认的,如果他们是默认的(例如UIButton, UIText),render会自动执行,否则我们需要调用view的<code>setNeedsDisplay</code>方法来让他重新render.在<code>touchesBegan:</code>方法的最后一句,我们看到<code>circleColor</code>被重新赋值(其实是它的setter方法被调用了),那么我们可以重载它的setter方法,并在里面调用<code>setNeedsDisplay</code>方法.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="nf">setCircleColor:</span><span class="p">(</span><span class="bp">UIColor</span> <span class="o">*</span><span class="p">)</span><span class="nv">circleColor</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">_circleColor</span> <span class="o">=</span> <span class="n">circleColor</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">[</span><span class="nb">self</span> <span class="n">setNeedsDisplay</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>再次运行,一切OK.</p>
+
+<p> <img src="http://qiusli.github.io/images/ios-5_3.png" width="250" height="500">
+ <img src="http://qiusli.github.io/images/ios-5_4.png" width="250" height="500">
+ <img src="http://qiusli.github.io/images/ios-5_5.png" width="250" height="500"></p>
+
+<h2>使用UIScrollView</h2>
+
+<p>Scroll view通常是为比屏幕更大的view准备的,这样就能通过上下左右滚动来查看完整的图片.之前我们是直接把当前的view加到<code>UIWindow</code>中,不过为了实现scroll view,我们需要把当前view加到scroll view中,然后再把这个scroll view加到<code>UIWindow</code>中去.</p>
+
+<p> <img src="http://qiusli.github.io/images/ios-5_UIScrollView.png" width="900" height="1200"></p>
+
+<p>然后到app delegate的<code>didFinishLaunchingWithOptions</code>里加上如下代码:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'>    <span class="bp">CGRect</span> <span class="n">screenRect</span> <span class="o">=</span> <span class="nb">self</span><span class="p">.</span><span class="n">window</span><span class="p">.</span><span class="n">bounds</span><span class="p">;</span>
+</span><span class='line'>    <span class="bp">CGRect</span> <span class="n">bigRect</span> <span class="o">=</span> <span class="n">screenRect</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">bigRect</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">width</span> <span class="o">*=</span> <span class="mi">2</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">bigRect</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">height</span> <span class="o">*=</span> <span class="mi">2</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="bp">UIScrollView</span> <span class="o">*</span><span class="n">scrollView</span> <span class="o">=</span> <span class="p">[[</span><span class="bp">UIScrollView</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithFrame</span><span class="p">:</span><span class="n">screenRect</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="nb">self</span><span class="p">.</span><span class="n">window</span> <span class="nl">addSubview</span><span class="p">:</span><span class="n">scrollView</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">BNRHypnosisterView</span> <span class="o">*</span><span class="n">hypnosisView</span> <span class="o">=</span> <span class="p">[[</span><span class="n">BNRHypnosisterView</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithFrame</span><span class="p">:</span><span class="n">bigRect</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">scrollView</span> <span class="nl">addSubview</span><span class="p">:</span><span class="n">hypnosisView</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>首先建立一个屏幕大小的CGRect作为<code>UIScrollView</code>的显示范围,然后建立一个两倍屏幕大小的CGRect作为view的显示范围,最后把view加到UIScrollView中.显示的效果如下:</p>
+
+<p> <img src="http://qiusli.github.io/images/ios-5_6.png" width="300" height="600"></p>
+
+<p>最后,我们可以把它做的更好看一些,我们给<code>UIScrollView</code>加两个view,并让他们在不同的屏幕显示:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'>    <span class="bp">CGRect</span> <span class="n">screenRect</span> <span class="o">=</span> <span class="nb">self</span><span class="p">.</span><span class="n">window</span><span class="p">.</span><span class="n">bounds</span><span class="p">;</span>
+</span><span class='line'>    <span class="bp">CGRect</span> <span class="n">bigRect</span> <span class="o">=</span> <span class="n">screenRect</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">bigRect</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">width</span> <span class="o">*=</span> <span class="mi">2</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'> <span class="bp">UIScrollView</span> <span class="o">*</span><span class="n">scrollView</span> <span class="o">=</span> <span class="p">[[</span><span class="bp">UIScrollView</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithFrame</span><span class="p">:</span><span class="n">screenRect</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="nb">self</span><span class="p">.</span><span class="n">window</span> <span class="nl">addSubview</span><span class="p">:</span><span class="n">scrollView</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">BNRHypnosisterView</span> <span class="o">*</span><span class="n">hypnosisView</span> <span class="o">=</span> <span class="p">[[</span><span class="n">BNRHypnosisterView</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithFrame</span><span class="p">:</span><span class="n">screenRect</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">scrollView</span><span class="p">.</span><span class="n">pagingEnabled</span> <span class="o">=</span> <span class="nb">YES</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">scrollView</span> <span class="nl">addSubview</span><span class="p">:</span><span class="n">hypnosisView</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">screenRect</span><span class="p">.</span><span class="n">origin</span><span class="p">.</span><span class="n">x</span> <span class="o">+=</span> <span class="n">screenRect</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">width</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">BNRHypnosisterView</span> <span class="o">*</span><span class="n">hypnosisView2</span> <span class="o">=</span> <span class="p">[[</span><span class="n">BNRHypnosisterView</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithFrame</span><span class="p">:</span><span class="n">screenRect</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">scrollView</span> <span class="nl">addSubview</span><span class="p">:</span><span class="n">hypnosisView2</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">scrollView</span><span class="p">.</span><span class="n">contentSize</span> <span class="o">=</span> <span class="n">bigRect</span><span class="p">.</span><span class="n">size</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>其中<code>scrollView.pagingEnabled = YES</code>的意思是在左右滑动的时候有翻页的效果,屏幕不会停在两个view的中间.
+ <img src="http://qiusli.github.io/images/ios-5_7.png" width="300" height="600"></p>
 ]]></content>
   </entry>
   

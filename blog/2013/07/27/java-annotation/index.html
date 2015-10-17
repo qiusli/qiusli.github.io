@@ -1,0 +1,438 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Java Annotation学习笔记  | 逆旅，行人</title>
+
+	<meta name="author" content="李秋实"> 
+	
+	<meta name="description" content="Annotation是什么
+Annotation是类，方法或字段的一种注解或元数据，当程序被JVM编译的时候，annotation会和类编译在一起，作为一种元数据去描述被修饰的数据
+Annotation的定义 1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+package &hellip;"> <meta name="keywords" content="">
+
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="逆旅，行人" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href="/stylesheets/font-awesome.min.css" rel="stylesheet" type="text/css">
+	
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	
+</head>
+
+
+
+<body>
+	<header id="header" class="inner"><h1>逆旅，行人</h1>
+<nav id="main-nav"><ul>
+	<li><a href="/">Blog</a></li>
+	<li><a href="/archives">Archive</a></li>
+	<li><a href="/contact">Contact</a></li>
+</ul>
+</nav>
+
+
+</header>
+
+	<div id="content" class="inner"><article class="post">
+	<h2 class="title">Java Annotation学习笔记</h2>
+	<div class="entry-content"><ol>
+<li>Annotation是什么
+Annotation是类，方法或字段的一种注解或元数据，当程序被JVM编译的时候，annotation会和类编译在一起，作为一种元数据去描述被修饰的数据</li>
+<li>Annotation的定义</li>
+</ol>
+
+
+<!-- more -->
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kn">package</span> <span class="n">annotationApplication</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kn">import</span> <span class="nn">java.lang.annotation.ElementType</span><span class="o">;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">java.lang.annotation.Retention</span><span class="o">;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">java.lang.annotation.RetentionPolicy</span><span class="o">;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">java.lang.annotation.Target</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nd">@Retention</span><span class="o">(</span><span class="n">RetentionPolicy</span><span class="o">.</span><span class="na">RUNTIME</span><span class="o">)</span>
+</span><span class='line'><span class="nd">@Target</span><span class="o">(</span><span class="n">ElementType</span><span class="o">.</span><span class="na">TYPE</span><span class="o">)</span>
+</span><span class='line'><span class="kd">public</span> <span class="nd">@interface</span> <span class="n">MyAnnotation</span> <span class="o">{</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="n">String</span> <span class="nf">name</span><span class="o">();</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">public</span> <span class="kt">int</span> <span class="nf">age</span><span class="o">();</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>其中，Retention中的字段表明，该注解能在运行时通过反射得到。Target表明该注解用于何处。此处为类或者接口处可以使用。</p>
+
+<ol>
+<li>Annotation的使用（类、接口范围）
+annotation的定义</li>
+</ol>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kn">package</span> <span class="n">annotationDefinition</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kn">import</span> <span class="nn">annotationApplication.MyAnnotation</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nd">@MyAnnotation</span><span class="o">(</span><span class="n">name</span> <span class="o">=</span> <span class="s">&quot;Mikel Arteta&quot;</span><span class="o">,</span> <span class="n">age</span> <span class="o">=</span> <span class="mi">29</span><span class="o">)</span>
+</span><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyAnnotationUsage</span> <span class="o">{</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>annotation的使用</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kn">package</span> <span class="n">annotationDefinition</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kn">import</span> <span class="nn">annotationApplication.MyAnnotation</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nd">@MyAnnotation</span><span class="o">(</span><span class="n">name</span> <span class="o">=</span> <span class="s">&quot;Mikel Arteta&quot;</span><span class="o">,</span> <span class="n">age</span> <span class="o">=</span> <span class="mi">29</span><span class="o">)</span>
+</span><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyAnnotationUsage</span> <span class="o">{</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>下面是我定义的使用类注解的类的查找器：找到并输出注解类的annotation的value</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kn">package</span> <span class="n">annotationDefinition</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kn">import</span> <span class="nn">annotationApplication.MyAnnotation</span><span class="o">;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">java.lang.annotation.Annotation</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyAnnotationFinder</span> <span class="o">{</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">ClassNotFoundException</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">Class</span><span class="o">&lt;?&gt;</span> <span class="n">myAnnotationUsage</span> <span class="o">=</span> <span class="n">Class</span><span class="o">.</span><span class="na">forName</span><span class="o">(</span><span class="s">&quot;annotationDefinition.MyAnnotationUsage&quot;</span><span class="o">);</span>
+</span><span class='line'>        <span class="n">Annotation</span><span class="o">[]</span> <span class="n">annotations</span> <span class="o">=</span> <span class="n">myAnnotationUsage</span><span class="o">.</span><span class="na">getAnnotations</span><span class="o">();</span>
+</span><span class='line'>        <span class="k">for</span><span class="o">(</span><span class="n">Annotation</span> <span class="n">annotation</span> <span class="o">:</span> <span class="n">annotations</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>            <span class="n">MyAnnotation</span> <span class="n">annotation1</span> <span class="o">=</span> <span class="o">(</span><span class="n">MyAnnotation</span><span class="o">)</span><span class="n">annotation</span><span class="o">;</span>
+</span><span class='line'>            <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">annotation1</span><span class="o">.</span><span class="na">name</span><span class="o">());</span>
+</span><span class='line'>            <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">annotation1</span><span class="o">.</span><span class="na">age</span><span class="o">());</span>
+</span><span class='line'>        <span class="o">}</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>运行结果</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='text'><span class='line'>annotation&#39;s name value -- &gt; Mikel Arteta
+</span><span class='line'>annotation&#39;s age value -- &gt; 29
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+4. Annotation的使用（方法范围）
+annotation的定义</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kn">package</span> <span class="n">annotationApplication</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kn">import</span> <span class="nn">java.lang.annotation.ElementType</span><span class="o">;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">java.lang.annotation.Retention</span><span class="o">;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">java.lang.annotation.RetentionPolicy</span><span class="o">;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">java.lang.annotation.Target</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nd">@Retention</span><span class="o">(</span><span class="n">RetentionPolicy</span><span class="o">.</span><span class="na">RUNTIME</span><span class="o">)</span>
+</span><span class='line'><span class="nd">@Target</span><span class="o">(</span><span class="n">ElementType</span><span class="o">.</span><span class="na">METHOD</span><span class="o">)</span>
+</span><span class='line'><span class="kd">public</span> <span class="nd">@interface</span> <span class="n">MethodAnnotation</span> <span class="o">{</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="n">String</span> <span class="nf">methodName</span><span class="o">();</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="n">String</span> <span class="nf">methodReturnType</span><span class="o">();</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>下面是我定义的使用类注解的类的查找器：找到并输出注解类的annotation的value</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kn">package</span> <span class="n">annotationDefinition</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kn">import</span> <span class="nn">annotationApplication.MethodAnnotation</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kn">import</span> <span class="nn">java.lang.annotation.Annotation</span><span class="o">;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">java.lang.reflect.Method</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">MethodAnnotationFinder</span> <span class="o">{</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">ClassNotFoundException</span><span class="o">,</span> <span class="n">NoSuchMethodException</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">Class</span><span class="o">&lt;?&gt;</span> <span class="n">clazz</span> <span class="o">=</span> <span class="n">Class</span><span class="o">.</span><span class="na">forName</span><span class="o">(</span><span class="s">&quot;annotationDefinition.MethodAnnotationUsage&quot;</span><span class="o">);</span>
+</span><span class='line'>        <span class="n">Method</span> <span class="n">method</span> <span class="o">=</span> <span class="n">clazz</span><span class="o">.</span><span class="na">getDeclaredMethod</span><span class="o">(</span><span class="s">&quot;testMethod&quot;</span><span class="o">);</span>
+</span><span class='line'>        <span class="n">Annotation</span> <span class="n">annotation</span> <span class="o">=</span> <span class="n">method</span><span class="o">.</span><span class="na">getAnnotation</span><span class="o">(</span><span class="n">MethodAnnotation</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+</span><span class='line'>        <span class="n">MethodAnnotation</span> <span class="n">annotation1</span> <span class="o">=</span> <span class="o">(</span><span class="n">MethodAnnotation</span><span class="o">)</span> <span class="n">annotation</span><span class="o">;</span>
+</span><span class='line'>        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;annotationed method name -- &gt; &quot;</span> <span class="o">+</span> <span class="n">annotation1</span><span class="o">.</span><span class="na">methodName</span><span class="o">());</span>
+</span><span class='line'>        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;annotationed method&#39;s return type -- &gt; &quot;</span> <span class="o">+</span> <span class="n">annotation1</span><span class="o">.</span><span class="na">methodReturnType</span><span class="o">());</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>运行结果：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='text'><span class='line'>annotationed method name -- &gt; testMethod
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ol>
+<li>Annotation的使用（Parameter范围）
+annotation的范围</li>
+</ol>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kn">package</span> <span class="n">annotationApplication</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kn">import</span> <span class="nn">java.lang.annotation.ElementType</span><span class="o">;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">java.lang.annotation.Retention</span><span class="o">;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">java.lang.annotation.RetentionPolicy</span><span class="o">;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">java.lang.annotation.Target</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nd">@Retention</span><span class="o">(</span><span class="n">RetentionPolicy</span><span class="o">.</span><span class="na">RUNTIME</span><span class="o">)</span>
+</span><span class='line'><span class="nd">@Target</span><span class="o">(</span><span class="n">ElementType</span><span class="o">.</span><span class="na">PARAMETER</span><span class="o">)</span>
+</span><span class='line'><span class="kd">public</span> <span class="nd">@interface</span> <span class="n">ParameterAnnotation</span> <span class="o">{</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="n">String</span> <span class="nf">parameterName</span><span class="o">();</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="n">String</span> <span class="nf">parameterType</span><span class="o">();</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>annotation的使用</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kn">package</span> <span class="n">annotationDefinition</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kn">import</span> <span class="nn">annotationApplication.ParameterAnnotation</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">ParameterAnnotationUsage</span> <span class="o">{</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">testMethod</span><span class="o">(</span><span class="nd">@ParameterAnnotation</span><span class="o">(</span><span class="n">parameterName</span> <span class="o">=</span> <span class="s">&quot;pname&quot;</span><span class="o">,</span> <span class="n">parameterType</span> <span class="o">=</span> <span class="s">&quot;int&quot;</span><span class="o">)</span> <span class="kt">int</span> <span class="n">value</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">value</span> <span class="o">=</span> <span class="mi">10</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>下面是我定义的使用类注解的类的查找器：找到并输出注解类的annotation的value</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kn">package</span> <span class="n">annotationDefinition</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kn">import</span> <span class="nn">annotationApplication.ParameterAnnotation</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kn">import</span> <span class="nn">java.lang.annotation.Annotation</span><span class="o">;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">java.lang.reflect.Method</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">ParameterAnnotationFinder</span> <span class="o">{</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">parameterAnnotationFinder</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">NoSuchMethodException</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">Class</span><span class="o">&lt;?&gt;</span> <span class="n">clazz</span> <span class="o">=</span> <span class="n">ParameterAnnotationUsage</span><span class="o">.</span><span class="na">class</span><span class="o">;</span>
+</span><span class='line'>        <span class="n">Method</span> <span class="n">method</span> <span class="o">=</span> <span class="n">clazz</span><span class="o">.</span><span class="na">getMethod</span><span class="o">(</span><span class="s">&quot;testMethod&quot;</span><span class="o">,</span> <span class="kt">int</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+</span><span class='line'>        <span class="n">Annotation</span><span class="o">[][]</span> <span class="n">annotations</span> <span class="o">=</span> <span class="n">method</span><span class="o">.</span><span class="na">getParameterAnnotations</span><span class="o">();</span>
+</span><span class='line'>        <span class="c1">//Method.getParameterAnnotations() method returns a two-dimensional Annotation array,  </span>
+</span><span class='line'>        <span class="c1">// containing an array of annotations for each method parameter.  </span>
+</span><span class='line'>        <span class="n">Class</span><span class="o">&lt;?&gt;[]</span> <span class="n">parameterTyeps</span> <span class="o">=</span> <span class="n">method</span><span class="o">.</span><span class="na">getParameterTypes</span><span class="o">();</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+</span><span class='line'>        <span class="k">for</span> <span class="o">(</span><span class="n">Annotation</span><span class="o">[]</span> <span class="n">annotation</span> <span class="o">:</span> <span class="n">annotations</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>            <span class="n">Class</span><span class="o">&lt;?&gt;</span> <span class="n">parameterTyep</span> <span class="o">=</span> <span class="n">parameterTyeps</span><span class="o">[</span><span class="n">i</span><span class="o">++];</span>
+</span><span class='line'>            <span class="k">for</span> <span class="o">(</span><span class="n">Annotation</span> <span class="n">annotation1</span> <span class="o">:</span> <span class="n">annotation</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>                <span class="n">ParameterAnnotation</span> <span class="n">parameterAnnotation1</span> <span class="o">=</span> <span class="o">(</span><span class="n">ParameterAnnotation</span><span class="o">)</span> <span class="n">annotation1</span><span class="o">;</span>
+</span><span class='line'>                <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;annotation paraName : &quot;</span> <span class="o">+</span> <span class="n">parameterAnnotation1</span><span class="o">.</span><span class="na">parameterName</span><span class="o">());</span>
+</span><span class='line'>                <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;annotation paraType : &quot;</span> <span class="o">+</span> <span class="n">parameterAnnotation1</span><span class="o">.</span><span class="na">parameterType</span><span class="o">());</span>
+</span><span class='line'>                <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;parameter Type : &quot;</span> <span class="o">+</span> <span class="n">parameterTyep</span><span class="o">);</span>
+</span><span class='line'>            <span class="o">}</span>
+</span><span class='line'>        <span class="o">}</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">NoSuchMethodException</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">new</span> <span class="nf">ParameterAnnotationFinder</span><span class="o">().</span><span class="na">parameterAnnotationFinder</span><span class="o">();</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>运行结果：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='text'><span class='line'>annotation paraName : pname
+</span><span class='line'>annotation paraType : int
+</span><span class='line'>parameter Type : int
+</span></code></pre></td></tr></table></div></figure>
+
+</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+
+<time datetime="2013-07-27T20:23:00-06:00" pubdate data-updated="true">Jul 27th, 2013</time></div>
+	
+
+
+</div>
+</article>
+</div>
+	<footer id="footer" class="inner">Copyright &copy; 2015
+ 李秋实 
+<br>
+Powered by Octopress.
+</footer>
+	
+
+</body>
+</html>

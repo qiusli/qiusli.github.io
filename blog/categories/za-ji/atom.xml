@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: 杂记 | 逆旅，行人]]></title>
+  <link href="http://qiusli.github.io/blog/categories/za-ji/atom.xml" rel="self"/>
+  <link href="http://qiusli.github.io/"/>
+  <updated>2015-10-17T03:22:03-06:00</updated>
+  <id>http://qiusli.github.io/</id>
+  <author>
+    <name><![CDATA[李秋实]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[如何使用Octopress写博客]]></title>
+    <link href="http://qiusli.github.io/blog/2015/10/17/how-to-blog-with-octopress/"/>
+    <updated>2015-10-17T03:12:48-06:00</updated>
+    <id>http://qiusli.github.io/blog/2015/10/17/how-to-blog-with-octopress</id>
+    <content type="html"><![CDATA[<p>具体的步骤是按照<a href="http://shengmingzhiqing.com/blog/setup-octopress-with-github-pages.html/">这个地址</a>来的。配置什么的都在里面，这里简单说说配置完成后到写博客的步骤</p>
+
+<ol>
+<li>rake new_post[&lsquo;blog title&rsquo;]创建新的文章</li>
+<li>完成编辑后运行rake generate</li>
+<li>然后rake preview在本地查看效果(<a href="http://localhost:4000/">http://localhost:4000/</a>)</li>
+<li>rake deploy到github上</li>
+<li>git add . 来把本地文件并入git管理</li>
+<li>git commit －m ‘whatever’</li>
+<li>git push origin source</li>
+</ol>
+
+]]></content>
+  </entry>
+  
+</feed>

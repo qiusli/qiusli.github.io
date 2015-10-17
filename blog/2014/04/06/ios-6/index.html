@@ -1,0 +1,242 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>iOS Programming 6-1(View Controllers)  | 逆旅，行人</title>
+
+	<meta name="author" content="李秋实"> 
+	
+	<meta name="description" content="前面讲过了view和View hierachy,为了让view在window上显示,我们都是直接把一个view加到应用的window里面去,今天要讲的东西比view更高级一层,他叫view controller.他的职责是创建view,响应view的事件,管理view的层级关系, &hellip;"> <meta name="keywords" content="">
+
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="逆旅，行人" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href="/stylesheets/font-awesome.min.css" rel="stylesheet" type="text/css">
+	
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	
+</head>
+
+
+
+<body>
+	<header id="header" class="inner"><h1>逆旅，行人</h1>
+<nav id="main-nav"><ul>
+	<li><a href="/">Blog</a></li>
+	<li><a href="/archives">Archive</a></li>
+	<li><a href="/contact">Contact</a></li>
+</ul>
+</nav>
+
+
+</header>
+
+	<div id="content" class="inner"><article class="post">
+	<h2 class="title">iOS Programming 6-1(View Controllers)</h2>
+	<div class="entry-content"><p>前面讲过了view和View hierachy,为了让view在window上显示,我们都是直接把一个view加到应用的window里面去,今天要讲的东西比view更高级一层,他叫view controller.他的职责是创建view,响应view的事件,管理view的层级关系,把view加到window里.</p>
+
+<p>我会结合一个实际的应用来阐述view controller,这个应用最后出来的效果会想下面这样:</p>
+
+<!--more-->
+
+
+<p> <img src="/images/ios-6_1.png" width="300" height="600"></p>
+
+<p>屏幕下面有一个tab,可以用来切换屏幕,左边按钮对应的屏幕和上一章讲到的view一样,右边的view是一个计时器.</p>
+
+<p> <img src="/images/ios-6_2.png" width="300" height="600"></p>
+
+<h2>Subclass UIViewController</h2>
+
+<p>我们首先创建一个空项目,并把上一章创建的view类引用到这个项目中来,接着创建第一个view controller (WUSTLHypnosisViewController), 让他继承自UIViewController.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="k">@interface</span> <span class="nc">WUSTLHypnosisViewController</span> : <span class="bp">UIViewController</span>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>View of View Controller</h2>
+
+<p>每一个继承自UIVIewController的类都有一个对应的view,它定义在父类中:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">strong</span><span class="p">)</span> <span class="bp">UIView</span> <span class="o">*</span><span class="n">view</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这个属性指向controller的view hierachy中的root view,所以当一个view controller的root view被加到应用的window中后,这个view controller中在view hierachy中的所有view都被加进去了.</p>
+
+<h3>Lazy Loading</h3>
+
+<p>View Controller中的view不是应用一启动就全部加载的,而是遇到用户请求才开始加载,这样做的好处是节约了内存,提高了性能.</p>
+
+<p>对于一个View Controller来说,有两种方法可以加载其对应的view:</p>
+
+<ul>
+<li>覆写父类UIViewController的loadView方法</li>
+<li>如果view是在Interface Builder中创建的,可以通过加载Nib文件来读取view</li>
+</ul>
+
+
+<p>我们首先使用第一种方法来创建WUSTLHypnosisViewController的view,在<code>WUSTLHypnosisViewController.m</code>文件里先import 之前创建的view,然后覆写loadView方法:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">loadView</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">BNRHypnosisterView</span> <span class="o">*</span><span class="n">backgroundView</span> <span class="o">=</span> <span class="p">[[</span><span class="n">BNRHypnosisterView</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>    <span class="nb">self</span><span class="p">.</span><span class="n">view</span> <span class="o">=</span> <span class="n">backgroundView</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<h2>Setting the Root View Controller</h2>
+
+<p>这一步完成后,我们已经建立了一个view controller并把它和一个view连接起来.如果要想显示这个view controller里面的view,我们只需要把这个view controller加到window里面去即可.我们来到AppDelegate的</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nf">application:</span><span class="p">(</span><span class="bp">UIApplication</span> <span class="o">*</span><span class="p">)</span><span class="nv">application</span> <span class="nf">didFinishLaunchingWithOptions:</span><span class="p">(</span><span class="bp">NSDictionary</span> <span class="o">*</span><span class="p">)</span><span class="nv">launchOptions</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>方法中,在里面创建view controller的实例,然后把这个实例加到应用的window中去:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nf">application:</span><span class="p">(</span><span class="bp">UIApplication</span> <span class="o">*</span><span class="p">)</span><span class="nv">application</span> <span class="nf">didFinishLaunchingWithOptions:</span><span class="p">(</span><span class="bp">NSDictionary</span> <span class="o">*</span><span class="p">)</span><span class="nv">launchOptions</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="nb">self</span><span class="p">.</span><span class="n">window</span> <span class="o">=</span> <span class="p">[[</span><span class="bp">UIWindow</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithFrame</span><span class="p">:[[</span><span class="bp">UIScreen</span> <span class="n">mainScreen</span><span class="p">]</span> <span class="n">bounds</span><span class="p">]];</span>
+</span><span class='line'>    <span class="c1">// Override point for customization after application launch.</span>
+</span><span class='line'>    <span class="n">WUSTLHypnosisViewController</span> <span class="o">*</span><span class="n">hvc</span> <span class="o">=</span> <span class="p">[[</span><span class="n">WUSTLHypnosisViewController</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>    <span class="nb">self</span><span class="p">.</span><span class="n">window</span><span class="p">.</span><span class="n">rootViewController</span> <span class="o">=</span> <span class="n">hvc</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nb">self</span><span class="p">.</span><span class="n">window</span><span class="p">.</span><span class="n">backgroundColor</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIColor</span> <span class="n">whiteColor</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="nb">self</span><span class="p">.</span><span class="n">window</span> <span class="n">makeKeyAndVisible</span><span class="p">];</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nb">YES</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在之前的教学中,我们是直接把一个view加到window中,例如:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="p">[</span><span class="nb">self</span><span class="p">.</span><span class="n">window</span> <span class="nl">addSubview</span><span class="p">:</span><span class="n">firstView</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>现在我们是把一个view controller加到window的root view controller中,其实在window的setRootViewController方法中,他还是会把view controller里面的view取出来,然后执行上面那段代码.</p>
+
+<p>这样我们就完成了第一个屏幕,接下来应该开始第二个屏幕内容了.首先还是建立一个UIViewController的子类,不过这一次我们选择使用另一种方式创建view &ndash; 读取XIB文件.</p>
+
+<h2>Create a View in Interface Builder</h2>
+
+<p>首先建立一个XIB文件.</p>
+
+<p> <img src="/images/ios-6_3.png" width="300" height="600">
+ <img src="/images/ios-6_4.png" width="300" height="600"></p>
+
+<p>然后点击XIB文件,拖一个UIView到空白处,这样我们就可以在Interface Builder上面加入各种view了.接下来我们选择DatePicker和UIButton拖到view里面,效果如下:</p>
+
+<p> <img src="/images/ios-6_5.png" width="300" height="600"></p>
+
+<p>接下来我们到对应的.m文件里创建一个DatePicker的property和addReminder方法:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="k">@interface</span> <span class="nc">WUSTLReminderViewController</span> <span class="p">()</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">weak</span><span class="p">)</span> <span class="kt">IBOutlet</span> <span class="bp">UIDatePicker</span> <span class="o">*</span><span class="n">datePicker</span><span class="p">;</span>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这里datePicker的属性是weak,这样做的好处是在这个view被销毁的时候,其子类也被销毁了.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">IBAction</span><span class="p">)</span><span class="nf">addReminder:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">sender</span> <span class="p">{</span>
+</span><span class='line'>    <span class="bp">NSDate</span> <span class="o">*</span><span class="n">date</span> <span class="o">=</span> <span class="nb">self</span><span class="p">.</span><span class="n">datePicker</span><span class="p">.</span><span class="n">date</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>现在我们有了view,并且在类里面也有对应的属性和方法,接下来就是把他俩连接起来,不过与第一个讲义不同的是,这个XIB文件不是在创建controller的时候创建的,而是后来单独创建的,所以还需要把它和一个view controller连接起来才行.打开view左侧的File&rsquo;s Owner,</p>
+
+<p> <img src="/images/ios-6_6.png" width="300" height="600"></p>
+
+<p>然后来到右边的属性栏,在class里面填写对应的view controller即可:</p>
+
+<p> <img src="/images/ios-6_7.png" width="300" height="600"></p>
+
+<p>创建view的最后一步就是把interface builder中的元素和类里面的属性和方法hook起来,方法如第一个讲义里面那样.</p>
+
+<h2>Loading a Nib File</h2>
+
+<p>我们还是来到AppDelegate那个didFinishLaunch方法里面去,并加上如下的代码:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="bp">NSBundle</span> <span class="o">*</span><span class="n">appBundle</span> <span class="o">=</span> <span class="p">[</span><span class="bp">NSBundle</span> <span class="n">mainBundle</span><span class="p">];</span>
+</span><span class='line'><span class="n">WUSTLReminderViewController</span> <span class="o">*</span><span class="n">rvc</span> <span class="o">=</span> <span class="p">[[</span><span class="n">WUSTLReminderViewController</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithNibName</span><span class="p">:</span><span class="s">@&quot;WUSTLReminderViewController&quot;</span> <span class="nl">bundle</span><span class="p">:</span><span class="n">appBundle</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>第一句话的意思是找到应用的bundle,bundle是一个应用里面的一个文件夹,里面主要装着可执行文件和一些资源(XIB文件).第二句话是初始化view controller并读取相应的NIB文件.其实上面的代码和接下来的代码效果是一样的:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="n">WUSTLReminderViewController</span> <span class="o">*</span><span class="n">rvc</span> <span class="o">=</span> <span class="p">[[</span><span class="n">WUSTLReminderViewController</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>因为如果直接调用init方法,系统最终还是会调用initWithNibName,所以调用init只是相当于把initWithNibName方法的两个参数都设为nil,不过系统会默认到当前应用的bundle下面去找对应的资源,他会去尝试找与当前view controller同名的Nib文件(Nib是XIB编译后的产物),所以为了方便起见,我们一般把XIB文件的名字和view controller的名字保持一致.</p>
+</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+
+<time datetime="2014-04-06T19:55:00-06:00" pubdate data-updated="true">Apr 6th, 2014</time></div>
+	
+
+
+</div>
+</article>
+</div>
+	<footer id="footer" class="inner">Copyright &copy; 2015
+ 李秋实 
+<br>
+Powered by Octopress.
+</footer>
+	
+
+</body>
+</html>
