@@ -4,7 +4,7 @@
   <title><![CDATA[My Octopress Blog]]></title>
   <link href="http://qiusli.github.io/atom.xml" rel="self"/>
   <link href="http://qiusli.github.io/"/>
-  <updated>2015-10-17T00:40:38-06:00</updated>
+  <updated>2015-10-17T01:33:52-06:00</updated>
   <id>http://qiusli.github.io/</id>
   <author>
     <name><![CDATA[Your Name]]></name>
@@ -12,5 +12,14 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Goldman Sachs]]></title>
+    <link href="http://qiusli.github.io/blog/2015/10/17/goldman-sachs/"/>
+    <updated>2015-10-17T00:42:09-06:00</updated>
+    <id>http://qiusli.github.io/blog/2015/10/17/goldman-sachs</id>
+    <content type="html"><![CDATA[<p>测试</p>
+]]></content>
+  </entry>
   
 </feed>
