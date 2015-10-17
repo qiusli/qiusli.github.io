@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[My Octopress Blog]]></title>
+  <title><![CDATA[归去来兮]]></title>
   <link href="http://qiusli.github.io/atom.xml" rel="self"/>
   <link href="http://qiusli.github.io/"/>
-  <updated>2015-10-17T01:33:52-06:00</updated>
+  <updated>2015-10-17T02:06:55-06:00</updated>
   <id>http://qiusli.github.io/</id>
   <author>
-    <name><![CDATA[Your Name]]></name>
+    <name><![CDATA[李秋实]]></name>
     
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
   
   <entry>
-    <title type="html"><![CDATA[Goldman Sachs]]></title>
+    <title type="html"><![CDATA[goldman sachs]]></title>
     <link href="http://qiusli.github.io/blog/2015/10/17/goldman-sachs/"/>
     <updated>2015-10-17T00:42:09-06:00</updated>
     <id>http://qiusli.github.io/blog/2015/10/17/goldman-sachs</id>
