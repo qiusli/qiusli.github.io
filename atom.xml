@@ -4,7 +4,7 @@
   <title><![CDATA[逆旅，行人]]></title>
   <link href="http://qiusli.github.io/atom.xml" rel="self"/>
   <link href="http://qiusli.github.io/"/>
-  <updated>2015-10-18T13:48:44-06:00</updated>
+  <updated>2015-10-18T14:43:54-06:00</updated>
   <id>http://qiusli.github.io/</id>
   <author>
     <name><![CDATA[李秋实]]></name>
@@ -1209,942 +1209,6 @@
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[正则表达式必知必会 4]]></title>
-    <link href="http://qiusli.github.io/blog/2014/05/17/regex4/"/>
-    <updated>2014-05-17T23:25:00-06:00</updated>
-    <id>http://qiusli.github.io/blog/2014/05/17/regex4</id>
-    <content type="html"><![CDATA[<h2>前后查找</h2>
-
-<p>#</p>
-
-<p><code>文本</code>:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;head&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;title&gt;</span>Ben Forta&#39;s Homepage<span class="nt">&lt;/title&gt;</span>
-</span><span class='line'><span class="nt">&lt;/head&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p><code>正则表达式</code>: \&lt;[Tt][Ii][Tt][Ll][Ee]>.*?\&lt;/[Tt][Ii][Tt][Ll][Ee]></p>
-
-<p><code>结果</code>: \<title>Ben Forta&rsquo;s Homepage\</title></p>
-
-<!-- more -->
-
-
-<p>本意是想要匹配出标题里面的文字,但是结果确实连标题的tag也一起匹配出来了,尽管我们可以使用上一章讲到的子表达式来把正则表达式分成3块然后取第2块出来,但是这样不免有些麻烦,这个时候就可以使用前后查找来解决这个问题.</p>
-
-<p><code>向前查找</code>(<code>?=</code>): 指定一个必须匹配但无需在结果中返回的模式.从语法上看,向前查找就是一个以<code>?=</code>开头的子表达式,需要匹配的文本跟在=后面.</p>
-
-<p>#</p>
-
-<p><code>文本</code>:</p>
-
-<p><a href="http://www.forta.com">http://www.forta.com</a></p>
-
-<p><a href="https://mail.forta.com">https://mail.forta.com</a></p>
-
-<p><a href="ftp://ftp.forta.com">ftp://ftp.forta.com</a></p>
-
-<p><code>正则表达式</code>: .+(?=:)</p>
-
-<p><code>结果</code>: http    https     ftp</p>
-
-<p>上面列出的URL地址里,协议和主机名以冒号<code>:</code>相隔.模式<code>.+</code>匹配任意文本,子表达式<code>(?=:)</code>匹配冒号<code>:</code>.值得注意的是被匹配到的<code>:</code>并没有出现在结果中,我们用<code>?=</code>向正则表达式引擎说明只要找到<code>:</code>就行了,不要把它包含在最终的结果里.</p>
-
-<p>#</p>
-
-<p><code>文本</code>:</p>
-
-<p><a href="http://www.forta.com">http://www.forta.com</a></p>
-
-<p><a href="https://mail.forta.com">https://mail.forta.com</a></p>
-
-<p><a href="ftp://ftp.forta.com">ftp://ftp.forta.com</a></p>
-
-<p><code>正则表达式</code>: .+(:)</p>
-
-<p><code>结果</code>: <a href="http:">http:</a>    <a href="https:">https:</a>     <a href="ftp:">ftp:</a></p>
-
-<p>这里的正则表达式没有使用向前查找,在最终的结果里面则包含了冒号.</p>
-
-<h2>向后查找</h2>
-
-<p><code>向后查找</code>(<code>?&lt;=</code>): 与向前查找大同小异.只是这次匹配但不返回的字符在首部了,它必须用在一个子表达式里.</p>
-
-<p>#</p>
-
-<p><code>文本</code>:</p>
-
-<p>ABC01: $23.12</p>
-
-<p>HGG42: $122.81</p>
-
-<p>AIOS98: $981.02</p>
-
-<p>HSW92: $72.33</p>
-
-<p><code>正则表达式</code>: \$[\d.]+</p>
-
-<p><code>结果</code>: $23.12    $122.81    $981.02    $72.33</p>
-
-<p>本想要匹配具体的金额,但是连同<code>$</code>也被返回了,这里就是向后匹配大显身手的时候.</p>
-
-<p>#</p>
-
-<p><code>文本</code>:</p>
-
-<p>ABC01: $23.12</p>
-
-<p>HGG42: $122.81</p>
-
-<p>AIOS98: $981.02</p>
-
-<p>HSW92: $72.33</p>
-
-<p><code>正则表达式</code>: (?&lt;=\$)[\d.]+</p>
-
-<p><code>结果</code>: 23.12    122.81    981.02    72.33</p>
-
-<h2>把向前和向后查找结合起来</h2>
-
-<p>#</p>
-
-<p><code>文本</code>:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;head&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;title&gt;</span>Ben Forta&#39;s Homepage<span class="nt">&lt;/title&gt;</span>
-</span><span class='line'><span class="nt">&lt;/head&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p><code>正则表达式</code>: (?&lt;=\&lt;[Tt][Ii][Tt][Ll][Ee]>).*?(?=\&lt;/[Tt][Ii][Tt][Ll][Ee]>)</p>
-
-<p><code>结果</code>: Ben Forta&rsquo;s Homepage</p>
-
-<p>这里我们在两个tag之前分别使用了向后和向前查找,表明匹配两个tag,但不返回它们,所以最后的结果就只包含字符.</p>
-
-<h2>对前后查找取非</h2>
-
-<p>我们前面遇到的向前查找和向后查找都是使用某个特殊字符来定位然后向前或者向后匹配,这种查找称为正向前查找(positive lookahead)和正向后查找(positive lookbehind).下面讲到的内容与之正好想法,称为负向前查找(negative lookahead)和负向后查找(negative lookbehind),顾名思义我们可以猜到它们其实就是匹配不以某个字符开头或者结尾的模式.</p>
-
-<p> <img src="http://qiusli.github.io/images/regex-4_1.png"></p>
-
-<p>#</p>
-
-<p><code>文本</code>: I paid $30 for 100 apples, 50 oranges and 30 pears. I saved $5 on this order.</p>
-
-<p><code>正则表达式</code>: (?&lt;=\$)\d+</p>
-
-<p><code>结果</code>: 30    5</p>
-
-<p>结果返回了以$开头的数字,既钱数. 接下来,如果我们只想查找水果个数.</p>
-
-<p>#</p>
-
-<p><code>文本</code>: I paid $30 for 100 apples, 50 oranges and 30 pears. I saved $5 on this order.</p>
-
-<p><code>正则表达式</code>: \b(?&lt;!\$)\d+\b</p>
-
-<p><code>结果</code>: 100    50    30</p>
-
-<p>最后的结果只包含那些不以$开头的数字.值得注意的是我在这个正则表达式里面使用了分隔符<code>\b</code>,如果不使用这个,$30中的0也会被匹配.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[正则表达式必知必会 3]]></title>
-    <link href="http://qiusli.github.io/blog/2014/05/17/regex3/"/>
-    <updated>2014-05-17T10:43:00-06:00</updated>
-    <id>http://qiusli.github.io/blog/2014/05/17/regex3</id>
-    <content type="html"><![CDATA[<h2>使用子表达式</h2>
-
-<p>有些短语虽然中间有空格,但是通常希望被作为一个整体显示在一行以便浏览,比如 Windows 2000.这样通常在Windows和2000之间插入非换行型空格<code>&amp;nbsp</code>,它是non-breaking space的缩写.</p>
-
-<p>#</p>
-
-<p><code>文本</code>: Hello, my name is Ben<code>&amp;nbsp;</code>Forta, and I am the author on SQL, Coldfusion, WAP, windosw<code>&amp;nbsp;&amp;nbsp;</code>2000, and other subjects.</p>
-
-<p><code>正则表达式</code>: <code>&amp;nbsp;</code>{2,}</p>
-
-<p><code>结果</code>: 空</p>
-
-<!-- more -->
-
-
-<p>我们本想通过这个正则表达式来匹配至少出现两个<code>&amp;nbsp;</code>,但是却什么都没有匹配出来,这是因为{2,}只作用于紧跟在它前面的一个字符 &ndash; 那是一个分号,所以这个正则表达式能匹配<code>&amp;nbsp;;;;</code>这种字符.</p>
-
-<p><code>子表达式</code>: 把一系列表达式划分为子表达式的目的是把那些子表达式当作一个个独立的单元来使用.子表达式需要用()括起来.</p>
-
-<p>#</p>
-
-<p><code>文本</code>: Hello, my name is Ben<code>&amp;nbsp;</code>Forta, and I am the author on SQL, Coldfusion, WAP, windosw<code>&amp;nbsp;&amp;nbsp;</code>2000, and other subjects.</p>
-
-<p><code>正则表达式</code>: (<code>&amp;nbsp;</code>){2,}</p>
-
-<p><code>结果</code>: <code>&amp;nbsp;&amp;nbsp;</code></p>
-
-<p>#</p>
-
-<p><code>文本</code>:</p>
-
-<p>ID: 042</p>
-
-<p>SEX: M</p>
-
-<p>DOB: 1987-08-17</p>
-
-<p>Status: Active</p>
-
-<p><code>正则表达式</code>: 19|20\d{2}</p>
-
-<p><code>结果</code>: 19</p>
-
-<p>这里的正则表达式是期望匹配出一个年份,但是结果却不是希望的那样.这是因为这个正则表达式被解释成了匹配19或者20紧接着2个数字.如果想要达到正确的效果,需要把19|20作为一个子表达式.</p>
-
-<p>#</p>
-
-<p><code>文本</code>:</p>
-
-<p>ID: 042</p>
-
-<p>SEX: M</p>
-
-<p>DOB: 1987-08-17</p>
-
-<p>Status: Active</p>
-
-<p><code>正则表达式</code>: (19|20)\d{2}</p>
-
-<p><code>结果</code>: 1987</p>
-
-<h3>子表达式的嵌套</h3>
-
-<p>#</p>
-
-<p><code>文本</code>: Pinging hog.forta.com [192.168.46.200] with 32 bytes data.</p>
-
-<p><code>正则表达式</code>: ((\d{1,2}) | (1\d{1,2}) | (2[0-4]\d) | (25[0-5]).){3}((\d{1,2}) | (1\d{1,2}) | (2[0-4]\d) | (25[0-5]))</p>
-
-<p><code>结果</code>: 192.168.46.200</p>
-
-<p>这里使用了子表达式的嵌套来匹配IP'地址.子表达式表示的意思分别是:</p>
-
-<ul>
-<li>任何一位或两位的数字</li>
-<li>任何以1开头的两位或者三位的数字</li>
-<li>任何以2开头的第二位为0-4的三位数字</li>
-<li>任何以25开头的第三位为0-5的三位数字</li>
-</ul>
-
-
-<p>这样的一个子表达式排除了其他不可能的情况,例如999.2222.222.0.</p>
-
-<h2>回溯引用:前后一致匹配</h2>
-
-<p>#</p>
-
-<p><code>文本</code>:</p>
-
-<p>\<H1>Welcome to my homepage \</H1></p>
-
-<p>Content is divided into two sections</p>
-
-<p>\<H2>ColdFusion\</H2></p>
-
-<p>Information about macro media coldfusion</p>
-
-<p>\<H2>Wireless\</H2></p>
-
-<p>Information about 802.11 and more</p>
-
-<p>\<H2>This is not a valid HTML\</H3></p>
-
-<p><code>正则表达式</code>: &lt;[Hh][1-6]>.*?&lt;/[Hh][1-6]></p>
-
-<p><code>结果</code>:</p>
-
-<p>\<H1>Welcome to my homepage \</H1></p>
-
-<p>\<H2>ColdFusion\</H2></p>
-
-<p>\<H2>Wireless\</H2></p>
-
-<p>\<H2>This is not a valid HTML\</H3></p>
-
-<p>这个正则表达式看起来很有用,但是在匹配最后一个title的时候得到了我们不想要的结果,把H3和H2匹配成了一对.这是因为正则表达式在匹配后一个tag的时候对前一个tag毫无所知,这时候就是回溯引用能用到的地方.</p>
-
-<p><code>回溯引用</code>: 允许正则表达式模式引用前面匹配的结果.</p>
-
-<p>在解决这个问题之前,先看一看一个回溯引用的简单应用.</p>
-
-<p>#</p>
-
-<p><code>文本</code>: this is a block of of text, several words here are are repeated, and and they should not be</p>
-
-<p><code>正则表达式</code>: \s+(\w+)\s+\1</p>
-
-<p><code>结果</code>: of of      are are        and and</p>
-
-<p>这里的正则表达式首先匹配一个或多个空格,然后使用一个子表达式匹配一个或多个字符,但是这里的子表达式不是用来做重复引用.接下来又匹配一个或多个空格,最后跟了一个\1,它的意思是引用第一个子表达式匹配到的字符,所以如果第一个表达式匹配到了A这个正则表达式就能匹配到 A A,\1就是一个回溯引用.\1表示引用第一个子表达式,如果前面有多个子表达式,可以通过\1,\2等来具体引用第几个子表达式.其实我们可以把子表达式想象成一个个变量,后面只是在使用前面定义的变量.</p>
-
-<p>现在我们可以来试图解决前面的问题了.
-#</p>
-
-<p><code>文本</code>:</p>
-
-<p>\<H1>Welcome to my homepage \</H1></p>
-
-<p>Content is divided into two sections</p>
-
-<p>\<H2>ColdFusion\</H2></p>
-
-<p>Information about macro media coldfusion</p>
-
-<p>\<H2>Wireless\</H2></p>
-
-<p>Information about 802.11 and more</p>
-
-<p>\<H2>This is not a valid HTML\</H3></p>
-
-<p><code>正则表达式</code>: &lt;[Hh]([1-6])>.*?&lt;/[Hh]\1></p>
-
-<p><code>结果</code>:
-\<H1>Welcome to my homepage \</H1></p>
-
-<p>\<H2>ColdFusion\</H2></p>
-
-<p>\<H2>Wireless\</H2>这里在第二个tag引用了第一个tag后面跟着的数字,所以两个tag的数字就一样了.</p>
-
-<p><code>note</code>: 回溯引用只能引用模式里的子表达式(用()括起来的正则表达式片段).</p>
-
-<h3>回溯引用在替换中的应用</h3>
-
-<p>#</p>
-
-<p><code>文本</code>: Hello, my name is Ben Forta, my email address is <a href="&#x6d;&#x61;&#x69;&#108;&#x74;&#x6f;&#58;&#x62;&#x65;&#110;&#x40;&#x66;&#x6f;&#x72;&#116;&#97;&#46;&#x63;&#x6f;&#x6d;">&#98;&#101;&#x6e;&#x40;&#102;&#111;&#114;&#116;&#97;&#x2e;&#99;&#x6f;&#109;</a></p>
-
-<p><code>正则表达式</code>: \w[\w.]*@[\w.]+.\w+</p>
-
-<p><code>结果</code>: <a href="&#x6d;&#97;&#105;&#108;&#116;&#x6f;&#58;&#98;&#x65;&#x6e;&#x40;&#102;&#x6f;&#x72;&#x74;&#97;&#x2e;&#99;&#x6f;&#x6d;">&#98;&#101;&#110;&#64;&#102;&#111;&#x72;&#116;&#97;&#46;&#99;&#111;&#109;</a></p>
-
-<p>这里的正则表达式匹配了一个邮件地址.</p>
-
-<p>如果我想要把邮件地址替换为可点击,需要使用下面这样的语法<code>\&lt;A href="mailto:ben@forta.com"&gt;ben@forta.com\&lt;/A&gt;</code>.</p>
-
-<p>我们可以使用回溯引用来完成这个操作,首先找到需要匹配的文本,然后再你用这个文本填充上面的语法:</p>
-
-<p>#</p>
-
-<p><code>文本</code>: Hello, my name is Ben Forta, my email address is <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#x3a;&#x62;&#x65;&#x6e;&#64;&#x66;&#111;&#x72;&#116;&#x61;&#46;&#x63;&#x6f;&#109;">&#x62;&#x65;&#x6e;&#64;&#102;&#x6f;&#114;&#x74;&#x61;&#46;&#x63;&#111;&#x6d;</a></p>
-
-<p><code>正则表达式</code>:  (\w[\w.]*@[\w.]+.\w+)</p>
-
-<p><code>替换</code>: \<A href="mailto:$1">$1\</A></p>
-
-<p><code>结果</code>: ben@forta.com成为了可点击的链接</p>
-
-<p>这里的正则表达式分为两步,首先匹配到需要的文本,接着再使用回溯引用得到第一步匹配到的文本,然后用这个文本填充.回溯引用可以跨模式使用,第一个模式你们匹配到的文本可以在第二个文本里使用.</p>
-
-<p><code>note</code>: 上面的例子中使用了$1而不是\1,这个是在JavaScript中的语法,比如在ColdFusion中就是\1,根据不同的语言有不同的语法,但效果都一样.</p>
-
-<p>#</p>
-
-<p><code>文本</code>:</p>
-
-<p>314-683-7956</p>
-
-<p>313-082-0121</p>
-
-<p>010-203-4121</p>
-
-<p>313-123-9921</p>
-
-<p><code>正则表达式</code>: (\d{3})(-)(\d{3})(-)(\d{4})</p>
-
-<p><code>替换</code>: ($1) $3-$5</p>
-
-<p><code>结果</code>:</p>
-
-<p>(314) 683-7956</p>
-
-<p>(313) 082-0121</p>
-
-<p>(010) 203-4121</p>
-
-<p>(313) 123-9921</p>
-
-<p>上面这个例子体现了如何回溯引用多个子表达式.达到的效果是替换电话号码的显示效果.</p>
-
-<h3>大小写转换</h3>
-
-<p>有些语言里的正则表达式允许使用一些特殊的元字符对匹配到的文本进行大小写转换</p>
-
-<p> <img src="http://qiusli.github.io/images/regex-3_1.png">
-#</p>
-
-<p><code>文本</code>:</p>
-
-<p>\<H1>Welcome to my homepage \</H1></p>
-
-<p>Content is divided into two sections</p>
-
-<p>\<H2>ColdFusion\</H2></p>
-
-<p>Information about macro media coldfusion</p>
-
-<p>\<H2>Wireless\</H2></p>
-
-<p>Information about 802.11 and more</p>
-
-<p>\<H2>This is not a valid HTML\</H3></p>
-
-<p><code>正则表达式</code>: (&lt;[Hh]1>)(.*?)(&lt;/[Hh]1>)</p>
-
-<p><code>替换</code>: $1\U$2\E$3</p>
-
-<p><code>结果</code>:</p>
-
-<p>\<H1>WELCOME TO MY HOMEPAGE \</H1></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[正则表达式必知必会 2]]></title>
-    <link href="http://qiusli.github.io/blog/2014/05/16/regex2/"/>
-    <updated>2014-05-16T21:28:00-06:00</updated>
-    <id>http://qiusli.github.io/blog/2014/05/16/regex2</id>
-    <content type="html"><![CDATA[<h2>重复匹配</h2>
-
-<h3>匹配一个或多个字符</h3>
-
-<p><code>+</code>: 匹配一个或多个字符(不匹配零个字符的情况).</p>
-
-<p>#</p>
-
-<p><code>文本</code>: Send personal email to <a href="&#x6d;&#x61;&#105;&#x6c;&#116;&#x6f;&#58;&#x62;&#x65;&#110;&#64;&#102;&#x6f;&#114;&#116;&#97;&#x2e;&#99;&#111;&#109;&#x2e;">&#98;&#x65;&#110;&#x40;&#102;&#111;&#x72;&#116;&#x61;&#46;&#x63;&#111;&#109;&#x2e;</a> For questions about the book use <a href="&#109;&#x61;&#x69;&#x6c;&#x74;&#x6f;&#58;&#x73;&#117;&#112;&#x70;&#111;&#x72;&#x74;&#64;&#x66;&#111;&#x72;&#x74;&#97;&#46;&#x63;&#111;&#x6d;&#x2e;">&#115;&#x75;&#x70;&#112;&#111;&#114;&#x74;&#x40;&#x66;&#111;&#114;&#116;&#97;&#46;&#x63;&#x6f;&#x6d;&#x2e;</a> Feel free to send unsolicited email to <a href="&#109;&#x61;&#105;&#108;&#x74;&#x6f;&#x3a;&#115;&#x70;&#97;&#109;&#64;&#x66;&#111;&#x72;&#116;&#x61;&#x2e;&#99;&#111;&#x6d;&#x2e;">&#115;&#x70;&#97;&#x6d;&#x40;&#x66;&#111;&#x72;&#116;&#97;&#46;&#99;&#111;&#x6d;&#x2e;</a></p>
-
-<p><code>正则表达式</code>: \w+@\w+.\w+</p>
-
-<p><code>结果</code>: <a href="&#x6d;&#x61;&#105;&#x6c;&#116;&#111;&#x3a;&#98;&#101;&#x6e;&#x40;&#x66;&#111;&#x72;&#116;&#x61;&#46;&#99;&#x6f;&#x6d;">&#x62;&#101;&#x6e;&#64;&#x66;&#x6f;&#114;&#x74;&#97;&#46;&#x63;&#x6f;&#x6d;</a>  <a href="&#x6d;&#x61;&#x69;&#108;&#116;&#111;&#58;&#x73;&#x75;&#x70;&#x70;&#x6f;&#114;&#x74;&#x40;&#102;&#111;&#114;&#x74;&#x61;&#x2e;&#99;&#111;&#109;">&#115;&#x75;&#112;&#112;&#111;&#114;&#116;&#64;&#x66;&#x6f;&#114;&#x74;&#x61;&#46;&#99;&#x6f;&#x6d;</a>  <a href="&#109;&#97;&#x69;&#x6c;&#x74;&#x6f;&#x3a;&#x73;&#x70;&#97;&#109;&#x40;&#102;&#111;&#x72;&#116;&#x61;&#46;&#99;&#x6f;&#109;">&#115;&#112;&#x61;&#109;&#x40;&#x66;&#111;&#x72;&#116;&#97;&#x2e;&#99;&#x6f;&#109;</a></p>
-
-<!-- more -->
-
-
-<p><code>*</code>: 匹配零个或多个字符.</p>
-
-<p><code>?</code>: 匹配零个或一个字符.</p>
-
-<p>#</p>
-
-<p><code>文本</code>: The URL is <a href="http://www.forta.com,">http://www.forta.com,</a> to connect securely use <a href="https://www.forta.com.">https://www.forta.com.</a></p>
-
-<p><code>正则表达式</code>: https?://[\w./]+</p>
-
-<p><code>结果</code>:  <a href="http://www.forta.com">http://www.forta.com</a>   <a href="https://www.forta.com">https://www.forta.com</a></p>
-
-<p>这里在s后面加了<code>?</code>,表示s既可以出现一次也可以不出现.</p>
-
-<h2>匹配的重复次数</h2>
-
-<p><code>重复次数 (interval)</code>: 精确定义<code>+</code>,<code>*</code>等元字符代表的字符的重复个数.这个个数定义在{}之间.</p>
-
-<p>#</p>
-
-<p>匹配RGB值(RGB值是由6个连续的任意字符或者0-9间的数字构成)</p>
-
-<p><code>文本</code>: \<body bgcolor="#336655" text="#FFFFFF" height=10 width=20></p>
-
-<p><code>正则表达式</code>: #[a-zA-Z0-9][a-zA-Z0-9][a-zA-Z0-9][a-zA-Z0-9][a-zA-Z0-9][a-zA-Z0-9]</p>
-
-<p><code>结果</code>: #336655, #FFFFFF</p>
-
-<p>修改后:</p>
-
-<p>#</p>
-
-<p>匹配RGB值(RGB值是由6个连续的任意字符或者0-9间的数字构成)</p>
-
-<p><code>文本</code>: \<body bgcolor="#336655" text="#FFFFFF" height=10 width=20></p>
-
-<p><code>正则表达式</code>: #[a-zA-Z0-9]{6}</p>
-
-<p><code>结果</code>: #336655, #FFFFFF</p>
-
-<p>上面的正则表达式规定{6}之前的字符连续出现6次.###为重复次数设定一个区间###</p>
-
-<p>#</p>
-
-<p><code>文本</code>: 4/8/03  10-6-2004  2/2/2  01-01-01</p>
-
-<p><code>正则表达式</code>: \d{1,2}/[-\/]d{1,2}[-\/]\d{2,4}</p>
-
-<p><code>结果</code>: 3/8/03 10-6-2004 01-01-01</p>
-
-<p>上面在\d后面跟上了这个字符具体出现的次数区间,两边都是inclusive.###匹配"至少重复多少次"###</p>
-
-<p>#</p>
-
-<p><code>文本</code>:</p>
-
-<p>1001: $489.02</p>
-
-<p>1002: $42.33</p>
-
-<p>1003: $1003.21</p>
-
-<p>1004: $104.55</p>
-
-<p>1005: $21.21</p>
-
-<p><code>正则表达式</code>: \d+: \$\d{3,}.\d{2}</p>
-
-<p><code>结果</code>: 1001: $489.02    1003: $1003.21    1004: $104.55</p>
-
-<p>上面的正则表达式中\d{3,}表示至少出现3次数字,换句话说就是找金额大于100美元的匹配.</p>
-
-<h2>防止过度匹配</h2>
-
-<p>#</p>
-
-<p><code>文本</code>: This offer is not available for customers living in <B>DC</B> and <B>MO</B></p>
-
-<p><code>正则表达式</code>: &lt;[Bb]>.*&lt;[Bb]></p>
-
-<p><code>结果</code>: <B>DC</B> and <B>MO</B></p>
-
-<p>这样的结果显然不是我们预期的,这时因为<code>.*</code>属于贪婪型匹配,它们进行匹配的模式是多多益善而不是适可而止.它们会尽可能从一段文本的开头一直匹配到这段文本的结尾,而不是从这段文本的开头碰到第一个匹配为止.</p>
-
-<p>为了达到我们想要的效果,我们需要使用元字符的<code>懒惰型</code>版本,这个版本与<code>贪婪型</code>正好相反.<code>懒惰型</code>版本的写法很简单,只需要在后面加上<code>?</code>后缀即可.</p>
-
-<p> <img src="http://qiusli.github.io/images/regex-2_1.png"></p>
-
-<p>所以,我们可以使用<code>懒惰型</code>字符匹配来解决上面的问题.</p>
-
-<p>#</p>
-
-<p><code>文本</code>: This offer is not available for customers living in <B>DC</B> and <B>MO</B></p>
-
-<p><code>正则表达式</code>: &lt;[Bb]>.*?&lt;[Bb]></p>
-
-<p><code>结果</code>: <B>DC</B>     <B>MO</B></p>
-
-<h2>位置匹配</h2>
-
-<p>位置匹配用来解决在什么地方进行字符串匹配操作的问题.</p>
-
-<p>#</p>
-
-<p><code>文本</code>: The cat scattered his food all over the room.</p>
-
-<p><code>正则表达式</code>: cat</p>
-
-<p><code>结果</code>: The <code>cat</code> s<code>cat</code>tered his food all over the room.</p>
-
-<p>这里的cat把一句话中的所有cat都找了出来,无论匹配的字符是单独的还是单词的一部分.</p>
-
-<p>解决这个问题的办法只有一个:使用边界限定符,也就是在正则表达式里用一些特殊的元字符来表明我们想要匹配操作在什么位置发生.</p>
-
-<h3>单词边界</h3>
-
-<p><code>\b</code>: 匹配单词的开始或结尾.</p>
-
-<p>#</p>
-
-<p><code>文本</code>: The cat scattered his food all over the room.</p>
-
-<p><code>正则表达式</code>: \bcat\b</p>
-
-<p><code>结果</code>: The <code>cat</code> scattered his food all over the room.</p>
-
-<p>单词cat的前后都有一个空格,空格是用来分割单词的字符之一.而单词scattered中的cat不能与之匹配,因为scattered中的cat前一个字符是s后一个字符是t,都不能与<code>\b</code>匹配.</p>
-
-<p><code>\b</code>中的b是boundary的意思,它匹配这样一个位置,这个位置位于一个能用来构成单词的字符(字母数字和下划线, 即\w)和不能构成单词的字符(即\W)之间.
-值得注意的是如果想要匹配一个完整的单词,就需要在前后都加上<code>\b</code>.</p>
-
-<p>#</p>
-
-<p><code>文本</code>: The captain wear his cap and cape proudly as he sat and listening to the recap of how his crew saved a men from a capsized vessel.</p>
-
-<p><code>正则表达式</code>: \bcap</p>
-
-<p><code>结果</code>: The <code>cap</code>tain wear his <code>cap</code> and <code>cap</code>e proudly as he sat and listening to the recap of how his crew saved a men from a <code>cap</code>sized vessel.</p>
-
-<p>这里的正则表达式匹配以cap开头的任意单词.</p>
-
-<p>#</p>
-
-<p><code>文本</code>: The captain wear his cap and cape proudly as he sat and listening to the recap of how his crew saved a men from a capsized vessel.</p>
-
-<p><code>正则表达式</code>: cap\b</p>
-
-<p><code>结果</code>: The captain wear his <code>cap</code> and cape proudly as he sat and listening to the re<code>cap</code> of how his crew saved a men from a capsized vessel.</p>
-
-<p>这里的正则表达式匹配以cap结尾的任意单词.</p>
-
-<p>如果想要表面不匹配单词边界,可以使用<code>\B</code>.</p>
-
-<p>#</p>
-
-<p><code>文本</code>: Please enter the nine-digit id as it appeared on your color - coded pass-key.</p>
-
-<p><code>正则表达式</code>: \B-\B</p>
-
-<p><code>结果</code>: color - coded</p>
-
-<p>\B-\B匹配前后都不是单词边界的连字符.</p>
-
-<h3>字符串边界</h3>
-
-<p><code>^</code>: 匹配字符串开头.
-<code>$</code>: 匹配字符串结尾.</p>
-
-<p><code>note</code>: <code>^</code>是一个多用途的元字符.当它在[]之间并且紧跟在[之后的时候,它表示取非.如果在字符集合的外面并在一个模式开头的时候,它将匹配字符串的开头.</p>
-
-<p>#</p>
-
-<p><code>文本</code>:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;</span>
-</span><span class='line'><span class="nt">&lt;person&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;name&gt;</span>Qiushi\<span class="nt">&lt;/name&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;age&gt;</span>25\<span class="nt">&lt;/age&gt;</span>
-</span><span class='line'><span class="nt">&lt;/person&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p><code>正则表达式</code>: \&lt;\?xml .* \?></p>
-
-<p><code>结果</code>: \&lt;?xml version=&ldquo;1.0&rdquo; encoding=&ldquo;UTF-8&rdquo; ?></p>
-
-<p>一个合法的XML文档都需要以文本的第一行作为开始,这里我想用这个正则表达式来匹配这个XML的头行,这里似乎奏效,但是其实不然.因为即使我在第一行前面加上一些支付,这个匹配也能成功.</p>
-
-<p>#</p>
-
-<p><code>文本</code>:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'>some text before
-</span><span class='line'><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;</span>
-</span><span class='line'><span class="nt">&lt;person&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;name&gt;</span>Qiushi<span class="nt">&lt;/name&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;age&gt;</span>25<span class="nt">&lt;/age&gt;</span>
-</span><span class='line'><span class="nt">&lt;/person&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p><code>正则表达式</code>: \&lt;\?xml .* \?></p>
-
-<p><code>结果</code>: \&lt;?xml version=&ldquo;1.0&rdquo; encoding=&ldquo;UTF-8&rdquo; ?></p>
-
-<p>但显然这不是我想要的结果,因为头文件不在第一行,表示这不是一个合法的XML文件.</p>
-
-<p>#</p>
-
-<p><code>文本</code>:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;</span>
-</span><span class='line'><span class="nt">&lt;person&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;name&gt;</span>Qiushi<span class="nt">&lt;/name&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;age&gt;</span>25<span class="nt">&lt;/age&gt;</span>
-</span><span class='line'><span class="nt">&lt;/person&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p><code>正则表达式</code>: ^\s<em> \&lt;\?xml .</em> \?></p>
-
-<p><code>结果</code>: \&lt;?xml version=&ldquo;1.0&rdquo; encoding=&ldquo;UTF-8&rdquo; ?></p>
-
-<p>这一次对了,^\s*表示在文本的开头能有空格(包括回车,换行等), 但不能以其他的字符开头.</p>
-
-<p>#</p>
-
-<p><code>文本</code>: \<html>haha\</html></p>
-
-<p><code>正则表达式</code>: \&lt;/[Hh][Tt][Mm][Ll]>\s$</p>
-
-<p><code>匹配</code>: \</html></p>
-
-<p>这里的正则表达式以\s$结尾,表示能有空格,但不能有其他字符.</p>
-
-<h3>分行匹配模式</h3>
-
-<p><code>?m</code>: 分行匹配模式将把行分割符当作一个字符串分隔符来对待.在分行匹配模式下,<code>^</code>不仅匹配字符串的开头,还匹配分隔符(换行符)后面开始的位置.<code>$</code>不仅匹配字符串的结束,还匹配分隔符(换行符)后面的结束位置.在使用分行匹配模式的时候,<code>?m</code>必须出现在正则表达式的最前面.</p>
-
-<p>#</p>
-
-<p><code>文本</code>:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">function</span> <span class="nx">doSpellCheck</span><span class="p">(</span><span class="nx">form</span><span class="p">,</span> <span class="nx">field</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>  <span class="c1">// make sure not empty</span>
-</span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="nx">field</span><span class="p">.</span><span class="nx">value</span> <span class="o">==</span> <span class="s2">&quot; &quot;</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>      <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="c1">// init</span>
-</span><span class='line'>  <span class="kd">var</span> <span class="nx">windowName</span> <span class="o">=</span> <span class="s2">&quot;spellWindow&quot;</span><span class="p">;</span>
-</span><span class='line'>  <span class="p">...</span>
-</span><span class='line'>  
-</span><span class='line'>  <span class="c1">// Done</span>
-</span><span class='line'>  <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p><code>正则表达式</code>: ?m^\s<em>//.</em>$</p>
-
-<p><code>结果</code>: // make sure not empty        // init       // Done</p>
-
-<p><code>^\s*//.*$</code>匹配一个字符串的开始,然后是任意多的空白字符,然后是//.再往后是任意文本,最后是字符串的结束.不过因为<code>*</code>是贪婪型字符,它将匹配第一条注释开始直到文本的结尾.加上<code>?m</code>之后,<code>?m^\s*//.*$</code>将把换行符作为一个字符串分隔符,这样就可以把每一行注释匹配出来了.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[正则表达式必知必会 1]]></title>
-    <link href="http://qiusli.github.io/blog/2014/05/15/regex/"/>
-    <updated>2014-05-15T22:27:00-06:00</updated>
-    <id>http://qiusli.github.io/blog/2014/05/15/regex</id>
-    <content type="html"><![CDATA[<h2>匹配单个字符</h2>
-
-<h3>匹配纯文本</h3>
-
-<p>#</p>
-
-<p><code>文本</code>: My name is Ben</p>
-
-<p><code>正则表达式</code>:  Ben</p>
-
-<p><code>结果</code>: <code>Ben</code></p>
-
-<p>这里使用的正则表达式是纯文本,匹配原始文本里面的<code>Ben</code>.</p>
-
-<!-- more -->
-
-
-<p>#</p>
-
-<p><code>文本</code>: Hello, my name is Ben, my website is benforta.com</p>
-
-<p><code>正则表达式</code>:  my</p>
-
-<p><code>结果</code>: <code>my</code></p>
-
-<p>这里的正则表达式匹配了第一个<code>my</code>,但忽略了第二个<code>my</code>.默认情况下,正则表达式只匹配第一个匹配的结果,如果想把所有结果找出来,(例如在JavaScript里),可以使用g(global).</p>
-
-<p>此外,正则表达式会区分大小写,my可以匹配my,但不能匹配My.</p>
-
-<h3>匹配任意字符</h3>
-
-<p><code>.</code>在正则表达式里面可以匹配任意字符,甚至是字符本身.</p>
-
-<p>#</p>
-
-<p><code>文本</code>: sales.xls  sales1.xls   sales2.xls   ape.xls   enrope.xls   na1.xls  na2.xls</p>
-
-<p><code>正则表达式</code>: sales.</p>
-
-<p><code>结果</code>: sales.  sales1  sales2</p>
-
-<p>这里的<code>.</code>匹配了sales后的单个字符,所以只有sales1.xls和sales2.xls与之匹配.</p>
-
-<p>#</p>
-
-<p><code>文本</code>: sales.xls  sales1.xls   sales2.xls   ape.xls   enrope.xls   na1.xls  na2.xls</p>
-
-<p><code>正则表达式</code>: .a..xls</p>
-
-<p><code>结果</code>: na1.xls  na2.xls</p>
-
-<p>这里的正则表达式中有一个<code>\</code>,表示转义.转义之后的<code>.</code>字符不再表示其在正则表达式里的意思,而只匹配一个普通的点.</p>
-
-<h2>匹配一组字符</h2>
-
-<h3>匹配多个字符中的某一个</h3>
-
-<p>#</p>
-
-<p><code>文本</code>: sales.xls  sales1.xls   sales2.xls  sa1.xls  ape.xls   enrope.xls   na1.xls  na2.xls</p>
-
-<p><code>正则表达式</code>: [ns]a..xls</p>
-
-<p><code>结果</code>: sa1.xls  na1.xls  na2.xls</p>
-
-<p>这里的正则表达式中的<code>[na]</code>表示匹配n和a中的任意一个字符.</p>
-
-<p>#</p>
-
-<p><code>文本</code>: The phrase &ldquo;regular expression&rdquo; is often abbreviated as &ldquo;regex&rdquo; or &ldquo;RegEx&rdquo;</p>
-
-<p><code>正则表达式</code>: [Rr]eg[Ee]x</p>
-
-<p><code>结果</code>: regex, RegEx</p>
-
-<h3>利用字符集合区间</h3>
-
-<p>#</p>
-
-<p><code>文本</code>: sales.xls  sales1.xls   sales2.xls  sa1.xls  ape.xls   enrope.xls   na1.xls  na2.xls  sam.xls</p>
-
-<p><code>正则表达式</code>: [ns]a[0123456789].xls</p>
-
-<p><code>结果</code>: sa1.xls  na1.xls  na2.xls</p>
-
-<p>这里的文本中新加了一个sam.xls,但是我们只想匹配以n或s开头,以数字结尾的字符串,所以我们定义了一个数字区间来匹配所有的数字.但是这里的字符区间只匹配0-9,不能匹配10,20或者100.</p>
-
-<ul>
-<li>tips: 上面的[0123456789]可以用[0-9]来代替</li>
-<li>还有一些可以也能使用连字符来代替的有: [a-z] [A-Z] 等等.</li>
-</ul>
-
-
-<p><code>note</code>: 连字符<code>-</code>是一个特殊的元字符,作为元字符它只能被用在[]之间,否则它就只是一个普通的字符与-匹配,不需要转义.</p>
-
-<p>在一个字符集合里可以给出多个字符区间,比如下面这个集合里可以匹配任意的字母和数字(0-9之间):</p>
-
-<p><code>[a-zA-Z0-9]</code></p>
-
-<p>#</p>
-
-<p>匹配RGB值(RGB值是由6个连续的任意字符或者0-9间的数字构成)</p>
-
-<p><code>文本</code>: \<body bgcolor="#336655" text="#FFFFFF" height=10 width=20></p>
-
-<p><code>正则表达式</code>: #[a-zA-Z0-9][a-zA-Z0-9][a-zA-Z0-9][a-zA-Z0-9][a-zA-Z0-9][a-zA-Z0-9]</p>
-
-<p><code>结果</code>: #336655, #FFFFFF</p>
-
-<h3>取非匹配</h3>
-
-<p>#</p>
-
-<p><code>文本</code>: sales.xls  sales1.xls   sales2.xls  sa1.xls  ape.xls   enrope.xls   na1.xls  na2.xls  sam.xls</p>
-
-<p><code>正则表达式</code>: [ns]a[^0-9].xls</p>
-
-<p><code>结果</code>: sam.xls</p>
-
-<p>这里的<code>^</code>表示非,所以[^0-9]就表示不是0-9中数字的任意一个.</p>
-
-<h2>使用元字符</h2>
-
-<h3>对特殊字符进行转义</h3>
-
-<p><code>元字符</code>: 在正则表达式里面有特殊含义的字符,例如<code>.</code>是一个元字符,用来匹配任意字符.<code>^</code>是一个元字符,用来取非.</p>
-
-<p><code>转义</code>: 如果想要匹配字面意义上的元字符(而不是其在正则表达式里的意思),就需要进行转义.通常是在元字符前面加上反斜杠<code>\</code>.</p>
-
-<h1></h1>
-
-<p><code>文本</code>:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">myArray</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Array</span><span class="p">();</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">if</span> <span class="p">(</span><span class="nx">myArray</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>  <span class="p">...</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p><code>正则表达式</code>: myArray[0]</p>
-
-<p><code>结果</code>: myArray</p>
-
-<p>本想匹配整个myArray[0],但却只匹配了myArray.因为[0]在正则表达式里表示集合中的一个,这里就是0,所以它期待的结果是myArray后面跟上0-9之间任意一个数字,这里没有匹配的结果,所以只匹配到了前面的字符串,所以需要对[]进行转义.</p>
-
-<p><code>正确的正则表达式</code>: myArray[0] 或者myArray[[0-9]]来匹配第0个到第9个数组.</p>
-
-<p><code>note</code>: 因为<code>\</code>在正则表达式里面也是一个元字符,如果想要匹配\,也需要对其转义,即<code>\\</code>.</p>
-
-<p>下面的这张图表总结了一些特殊的元字符:</p>
-
-<p> <img src="http://qiusli.github.io/images/regex-1_1.png"></p>
-
-<p><code>tips</code>: 可以使用<code>\r\n</code>来匹配一个回车+换行的组合.</p>
-
-<h3>匹配特定的字符类别</h3>
-
-<h4>匹配数字与非数字</h4>
-
-<p><code>\d</code>: 匹配任意一个数字字符,等价于[0-9]</p>
-
-<p><code>\D</code>: 匹配任意一个非数字字符,等价于[^0-9]</p>
-
-<h4>匹配字母和数字与非字母和数字</h4>
-
-<p><code>字母和数字</code>: A-Z, a-z, 0-9和下划线<code>_</code>.</p>
-
-<p><code>\w</code>: 匹配任意一个字母数字字符或下划线集合(等价于[A-Za-a0-9])</p>
-
-<p><code>\W</code>: 与上面的匹配相反(等价于[^A-Za-a0-9])</p>
-
-<h4>匹配空白字符和飞空白字符</h4>
-
-<p><code>\s</code>: 匹配任意一个空白字符(等价于[\f\n\r\t\v])</p>
-
-<p><code>\S</code>: 匹配任意一个非空白字符(等价于[^\f\n\r\t\v])</p>
-
-<h4>使用POSIX字符类</h4>
-
-<p>POSIX是许多正则表达式(但不是所有,例如JavaScript就不支持POSIX)都支持的一种简写形式.</p>
-
-<p>下面是POSIX字符表:</p>
-
-<p> <img src="http://qiusli.github.io/images/regex-1_2.png"></p>
-
-<p>可以使用POSIX来代替上面的一个例子:</p>
-
-<p>#</p>
-
-<p><code>文本</code>: \<body bgcolor="#336655" text="#FFFFFF" height=10 width=20></p>
-
-<p><code>正则表达式</code>: #[[:xdigit:]][[:xdigit:]][[:xdigit:]][[:xdigit:]][[:xdigit:]][[:xdigit:]]</p>
-
-<p><code>结果</code>: #336655, #FFFFFF</p>
-
-<p>这里的POSIX使用了两层括号,里面的一层表示POSIX字符类,外面的那一层表示字符集和.</p>
-]]></content>
-  </entry>
-  
-  <entry>
     <title type="html"><![CDATA[iOS Programming 8 (UITableView &amp; UITableViewController)]]></title>
     <link href="http://qiusli.github.io/blog/2014/05/09/ios-programming-8-uitableview-and-uitableviewcontroller/"/>
     <updated>2014-05-09T12:20:00-06:00</updated>
@@ -3177,6 +2241,1230 @@
 
 
 <p>因为如果直接调用init方法,系统最终还是会调用initWithNibName,所以调用init只是相当于把initWithNibName方法的两个参数都设为nil,不过系统会默认到当前应用的bundle下面去找对应的资源,他会去尝试找与当前view controller同名的Nib文件(Nib是XIB编译后的产物),所以为了方便起见,我们一般把XIB文件的名字和view controller的名字保持一致.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[iOS Programming 5(Redrawing and UIScrollView)]]></title>
+    <link href="http://qiusli.github.io/blog/2014/04/04/ios-programming-5/"/>
+    <updated>2014-04-04T13:08:00-06:00</updated>
+    <id>http://qiusli.github.io/blog/2014/04/04/ios-programming-5</id>
+    <content type="html"><![CDATA[<p>在上一篇博客中,我们创建了一个画同心圆的app,这篇博客将继续在那上面扩展,当用户在屏幕上点击的时候同心圆会改变颜色.此外,还将在app里面加上UIScrollView,让用户通过scroll的方式浏览比屏幕本身大的view.</p>
+
+<h2>改变同心圆颜色</h2>
+
+<p>既然是通过点击来改变同心圆的颜色,那么我们肯定会想到用touch event来实现,在用户touch之后需要改变颜色,我们可以通过创建一个公有变量,然后在touch方法里改变他的颜色. 我们现在项目的格局如下:</p>
+
+<!--more-->
+
+
+<p> <img src="http://qiusli.github.io/images/ios-5_1.png" width="300" height="600"></p>
+
+<p>首先我们在<code>BNRHypnosisterView.m</code>的头部创建一个property文件:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="k">@interface</span> <span class="nc">BNRHypnosisterView</span> <span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">strong</span><span class="p">,</span> <span class="k">nonatomic</span><span class="p">)</span> <span class="bp">UIColor</span> <span class="o">*</span><span class="n">circleColor</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@implementation</span> <span class="nc">BNRHypnosisterView</span>
+</span><span class='line'><span class="p">...</span>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在这里创建property而不是在header文件里面创建的原因是隐藏这个变量.一个类的header文件是对所有类可见,一种默认的做法是如果变量是定义在header文件里面,那么就表示他可以和其他所有的类互动,如果我想要这个变量或者方法只在这个类中使用,那么可以把它定义在.m的category里面.这相当于对其他类隐藏了这个变量或方法,即使其子类都不能看到.</p>
+
+<p>声明完之后就应该开始定义了,我们可以到<code>initWithFrame</code>方法里给它首先赋予一个默认值:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">initWithFrame:</span><span class="p">(</span><span class="bp">CGRect</span><span class="p">)</span><span class="nv">frame</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="nb">self</span> <span class="o">=</span> <span class="p">[</span><span class="nb">super</span> <span class="nl">initWithFrame</span><span class="p">:</span><span class="n">frame</span><span class="p">];</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="nb">self</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="c1">// Initialization code</span>
+</span><span class='line'>        <span class="nb">self</span><span class="p">.</span><span class="n">backgroundColor</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIColor</span> <span class="n">clearColor</span><span class="p">];</span>
+</span><span class='line'>        <span class="nb">self</span><span class="p">.</span><span class="n">circleColor</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIColor</span> <span class="n">lightGrayColor</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nb">self</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这样在程序启动的时候同心圆的颜色是灰色.接下来就应该实现touch even了, 当用户点击后就改变<code>circleColor</code>的颜色我们通过实现默认的<code>touchesBegan</code>方法来实现.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="nf">touchesBegan:</span><span class="p">(</span><span class="bp">NSSet</span> <span class="o">*</span><span class="p">)</span><span class="nv">touches</span> <span class="nf">withEvent:</span><span class="p">(</span><span class="bp">UIEvent</span> <span class="o">*</span><span class="p">)</span><span class="nv">event</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kt">float</span> <span class="n">red</span> <span class="o">=</span> <span class="p">(</span><span class="n">arc4random</span><span class="p">()</span> <span class="o">%</span> <span class="mi">100</span><span class="p">)</span> <span class="o">/</span> <span class="mf">100.0</span><span class="p">;</span>
+</span><span class='line'>    <span class="kt">float</span> <span class="n">green</span> <span class="o">=</span> <span class="p">(</span><span class="n">arc4random</span><span class="p">()</span> <span class="o">%</span> <span class="mi">100</span><span class="p">)</span> <span class="o">/</span> <span class="mf">100.0</span><span class="p">;</span>
+</span><span class='line'>    <span class="kt">float</span> <span class="n">blue</span> <span class="o">=</span> <span class="p">(</span><span class="n">arc4random</span><span class="p">()</span> <span class="o">%</span> <span class="mi">100</span><span class="p">)</span> <span class="o">/</span> <span class="mf">100.0</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="bp">UIColor</span> <span class="o">*</span><span class="n">randomColor</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIColor</span> <span class="nl">colorWithRed</span><span class="p">:</span><span class="n">red</span> <span class="nl">green</span><span class="p">:</span><span class="n">green</span> <span class="nl">blue</span><span class="p">:</span><span class="n">blue</span> <span class="nl">alpha</span><span class="p">:</span><span class="mi">1</span><span class="p">];</span>
+</span><span class='line'>    <span class="nb">self</span><span class="p">.</span><span class="n">circleColor</span> <span class="o">=</span> <span class="n">randomColor</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>上面这个方法就是在每次用户点击的时候都重新开始算rgb在<code>randomColor</code>中的分量,然后得到一个新的<code>randomColor</code>并把它赋值给circleColor.这样<code>circleColor</code>的颜色就变了,现在我们可以运行看看效果:</p>
+
+<p> <img src="http://qiusli.github.io/images/ios-5_2.png" width="300" height="600"></p>
+
+<p>我们发现无论怎么点击屏幕,颜色都不会改变,这是为什么呢?这里有两个原因:</p>
+
+<ul>
+<li>UIView的drawRect方法默认情况下只在加载的时候被调用,所以无论我们怎么点击屏幕,这个方法都不会被再次调用,所以所有的view都没有被重新render.</li>
+<li>在drawRect方法里面没有改变同心圆的颜色,改变的代码如下:</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'> <span class="c1">// [[UIColor lightGrayColor] setStroke];</span>
+</span><span class='line'>    <span class="p">[</span><span class="nb">self</span><span class="p">.</span><span class="n">circleColor</span> <span class="n">setStroke</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这里又涉及到iOS的一种机制:<code>run loop</code>. 它指的是当iOS app 在运行的时候,他会开始一个<code>run loop</code>,这个loop是专门用来监听事件的.当一次事件发生时(例如touch),<code>run loop</code>会找到相应的handler来处理这次事件,当这个事件被处理后,<code>run loop</code>继续执行. 在我们这个程序中,当<code>run loop</code>发现touch事件时,会停下来调用<code>touchesBegan</code>方法处理它,在处理完后重新回到<code>tun loop</code>中.在重新回到<code>run loop</code>后,它会检查那些在上次执行handler之后有改变并且需要重新render的view,然后<code>run loop</code>会发送drawRect:方法给这些view,然他们重新去render.但是为什么我们在点击屏幕后view并没有被重新render呢?原来这是因为需要被重新render的view不是系统默认的,如果他们是默认的(例如UIButton, UIText),render会自动执行,否则我们需要调用view的<code>setNeedsDisplay</code>方法来让他重新render.在<code>touchesBegan:</code>方法的最后一句,我们看到<code>circleColor</code>被重新赋值(其实是它的setter方法被调用了),那么我们可以重载它的setter方法,并在里面调用<code>setNeedsDisplay</code>方法.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="nf">setCircleColor:</span><span class="p">(</span><span class="bp">UIColor</span> <span class="o">*</span><span class="p">)</span><span class="nv">circleColor</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">_circleColor</span> <span class="o">=</span> <span class="n">circleColor</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">[</span><span class="nb">self</span> <span class="n">setNeedsDisplay</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>再次运行,一切OK.</p>
+
+<p> <img src="http://qiusli.github.io/images/ios-5_3.png" width="250" height="500">
+ <img src="http://qiusli.github.io/images/ios-5_4.png" width="250" height="500">
+ <img src="http://qiusli.github.io/images/ios-5_5.png" width="250" height="500"></p>
+
+<h2>使用UIScrollView</h2>
+
+<p>Scroll view通常是为比屏幕更大的view准备的,这样就能通过上下左右滚动来查看完整的图片.之前我们是直接把当前的view加到<code>UIWindow</code>中,不过为了实现scroll view,我们需要把当前view加到scroll view中,然后再把这个scroll view加到<code>UIWindow</code>中去.</p>
+
+<p> <img src="http://qiusli.github.io/images/ios-5_UIScrollView.png" width="900" height="1200"></p>
+
+<p>然后到app delegate的<code>didFinishLaunchingWithOptions</code>里加上如下代码:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'>    <span class="bp">CGRect</span> <span class="n">screenRect</span> <span class="o">=</span> <span class="nb">self</span><span class="p">.</span><span class="n">window</span><span class="p">.</span><span class="n">bounds</span><span class="p">;</span>
+</span><span class='line'>    <span class="bp">CGRect</span> <span class="n">bigRect</span> <span class="o">=</span> <span class="n">screenRect</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">bigRect</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">width</span> <span class="o">*=</span> <span class="mi">2</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">bigRect</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">height</span> <span class="o">*=</span> <span class="mi">2</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="bp">UIScrollView</span> <span class="o">*</span><span class="n">scrollView</span> <span class="o">=</span> <span class="p">[[</span><span class="bp">UIScrollView</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithFrame</span><span class="p">:</span><span class="n">screenRect</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="nb">self</span><span class="p">.</span><span class="n">window</span> <span class="nl">addSubview</span><span class="p">:</span><span class="n">scrollView</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">BNRHypnosisterView</span> <span class="o">*</span><span class="n">hypnosisView</span> <span class="o">=</span> <span class="p">[[</span><span class="n">BNRHypnosisterView</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithFrame</span><span class="p">:</span><span class="n">bigRect</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">scrollView</span> <span class="nl">addSubview</span><span class="p">:</span><span class="n">hypnosisView</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>首先建立一个屏幕大小的CGRect作为<code>UIScrollView</code>的显示范围,然后建立一个两倍屏幕大小的CGRect作为view的显示范围,最后把view加到UIScrollView中.显示的效果如下:</p>
+
+<p> <img src="http://qiusli.github.io/images/ios-5_6.png" width="300" height="600"></p>
+
+<p>最后,我们可以把它做的更好看一些,我们给<code>UIScrollView</code>加两个view,并让他们在不同的屏幕显示:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'>    <span class="bp">CGRect</span> <span class="n">screenRect</span> <span class="o">=</span> <span class="nb">self</span><span class="p">.</span><span class="n">window</span><span class="p">.</span><span class="n">bounds</span><span class="p">;</span>
+</span><span class='line'>    <span class="bp">CGRect</span> <span class="n">bigRect</span> <span class="o">=</span> <span class="n">screenRect</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">bigRect</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">width</span> <span class="o">*=</span> <span class="mi">2</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'> <span class="bp">UIScrollView</span> <span class="o">*</span><span class="n">scrollView</span> <span class="o">=</span> <span class="p">[[</span><span class="bp">UIScrollView</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithFrame</span><span class="p">:</span><span class="n">screenRect</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="nb">self</span><span class="p">.</span><span class="n">window</span> <span class="nl">addSubview</span><span class="p">:</span><span class="n">scrollView</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">BNRHypnosisterView</span> <span class="o">*</span><span class="n">hypnosisView</span> <span class="o">=</span> <span class="p">[[</span><span class="n">BNRHypnosisterView</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithFrame</span><span class="p">:</span><span class="n">screenRect</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">scrollView</span><span class="p">.</span><span class="n">pagingEnabled</span> <span class="o">=</span> <span class="nb">YES</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">scrollView</span> <span class="nl">addSubview</span><span class="p">:</span><span class="n">hypnosisView</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">screenRect</span><span class="p">.</span><span class="n">origin</span><span class="p">.</span><span class="n">x</span> <span class="o">+=</span> <span class="n">screenRect</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">width</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">BNRHypnosisterView</span> <span class="o">*</span><span class="n">hypnosisView2</span> <span class="o">=</span> <span class="p">[[</span><span class="n">BNRHypnosisterView</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithFrame</span><span class="p">:</span><span class="n">screenRect</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">scrollView</span> <span class="nl">addSubview</span><span class="p">:</span><span class="n">hypnosisView2</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">scrollView</span><span class="p">.</span><span class="n">contentSize</span> <span class="o">=</span> <span class="n">bigRect</span><span class="p">.</span><span class="n">size</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>其中<code>scrollView.pagingEnabled = YES</code>的意思是在左右滑动的时候有翻页的效果,屏幕不会停在两个view的中间.
+ <img src="http://qiusli.github.io/images/ios-5_7.png" width="300" height="600"></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[使用递归计算的回溯法]]></title>
+    <link href="http://qiusli.github.io/blog/2014/04/03/backtrack/"/>
+    <updated>2014-04-03T21:59:00-06:00</updated>
+    <id>http://qiusli.github.io/blog/2014/04/03/backtrack</id>
+    <content type="html"><![CDATA[<p>谈到这个方法的初衷本来是想在iOS项目中使用,因为当时叫设计一种方法来摆放battleship,如果在当前位置不能摆放可以回溯到上一个地点再试,最后还是放弃了,因为用不了这么复杂的方法. 不过既然学习了,并且花了这么多时间来编码,就应该记录下来,以后可能还会用上,就不必又从开头来学了.</p>
+
+<h3>什么是回溯法</h3>
+
+<p>回溯法就是先在一条路上走到黑,发现还没达到目的,然后就退回到上一步,然后把另一个发展方向试一遍,直到找到一条通路为止.</p>
+
+<!--more-->
+
+
+<h3>回溯法的应用</h3>
+
+<p>回溯法最经典的应用就是黑八皇后问题,他要求八颗棋子分别代表八个皇后,然后要把这八个皇后分别放在棋盘上,并且满足如下条件:</p>
+
+<ul>
+<li>任意两个皇后不能在同一行</li>
+<li>任意两个皇后不能在同一列</li>
+<li>任意两个皇后不能在同一条斜线上</li>
+</ul>
+
+
+<h3>代码</h3>
+
+<h4>避免冲突</h4>
+
+<p>下面的代码是用来避免冲突的,即满足上面列出的三个条件.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">private</span> <span class="kt">boolean</span> <span class="nf">threaten</span><span class="o">(</span><span class="kt">int</span> <span class="n">row</span><span class="o">,</span> <span class="kt">int</span> <span class="n">column</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="kt">int</span> <span class="n">rowT</span> <span class="o">=</span> <span class="n">row</span><span class="o">;</span>
+</span><span class='line'>        <span class="kt">int</span> <span class="n">columnT</span> <span class="o">=</span> <span class="n">column</span><span class="o">;</span>
+</span><span class='line'>        <span class="c1">// same row check</span>
+</span><span class='line'>        <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">boardSize</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+</span><span class='line'>            <span class="k">if</span> <span class="o">(</span><span class="n">board</span><span class="o">[</span><span class="n">row</span><span class="o">][</span><span class="n">i</span><span class="o">])</span>
+</span><span class='line'>                <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+</span><span class='line'>        <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// up left diagonal check</span>
+</span><span class='line'>        <span class="k">while</span> <span class="o">(</span><span class="n">rowT</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="n">columnT</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>            <span class="k">if</span> <span class="o">(</span><span class="n">board</span><span class="o">[</span><span class="n">rowT</span><span class="o">][</span><span class="n">columnT</span><span class="o">])</span>
+</span><span class='line'>                <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+</span><span class='line'>            <span class="n">rowT</span><span class="o">--;</span>
+</span><span class='line'>            <span class="n">columnT</span><span class="o">--;</span>
+</span><span class='line'>        <span class="o">}</span>
+</span><span class='line'>        <span class="n">rowT</span> <span class="o">=</span> <span class="n">row</span><span class="o">;</span>
+</span><span class='line'>        <span class="n">columnT</span> <span class="o">=</span> <span class="n">column</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// up right diagonal check</span>
+</span><span class='line'>        <span class="k">while</span> <span class="o">(</span><span class="n">rowT</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="n">columnT</span> <span class="o">&lt;</span> <span class="n">boardSize</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>            <span class="k">if</span> <span class="o">(</span><span class="n">board</span><span class="o">[</span><span class="n">rowT</span><span class="o">][</span><span class="n">columnT</span><span class="o">])</span>
+</span><span class='line'>                <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+</span><span class='line'>            <span class="n">rowT</span><span class="o">--;</span>
+</span><span class='line'>            <span class="n">columnT</span><span class="o">++;</span>
+</span><span class='line'>        <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">rowT</span> <span class="o">=</span> <span class="n">row</span><span class="o">;</span>
+</span><span class='line'>        <span class="n">columnT</span> <span class="o">=</span> <span class="n">column</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// down left diagonal check</span>
+</span><span class='line'>        <span class="k">while</span> <span class="o">(</span><span class="n">rowT</span> <span class="o">&lt;</span> <span class="n">boardSize</span> <span class="o">&amp;&amp;</span> <span class="n">columnT</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>            <span class="k">if</span> <span class="o">(</span><span class="n">board</span><span class="o">[</span><span class="n">rowT</span><span class="o">][</span><span class="n">columnT</span><span class="o">])</span>
+</span><span class='line'>                <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+</span><span class='line'>            <span class="n">rowT</span><span class="o">++;</span>
+</span><span class='line'>            <span class="n">columnT</span><span class="o">--;</span>
+</span><span class='line'>        <span class="o">}</span>
+</span><span class='line'>        <span class="n">rowT</span> <span class="o">=</span> <span class="n">row</span><span class="o">;</span>
+</span><span class='line'>        <span class="n">columnT</span> <span class="o">=</span> <span class="n">column</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// down right diagonal check</span>
+</span><span class='line'>        <span class="k">while</span> <span class="o">(</span><span class="n">rowT</span> <span class="o">&lt;</span> <span class="n">boardSize</span> <span class="o">&amp;&amp;</span> <span class="n">columnT</span> <span class="o">&lt;</span> <span class="n">boardSize</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>            <span class="k">if</span> <span class="o">(</span><span class="n">board</span><span class="o">[</span><span class="n">rowT</span><span class="o">][</span><span class="n">columnT</span><span class="o">])</span>
+</span><span class='line'>                <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+</span><span class='line'>            <span class="n">rowT</span><span class="o">++;</span>
+</span><span class='line'>            <span class="n">columnT</span><span class="o">++;</span>
+</span><span class='line'>        <span class="o">}</span>
+</span><span class='line'>        <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在展示核心代码之前,需要首先谈谈是如何来找地方来摆放棋子的.我使用的方法是以'列'为anchor,然后再在这一列的八行中分别尝试摆放棋子,如果满足条件,就在这个点放上棋子,如果不满足,行数加一继续往下走,如果遇到走不通的情况就回退一步.为了具体说明他是怎么回退的,我用一个具体的例子来阐述:
+* 当摆放第一个棋子(row=0, column=0)的时候不会有冲突,所以直接在这里落子,现在棋盘的格局如下:</p>
+
+<p>Q X X X X X X X <br/>
+X X X X X X X X <br/>
+X X X X X X X X <br/>
+X X X X X X X X <br/>
+X X X X X X X X <br/>
+X X X X X X X X <br/>
+X X X X X X X X <br/>
+X X X X X X X X <br/></p>
+
+<ul>
+<li>当尝试摆放第二个棋子的时候,column到了第二列,所以它还是从第一行摆放,但是冲突了,所以他尝试第二行,但是还是冲突(斜线),所以他就开始尝试第三行,这里没问题,所以这一步之后,棋盘的格局如下:</li>
+</ul>
+
+
+<p>Q X X X X X X X <br/>
+X X X X X X X X <br/>
+X Q X X X X X X <br/>
+X X X X X X X X <br/>
+X X X X X X X X <br/>
+X X X X X X X X <br/>
+X X X X X X X X <br/>
+X X X X X X X X <br/></p>
+
+<ul>
+<li>当尝试摆放第三颗棋子的时候,第一到第四行都有冲突,所以只有放到第五行,棋盘的格局如下:</li>
+</ul>
+
+
+<p>Q X X X X X X X <br/>
+X X X X X X X X <br/>
+X Q X X X X X X <br/>
+X X X X X X X X <br/>
+X X Q X X X X X <br/>
+X X X X X X X X <br/>
+X X X X X X X X <br/>
+X X X X X X X X <br/></p>
+
+<ul>
+<li>继续摆放第四颗棋子:</li>
+</ul>
+
+
+<p>Q X X X X X X X <br/>
+X X X Q X X X X <br/>
+X Q X X X X X X <br/>
+X X X X X X X X <br/>
+X X Q X X X X X <br/>
+X X X X X X X X <br/>
+X X X X X X X X <br/>
+X X X X X X X X <br/></p>
+
+<ul>
+<li>继续摆放第五颗棋子:</li>
+</ul>
+
+
+<p>Q X X X X X X X <br/>
+X X X Q X X X X <br/>
+X Q X X X X X X <br/>
+X X X X Q X X X <br/>
+X X Q X X X X X <br/>
+X X X X X X X X <br/>
+X X X X X X X X <br/>
+X X X X X X X X <br/></p>
+
+<ul>
+<li>继续摆放第六颗棋子,这个时候问题来了,因为第六列的所有行都无法摆放,所以这时就应该回退到上一列,让第五列的棋子继续尝试向下搜索(不能向上是因为在从上到下摆放的时候使用的贪心法,即遇到可以摆放的地方立马落子,所以上面的空间都是证明没用的),当找到一个可以落子的地方时就摆放棋子,然后重新尝试落第六个子:</li>
+</ul>
+
+
+<p>Q X X X X X X X <br/>
+X X X Q X X X X <br/>
+X Q X X X X X X <br/>
+X X X X Q X X X <br/>
+X X Q X X X X X <br/>
+X X X X X X X X <br/>
+X X X X X X X X <br/>
+X X X X X X X X <br/></p>
+
+<ul>
+<li></li>
+</ul>
+
+
+<p>Q X X X X X X X <br/>
+X X X Q X X X X <br/>
+X Q X X X X X X <br/>
+X X X X X X X X <br/>
+X X Q X X X X X <br/>
+X X X X X X X X <br/>
+X X X X X X X X <br/>
+X X X X Q X X X <br/></p>
+
+<ul>
+<li>我们发现即使第六个子变了位置之后,第七个子仍然不能下落,所以又回到第六列,这时第六列的所有可能性都已经用完了,所以然后回到第五列,这样不断递归下去直到从某一列到最后一列能都找到摆放的地方结束.</li>
+</ul>
+
+
+<p>下面的代码是算法的核心,即怎样找到一种摆放的方法:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'>   <span class="kd">private</span> <span class="kt">boolean</span> <span class="nf">placeQueen_oneSolution</span><span class="o">(</span><span class="kt">int</span> <span class="n">column</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="kt">int</span> <span class="n">row</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+</span><span class='line'>        <span class="kt">boolean</span> <span class="n">success</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">while</span> <span class="o">(</span><span class="n">row</span> <span class="o">&lt;</span> <span class="n">boardSize</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>            <span class="k">if</span> <span class="o">(</span><span class="n">column</span> <span class="o">==</span> <span class="n">boardSize</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>                <span class="n">printBoard</span><span class="o">();</span>
+</span><span class='line'>                <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+</span><span class='line'>            <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>            <span class="k">if</span> <span class="o">(</span><span class="n">threaten</span><span class="o">(</span><span class="n">row</span><span class="o">,</span> <span class="n">column</span><span class="o">))</span> <span class="o">{</span>
+</span><span class='line'>                <span class="n">row</span><span class="o">++;</span>
+</span><span class='line'>            <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+</span><span class='line'>                <span class="n">board</span><span class="o">[</span><span class="n">row</span><span class="o">][</span><span class="n">column</span><span class="o">]</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span>
+</span><span class='line'>                <span class="n">success</span> <span class="o">=</span> <span class="n">placeQueen_oneSolution</span><span class="o">(</span><span class="n">column</span> <span class="o">+</span> <span class="mi">1</span><span class="o">);</span>
+</span><span class='line'>
+</span><span class='line'>                <span class="k">if</span> <span class="o">(!</span><span class="n">success</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>                    <span class="n">board</span><span class="o">[</span><span class="n">row</span><span class="o">][</span><span class="n">column</span><span class="o">]</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
+</span><span class='line'>                    <span class="n">row</span><span class="o">++;</span>
+</span><span class='line'>                <span class="o">}</span>
+</span><span class='line'>            <span class="o">}</span>
+</span><span class='line'>        <span class="o">}</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">success</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>当上一次不成功时就返回false,同时把刚刚摆放的棋子拿掉(设为false),然后继续本次while循环,如果while循环完了都还没找到,就return false到上一次递归的地点. 执行上面的代码得到的格局如下:</p>
+
+<p>Q X X X X X X X <br/>
+X X X X X X Q X <br/>
+X X X X Q X X X<br/>
+X X X X X X X Q <br/>
+X Q X X X X X X <br/>
+X X X Q X X X X<br/>
+X X X X X Q X X <br/>
+X X Q X X X X X<br/></p>
+
+<p>这样就算找到了一条路径.但是如果我们想要找出所有的路径又该怎么办呢?其实很简单,只需要在找到一条路径后不停止搜索,从当前位置开始往下走,尝试去找其他的可能性,然后对之前的所有列都执行同样的步骤即可,方法如下:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'>    <span class="kd">private</span> <span class="kt">void</span> <span class="nf">placeQueen_allSolutions</span><span class="o">(</span><span class="kt">int</span> <span class="n">column</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="kt">int</span> <span class="n">row</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">while</span> <span class="o">(</span><span class="n">row</span> <span class="o">&lt;</span> <span class="n">boardSize</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>            <span class="k">if</span> <span class="o">(</span><span class="n">column</span> <span class="o">==</span> <span class="n">boardSize</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>                <span class="n">printBoard</span><span class="o">();</span>
+</span><span class='line'>                <span class="k">return</span><span class="o">;</span>
+</span><span class='line'>            <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>            <span class="k">if</span> <span class="o">(</span><span class="n">threaten</span><span class="o">(</span><span class="n">row</span><span class="o">,</span> <span class="n">column</span><span class="o">))</span> <span class="o">{</span>
+</span><span class='line'>                <span class="n">row</span><span class="o">++;</span>
+</span><span class='line'>            <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+</span><span class='line'>                <span class="n">board</span><span class="o">[</span><span class="n">row</span><span class="o">][</span><span class="n">column</span><span class="o">]</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span>
+</span><span class='line'>                <span class="n">placeQueen_allSolutions</span><span class="o">(</span><span class="n">column</span> <span class="o">+</span> <span class="mi">1</span><span class="o">);</span>
+</span><span class='line'>
+</span><span class='line'>                <span class="n">board</span><span class="o">[</span><span class="n">row</span><span class="o">][</span><span class="n">column</span><span class="o">]</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
+</span><span class='line'>                <span class="n">row</span><span class="o">++;</span>
+</span><span class='line'>            <span class="o">}</span>
+</span><span class='line'>        <span class="o">}</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>最后发现有92种解法,与维基百科所属一致,ok收工.</p>
+
+<p>最后贴出完整的代码:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+<span class='line-number'>82</span>
+<span class='line-number'>83</span>
+<span class='line-number'>84</span>
+<span class='line-number'>85</span>
+<span class='line-number'>86</span>
+<span class='line-number'>87</span>
+<span class='line-number'>88</span>
+<span class='line-number'>89</span>
+<span class='line-number'>90</span>
+<span class='line-number'>91</span>
+<span class='line-number'>92</span>
+<span class='line-number'>93</span>
+<span class='line-number'>94</span>
+<span class='line-number'>95</span>
+<span class='line-number'>96</span>
+<span class='line-number'>97</span>
+<span class='line-number'>98</span>
+<span class='line-number'>99</span>
+<span class='line-number'>100</span>
+<span class='line-number'>101</span>
+<span class='line-number'>102</span>
+<span class='line-number'>103</span>
+<span class='line-number'>104</span>
+<span class='line-number'>105</span>
+<span class='line-number'>106</span>
+<span class='line-number'>107</span>
+<span class='line-number'>108</span>
+<span class='line-number'>109</span>
+<span class='line-number'>110</span>
+<span class='line-number'>111</span>
+<span class='line-number'>112</span>
+<span class='line-number'>113</span>
+<span class='line-number'>114</span>
+<span class='line-number'>115</span>
+<span class='line-number'>116</span>
+<span class='line-number'>117</span>
+<span class='line-number'>118</span>
+<span class='line-number'>119</span>
+<span class='line-number'>120</span>
+<span class='line-number'>121</span>
+<span class='line-number'>122</span>
+<span class='line-number'>123</span>
+<span class='line-number'>124</span>
+<span class='line-number'>125</span>
+<span class='line-number'>126</span>
+<span class='line-number'>127</span>
+<span class='line-number'>128</span>
+<span class='line-number'>129</span>
+<span class='line-number'>130</span>
+<span class='line-number'>131</span>
+<span class='line-number'>132</span>
+<span class='line-number'>133</span>
+<span class='line-number'>134</span>
+<span class='line-number'>135</span>
+<span class='line-number'>136</span>
+<span class='line-number'>137</span>
+<span class='line-number'>138</span>
+<span class='line-number'>139</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="cm">/**</span>
+</span><span class='line'><span class="cm"> * Created by liqiushi on 3/20/14.</span>
+</span><span class='line'><span class="cm"> */</span>
+</span><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Backtracking</span> <span class="o">{</span>
+</span><span class='line'>    <span class="kt">int</span> <span class="n">boardSize</span><span class="o">;</span>
+</span><span class='line'>    <span class="kt">boolean</span><span class="o">[][]</span> <span class="n">board</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kt">int</span> <span class="n">k</span> <span class="o">=</span> <span class="mi">1</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">public</span> <span class="nf">Backtracking</span><span class="o">(</span><span class="kt">int</span> <span class="n">boardSize</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">this</span><span class="o">.</span><span class="na">boardSize</span> <span class="o">=</span> <span class="n">boardSize</span><span class="o">;</span>
+</span><span class='line'>        <span class="n">board</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">boolean</span><span class="o">[</span><span class="n">boardSize</span><span class="o">][</span><span class="n">boardSize</span><span class="o">];</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">Backtracking</span> <span class="n">backtracking</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">Backtracking</span><span class="o">(</span><span class="mi">8</span><span class="o">);</span>
+</span><span class='line'>        <span class="n">backtracking</span><span class="o">.</span><span class="na">init</span><span class="o">();</span>
+</span><span class='line'>        <span class="n">backtracking</span><span class="o">.</span><span class="na">placeQueen_oneSolution</span><span class="o">(</span><span class="mi">0</span><span class="o">);</span>
+</span><span class='line'>        <span class="n">backtracking</span><span class="o">.</span><span class="na">init</span><span class="o">();</span>
+</span><span class='line'>        <span class="n">backtracking</span><span class="o">.</span><span class="na">placeQueen_allSolutions</span><span class="o">(</span><span class="mi">0</span><span class="o">);</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">private</span> <span class="kt">void</span> <span class="nf">printBoard</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">boardSize</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+</span><span class='line'>            <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">boardSize</span><span class="o">;</span> <span class="n">j</span><span class="o">++)</span> <span class="o">{</span>
+</span><span class='line'>                <span class="k">if</span> <span class="o">(</span><span class="n">board</span><span class="o">[</span><span class="n">i</span><span class="o">][</span><span class="n">j</span><span class="o">])</span> <span class="o">{</span>
+</span><span class='line'>                    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="s">&quot;Q &quot;</span><span class="o">);</span>
+</span><span class='line'>                <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+</span><span class='line'>                    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="s">&quot;. &quot;</span><span class="o">);</span>
+</span><span class='line'>                <span class="o">}</span>
+</span><span class='line'>            <span class="o">}</span>
+</span><span class='line'>            <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">();</span>
+</span><span class='line'>        <span class="o">}</span>
+</span><span class='line'>        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">k</span><span class="o">++);</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">private</span> <span class="kt">boolean</span> <span class="nf">placeQueen_oneSolution</span><span class="o">(</span><span class="kt">int</span> <span class="n">column</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="kt">int</span> <span class="n">row</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+</span><span class='line'>        <span class="kt">boolean</span> <span class="n">success</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">while</span> <span class="o">(</span><span class="n">row</span> <span class="o">&lt;</span> <span class="n">boardSize</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>            <span class="k">if</span> <span class="o">(</span><span class="n">column</span> <span class="o">==</span> <span class="n">boardSize</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>                <span class="n">printBoard</span><span class="o">();</span>
+</span><span class='line'>                <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+</span><span class='line'>            <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>            <span class="k">if</span> <span class="o">(</span><span class="n">threaten</span><span class="o">(</span><span class="n">row</span><span class="o">,</span> <span class="n">column</span><span class="o">))</span> <span class="o">{</span>
+</span><span class='line'>                <span class="n">row</span><span class="o">++;</span>
+</span><span class='line'>            <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+</span><span class='line'>                <span class="n">board</span><span class="o">[</span><span class="n">row</span><span class="o">][</span><span class="n">column</span><span class="o">]</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span>
+</span><span class='line'>                <span class="n">success</span> <span class="o">=</span> <span class="n">placeQueen_oneSolution</span><span class="o">(</span><span class="n">column</span> <span class="o">+</span> <span class="mi">1</span><span class="o">);</span>
+</span><span class='line'>
+</span><span class='line'>                <span class="k">if</span> <span class="o">(!</span><span class="n">success</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>                    <span class="n">board</span><span class="o">[</span><span class="n">row</span><span class="o">][</span><span class="n">column</span><span class="o">]</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
+</span><span class='line'>                    <span class="n">row</span><span class="o">++;</span>
+</span><span class='line'>                <span class="o">}</span>
+</span><span class='line'>            <span class="o">}</span>
+</span><span class='line'>        <span class="o">}</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">success</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">private</span> <span class="kt">void</span> <span class="nf">placeQueen_allSolutions</span><span class="o">(</span><span class="kt">int</span> <span class="n">column</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="kt">int</span> <span class="n">row</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">while</span> <span class="o">(</span><span class="n">row</span> <span class="o">&lt;</span> <span class="n">boardSize</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>            <span class="k">if</span> <span class="o">(</span><span class="n">column</span> <span class="o">==</span> <span class="n">boardSize</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>                <span class="n">printBoard</span><span class="o">();</span>
+</span><span class='line'>                <span class="k">return</span><span class="o">;</span>
+</span><span class='line'>            <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>            <span class="k">if</span> <span class="o">(</span><span class="n">threaten</span><span class="o">(</span><span class="n">row</span><span class="o">,</span> <span class="n">column</span><span class="o">))</span> <span class="o">{</span>
+</span><span class='line'>                <span class="n">row</span><span class="o">++;</span>
+</span><span class='line'>            <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+</span><span class='line'>                <span class="n">board</span><span class="o">[</span><span class="n">row</span><span class="o">][</span><span class="n">column</span><span class="o">]</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span>
+</span><span class='line'>                <span class="n">placeQueen_allSolutions</span><span class="o">(</span><span class="n">column</span> <span class="o">+</span> <span class="mi">1</span><span class="o">);</span>
+</span><span class='line'>
+</span><span class='line'>                <span class="n">board</span><span class="o">[</span><span class="n">row</span><span class="o">][</span><span class="n">column</span><span class="o">]</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
+</span><span class='line'>                <span class="n">row</span><span class="o">++;</span>
+</span><span class='line'>            <span class="o">}</span>
+</span><span class='line'>        <span class="o">}</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">private</span> <span class="kt">boolean</span> <span class="nf">threaten</span><span class="o">(</span><span class="kt">int</span> <span class="n">row</span><span class="o">,</span> <span class="kt">int</span> <span class="n">column</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="kt">int</span> <span class="n">rowT</span> <span class="o">=</span> <span class="n">row</span><span class="o">;</span>
+</span><span class='line'>        <span class="kt">int</span> <span class="n">columnT</span> <span class="o">=</span> <span class="n">column</span><span class="o">;</span>
+</span><span class='line'>        <span class="c1">// same row check</span>
+</span><span class='line'>        <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">boardSize</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+</span><span class='line'>            <span class="k">if</span> <span class="o">(</span><span class="n">board</span><span class="o">[</span><span class="n">row</span><span class="o">][</span><span class="n">i</span><span class="o">])</span>
+</span><span class='line'>                <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+</span><span class='line'>        <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// up left diagonal check</span>
+</span><span class='line'>        <span class="k">while</span> <span class="o">(</span><span class="n">rowT</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="n">columnT</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>            <span class="k">if</span> <span class="o">(</span><span class="n">board</span><span class="o">[</span><span class="n">rowT</span><span class="o">][</span><span class="n">columnT</span><span class="o">])</span>
+</span><span class='line'>                <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+</span><span class='line'>            <span class="n">rowT</span><span class="o">--;</span>
+</span><span class='line'>            <span class="n">columnT</span><span class="o">--;</span>
+</span><span class='line'>        <span class="o">}</span>
+</span><span class='line'>        <span class="n">rowT</span> <span class="o">=</span> <span class="n">row</span><span class="o">;</span>
+</span><span class='line'>        <span class="n">columnT</span> <span class="o">=</span> <span class="n">column</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// up right diagonal check</span>
+</span><span class='line'>        <span class="k">while</span> <span class="o">(</span><span class="n">rowT</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="n">columnT</span> <span class="o">&lt;</span> <span class="n">boardSize</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>            <span class="k">if</span> <span class="o">(</span><span class="n">board</span><span class="o">[</span><span class="n">rowT</span><span class="o">][</span><span class="n">columnT</span><span class="o">])</span>
+</span><span class='line'>                <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+</span><span class='line'>            <span class="n">rowT</span><span class="o">--;</span>
+</span><span class='line'>            <span class="n">columnT</span><span class="o">++;</span>
+</span><span class='line'>        <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">rowT</span> <span class="o">=</span> <span class="n">row</span><span class="o">;</span>
+</span><span class='line'>        <span class="n">columnT</span> <span class="o">=</span> <span class="n">column</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// down left diagonal check</span>
+</span><span class='line'>        <span class="k">while</span> <span class="o">(</span><span class="n">rowT</span> <span class="o">&lt;</span> <span class="n">boardSize</span> <span class="o">&amp;&amp;</span> <span class="n">columnT</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>            <span class="k">if</span> <span class="o">(</span><span class="n">board</span><span class="o">[</span><span class="n">rowT</span><span class="o">][</span><span class="n">columnT</span><span class="o">])</span>
+</span><span class='line'>                <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+</span><span class='line'>            <span class="n">rowT</span><span class="o">++;</span>
+</span><span class='line'>            <span class="n">columnT</span><span class="o">--;</span>
+</span><span class='line'>        <span class="o">}</span>
+</span><span class='line'>        <span class="n">rowT</span> <span class="o">=</span> <span class="n">row</span><span class="o">;</span>
+</span><span class='line'>        <span class="n">columnT</span> <span class="o">=</span> <span class="n">column</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// down right diagonal check</span>
+</span><span class='line'>        <span class="k">while</span> <span class="o">(</span><span class="n">rowT</span> <span class="o">&lt;</span> <span class="n">boardSize</span> <span class="o">&amp;&amp;</span> <span class="n">columnT</span> <span class="o">&lt;</span> <span class="n">boardSize</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>            <span class="k">if</span> <span class="o">(</span><span class="n">board</span><span class="o">[</span><span class="n">rowT</span><span class="o">][</span><span class="n">columnT</span><span class="o">])</span>
+</span><span class='line'>                <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+</span><span class='line'>            <span class="n">rowT</span><span class="o">++;</span>
+</span><span class='line'>            <span class="n">columnT</span><span class="o">++;</span>
+</span><span class='line'>        <span class="o">}</span>
+</span><span class='line'>        <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">private</span> <span class="kt">void</span> <span class="nf">init</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">boardSize</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+</span><span class='line'>            <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">boardSize</span><span class="o">;</span> <span class="n">j</span><span class="o">++)</span>
+</span><span class='line'>                <span class="n">board</span><span class="o">[</span><span class="n">i</span><span class="o">][</span><span class="n">j</span><span class="o">]</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
+</span><span class='line'>        <span class="o">}</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[iOS Programming 4(Views and the View Hierarchy)]]></title>
+    <link href="http://qiusli.github.io/blog/2014/03/09/ios-4/"/>
+    <updated>2014-03-09T19:08:00-06:00</updated>
+    <id>http://qiusli.github.io/blog/2014/03/09/ios-4</id>
+    <content type="html"><![CDATA[<h3>View Basics</h3>
+
+<p>在iOS中，每一个应用都有一个UIWindow的对象，他是应用中所有view的容器(container)，其实UIWindow自己也只是一个view，只不过他的职责不是显示view，而是作为容器存放view。当应用启动的时候，这个对象就被创建，我们可以往这个容器里面添加其他的view。那么什么是view呢？他是在屏幕上被显示的元素，例如button。每一个view都是UIView或UIView的子类的一个实例，每一个view都有一个对应的layer，view在其对应的那样儿上显示自己，我们可以想象成每个view都自带了一块画板，在画板上作画然后贴到最大的canvas(UIWindow)上去。view还能handle屏幕上的一些事件，例如button能handle touch事件。view之间存在层级关系(hierarchy),一个view可以包含另一个view，我们可以把其中的关系想象成一棵树，根结点就是UIWindow。</p>
+
+<!--more-->
+
+
+<h3>Frames &amp; View Hierarchy</h3>
+
+<p>我们通过一个小例子来阐述view的frame。首先新建一个empty application，然后创建一个类，继承自UIView：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="k">@interface</span> <span class="nc">BNRHypnosisterView</span> : <span class="bp">UIView</span>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>当一个类继承自UIView时，会继承两个方法，initWithFrame:和drawRect，前者是UIView的默认init方法，后者默认情况下是被注释，因为只有在custome的时候才需要他。initWithFrame接受一个CGRect参数，他是定义在父类(UIView)中的一个property:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">)</span> <span class="bp">CGRect</span> <span class="n">frame</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>一个UIView的frame定义了这个view相对于其superview的位置和大小，CRRect中包含了两个关键信息(origin和size)，一是frame左上角初始点的坐标(origin.x, origin.y)，其次定义了这个frame的大小(size.width, size.height)。值得注意的是，这里的origin和size都不是objective-c中的对象，他们均是C语言中的结构体，所以在定义CGRect的时候不能写成：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="bp">CGRect</span> <span class="o">*</span><span class="n">frame</span> <span class="o">=</span> <span class="p">....</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>而应该这样定义：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="bp">CGRect</span> <span class="n">frame</span> <span class="o">=</span> <span class="n">CGRectMake</span><span class="p">(</span><span class="n">origin</span><span class="p">.</span><span class="n">x</span><span class="p">,</span> <span class="n">origin</span><span class="p">.</span><span class="n">y</span><span class="p">,</span> <span class="n">size</span><span class="p">.</span><span class="n">width</span><span class="p">,</span> <span class="n">size</span><span class="p">.</span><span class="n">height</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>现在我们来到应用的appDelegate类，找到application:didFinishLaunchingWithOptions:方法，在里面定义一个view(firstView)，同时定义一个frame(fristFrame)，然后再把这个frame加到view里去，最后需要做的就是把包含有一个frame的这个view加入到application的root view里面去，这样就能被显示了：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nf">application:</span><span class="p">(</span><span class="bp">UIApplication</span> <span class="o">*</span><span class="p">)</span><span class="nv">application</span> <span class="nf">didFinishLaunchingWithOptions:</span><span class="p">(</span><span class="bp">NSDictionary</span>     <span class="o">*</span><span class="p">)</span><span class="nv">launchOptions</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="nb">self</span><span class="p">.</span><span class="n">window</span> <span class="o">=</span> <span class="p">[[</span><span class="bp">UIWindow</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithFrame</span><span class="p">:[[</span><span class="bp">UIScreen</span> <span class="n">mainScreen</span><span class="p">]</span> <span class="n">bounds</span><span class="p">]];</span>
+</span><span class='line'>    <span class="c1">// Override point for customization after application launch.</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="bp">CGRect</span> <span class="n">firstFrame</span> <span class="o">=</span> <span class="n">CGRectMake</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">140</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">BNRHypnosisterView</span> <span class="o">*</span><span class="n">firstView</span> <span class="o">=</span> <span class="p">[[</span><span class="n">BNRHypnosisterView</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithFrame</span><span class="p">:</span><span class="n">firstFrame</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">[</span><span class="nb">self</span><span class="p">.</span><span class="n">window</span> <span class="nl">addSubview</span><span class="p">:</span><span class="n">firstView</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">firstView</span><span class="p">.</span><span class="n">backgroundColor</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIColor</span> <span class="n">redColor</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nb">self</span><span class="p">.</span><span class="n">window</span><span class="p">.</span><span class="n">backgroundColor</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIColor</span> <span class="n">whiteColor</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="nb">self</span><span class="p">.</span><span class="n">window</span> <span class="n">makeKeyAndVisible</span><span class="p">];</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nb">YES</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>运行后，出来的效果会是这样的：</p>
+
+<p><img src="http://qiusli.github.io/images/ios_frame.png" width="300" height="600"></p>
+
+<p>当我们把一个新的view加入到UIWindow之后，他们之间的关系就如下面这样：</p>
+
+<p><img src="http://qiusli.github.io/images/ios_hierarchy.png" width="500" height="800"></p>
+
+<p>此外，当加入一个subview的时候，subview指向superview的关系自动被创建，不过为了避免强引用环(strong reference cycle)，subview指向superview的引用被设为weak(图中虚线部分)。</p>
+
+<p>这时，我们尝试再往UIWindow里面加上一个view：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nf">application:</span><span class="p">(</span><span class="bp">UIApplication</span> <span class="o">*</span><span class="p">)</span><span class="nv">application</span> <span class="nf">didFinishLaunchingWithOptions:</span><span class="p">(</span><span class="bp">NSDictionary</span> <span class="o">*</span><span class="p">)</span><span class="nv">launchOptions</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="nb">self</span><span class="p">.</span><span class="n">window</span> <span class="o">=</span> <span class="p">[[</span><span class="bp">UIWindow</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithFrame</span><span class="p">:[[</span><span class="bp">UIScreen</span> <span class="n">mainScreen</span><span class="p">]</span> <span class="n">bounds</span><span class="p">]];</span>
+</span><span class='line'>    <span class="c1">// Override point for customization after application launch.</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//    CGRect firstFrame = self.window.bounds;</span>
+</span><span class='line'>    <span class="bp">CGRect</span> <span class="n">firstFrame</span> <span class="o">=</span> <span class="n">CGRectMake</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">140</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">BNRHypnosisterView</span> <span class="o">*</span><span class="n">firstView</span> <span class="o">=</span> <span class="p">[[</span><span class="n">BNRHypnosisterView</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithFrame</span><span class="p">:</span><span class="n">firstFrame</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">[</span><span class="nb">self</span><span class="p">.</span><span class="n">window</span> <span class="nl">addSubview</span><span class="p">:</span><span class="n">firstView</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">firstView</span><span class="p">.</span><span class="n">backgroundColor</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIColor</span> <span class="n">redColor</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="bp">CGRect</span> <span class="n">secondFrame</span> <span class="o">=</span> <span class="n">CGRectMake</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">BNRHypnosisterView</span> <span class="o">*</span><span class="n">secondView</span> <span class="o">=</span> <span class="p">[[</span><span class="n">BNRHypnosisterView</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithFrame</span><span class="p">:</span><span class="n">secondFrame</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="nb">self</span><span class="p">.</span><span class="n">window</span> <span class="nl">addSubview</span><span class="p">:</span><span class="n">secondView</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">secondView</span><span class="p">.</span><span class="n">backgroundColor</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIColor</span> <span class="n">greenColor</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>    <span class="nb">self</span><span class="p">.</span><span class="n">window</span><span class="p">.</span><span class="n">backgroundColor</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIColor</span> <span class="n">whiteColor</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="nb">self</span><span class="p">.</span><span class="n">window</span> <span class="n">makeKeyAndVisible</span><span class="p">];</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nb">YES</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这时出来的效果应该是这样的：</p>
+
+<p><img src="http://qiusli.github.io/images/ios_frame_2.png" width="300" height="600"></p>
+
+<p>对应的层次关系应该是这样的：</p>
+
+<p><img src="http://qiusli.github.io/images/ios_hierarchy_2.png" width="500" height="800"></p>
+
+<p>我们甚至可以把secondView作为firstView的subView，只需要改一行代码就行：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="c1">// [self.window addSubview:secondView];</span>
+</span><span class='line'><span class="p">[</span><span class="n">fistView</span> <span class="nl">addSubview</span><span class="p">:</span><span class="n">secondView</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p> 这时出来的效果应该是这样的：</p>
+
+<p> <img src="http://qiusli.github.io/images/ios_frame_3.png" width="300" height="600"></p>
+
+<p> 对应的层次关系如下：</p>
+
+<p> <img src="http://qiusli.github.io/images/ios_hierarchy_3.png" width="500" height="800"></p>
+
+<h3>Customer Drawing in drawRect</h3>
+
+<p>每一个view都有一个bounds，他指的是这个view的范围，他与frame的区别在于：bounds是相对于自身来说的范围，而frame是相对于superview的范围(之前在定义frame的时候包含的参数包括起始点和长宽,这个起始点就是相对于superview的距离)。</p>
+
+<p>现在我们回到AppDelegate,把原来声明frame的语句改成下面这样:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="c1">// CGRect frame = CGRectMake(100, 200, 100, 140);</span>
+</span><span class='line'><span class="bp">CGRect</span> <span class="n">frame</span> <span class="o">=</span> <span class="nb">self</span><span class="p">.</span><span class="n">window</span><span class="p">.</span><span class="n">bounds</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>他的意思是把root window的bounds作为subview的frame,换句话说就是实现subview全屏.所以现在的运行效果应该是这样的:</p>
+
+<p> <img src="http://qiusli.github.io/images/ios_frame_4.png" width="300" height="600"></p>
+
+<h4>draw concentric circle</h4>
+
+<p>现在我们来做一点有意思的事情:画同心圆. 我们之前说过，如果需要自定义一些drawing，需要在drawRect方法中进行,当xCode发现drawRect方法不是被注释的情况下,会对UIWindow中的每一个view应用drawRect方法中定义的drawing.所以现在我们来到drawRect方法中做一些改变,最后达到的效果就如下图所示:</p>
+
+<p><img src="http://qiusli.github.io/images/ios_concentric.png" width="300" height="600"></p>
+
+<p>首先我们从最外层圆入手,定义圆心和半径:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="bp">CGRect</span> <span class="n">bounds</span> <span class="o">=</span> <span class="nb">self</span><span class="p">.</span><span class="n">bounds</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="bp">CGPoint</span> <span class="n">center</span><span class="p">;</span>
+</span><span class='line'><span class="n">center</span><span class="p">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">bounds</span><span class="p">.</span><span class="n">origin</span><span class="p">.</span><span class="n">x</span> <span class="o">+</span> <span class="n">bounds</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">;</span>
+</span><span class='line'><span class="n">center</span><span class="p">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">bounds</span><span class="p">.</span><span class="n">origin</span><span class="p">.</span><span class="n">y</span> <span class="o">+</span> <span class="n">bounds</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">height</span> <span class="o">/</span> <span class="mi">2</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kt">float</span> <span class="n">maxRadius</span> <span class="o">=</span> <span class="n">hypot</span><span class="p">(</span><span class="n">bounds</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">width</span><span class="p">,</span> <span class="n">bounds</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">height</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>定义好了圆心和半径,就可以开始画圆了.在objective-c中有一个很常用的画图类,叫做UIBezierPath,这个类里面定义了很多方法可以用来作图,当然画圆也不在话下.通过查看这个类的API,我们发现有一个叫做addArcWithCenter:c radius:r startAngle:s endAngle:e clockwise:的方法可以用来画圆,参数分别的含义是圆心,半径,起始角度(0),终止角度(360)和顺时针/逆时针(这里无所谓).最后定义好一切之后就需要作图了,调用UIBezierPath类的stroke方法即可:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">drawRect:</span><span class="p">(</span><span class="bp">CGRect</span><span class="p">)</span><span class="nv">rect</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">// Drawing code</span>
+</span><span class='line'>    <span class="bp">CGRect</span> <span class="n">bounds</span> <span class="o">=</span> <span class="nb">self</span><span class="p">.</span><span class="n">bounds</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="bp">CGPoint</span> <span class="n">center</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">center</span><span class="p">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">bounds</span><span class="p">.</span><span class="n">origin</span><span class="p">.</span><span class="n">x</span> <span class="o">+</span> <span class="n">bounds</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">center</span><span class="p">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">bounds</span><span class="p">.</span><span class="n">origin</span><span class="p">.</span><span class="n">y</span> <span class="o">+</span> <span class="n">bounds</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">height</span> <span class="o">/</span> <span class="mi">2</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kt">float</span> <span class="n">maxRadius</span> <span class="o">=</span> <span class="n">MIN</span><span class="p">(</span><span class="n">bounds</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">width</span><span class="p">,</span> <span class="n">bounds</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">height</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="bp">UIBezierPath</span> <span class="o">*</span><span class="n">path</span> <span class="o">=</span> <span class="p">[[</span><span class="bp">UIBezierPath</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">[</span><span class="n">path</span> <span class="nl">addArcWithCenter</span><span class="p">:</span><span class="n">center</span> <span class="nl">radius</span><span class="p">:</span><span class="n">maxRadius</span> <span class="nl">startAngle</span><span class="p">:</span><span class="mi">0</span> <span class="nl">endAngle</span><span class="p">:</span><span class="n">M_PI</span> <span class="o">*</span> <span class="mi">2</span> <span class="nl">clockwise</span><span class="p">:</span><span class="nb">YES</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">path</span><span class="p">.</span><span class="n">lineWidth</span> <span class="o">=</span> <span class="mi">10</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">[[</span><span class="bp">UIColor</span> <span class="n">lightGrayColor</span><span class="p">]</span> <span class="n">setStroke</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">[</span><span class="n">path</span> <span class="n">stroke</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>上面的代码中path.lineWidth设置线的宽度,[[UIColor lightGrayColor] setStroke]用来设置线的颜色,最后出来的效果应该如下:</p>
+
+<p><img src="http://qiusli.github.io/images/ios_concentric_2.png" width="300" height="600"></p>
+
+<p>既然画好了一个圆,那么可以开始画其他的了.我们可以定义一个for循环,每次循环减少一定的半径,圆心不变.只需要修改一行代码:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="c1">//  [path addArcWithCenter:center radius:maxRadius startAngle:0 endAngle:M_PI * 2 clockwise:YES];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">for</span> <span class="p">(</span><span class="kt">float</span> <span class="n">currentRadius</span> <span class="o">=</span> <span class="n">maxRadius</span><span class="p">;</span> <span class="n">currentRadius</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">;</span> <span class="n">currentRadius</span> <span class="o">-=</span> <span class="mi">20</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'><span class="c1">//        [path moveToPoint:CGPointMake(center.x + currentRadius, center.y)];</span>
+</span><span class='line'>        <span class="p">[</span><span class="n">path</span> <span class="nl">addArcWithCenter</span><span class="p">:</span><span class="n">center</span> <span class="nl">radius</span><span class="p">:</span><span class="n">currentRadius</span> <span class="nl">startAngle</span><span class="p">:</span><span class="mi">0</span> <span class="nl">endAngle</span><span class="p">:</span><span class="n">M_PI</span> <span class="o">*</span> <span class="mi">2</span> <span class="nl">clockwise</span><span class="p">:</span><span class="nb">YES</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>运行的效果:</p>
+
+<p><img src="http://qiusli.github.io/images/ios_concentric_3.png" width="300" height="600"></p>
+
+<p>这时还有两个问题:1.为什么有一条直线 2.应该是满屏的圆.首先我们来解决第一个问题.画过画的同学都知道,当在画同心圆的时候,从一个圆跳到下一个圆上去应该从纸上拿起铅笔然后开始画下一个圆,如果不拿起来的话就成了一笔画,所以两个圆之间会有一条连线,问题就出在这里.为了让电脑"提起笔",我们应该在每次画完一个圆之后调用一个相应的方法告诉他,所以for循环应该改成下面这样:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="k">for</span> <span class="p">(</span><span class="kt">float</span> <span class="n">currentRadius</span> <span class="o">=</span> <span class="n">maxRadius</span><span class="p">;</span> <span class="n">currentRadius</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">;</span> <span class="n">currentRadius</span> <span class="o">-=</span> <span class="mi">20</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">path</span> <span class="nl">moveToPoint</span><span class="p">:</span><span class="n">CGPointMake</span><span class="p">(</span><span class="n">center</span><span class="p">.</span><span class="n">x</span> <span class="o">+</span> <span class="n">currentRadius</span><span class="p">,</span> <span class="n">center</span><span class="p">.</span><span class="n">y</span><span class="p">)];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">path</span> <span class="nl">addArcWithCenter</span><span class="p">:</span><span class="n">center</span> <span class="nl">radius</span><span class="p">:</span><span class="n">currentRadius</span> <span class="nl">startAngle</span><span class="p">:</span><span class="mi">0</span> <span class="nl">endAngle</span><span class="p">:</span><span class="n">M_PI</span> <span class="o">*</span> <span class="mi">2</span> <span class="nl">clockwise</span><span class="p">:</span><span class="nb">YES</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>修改完成后运行:</p>
+
+<p><img src="http://qiusli.github.io/images/ios_concentric_3.png" width="300" height="600"></p>
+
+<p>最后修改满屏的问题,想一想就知道,肯定与圆的半径有关,半径大一些的话,屏幕上就都是圆了,那么究竟要多大呢?只需要一个圆能包含屏幕的四个角就行了(circumcircle),而这也只需要修改一行代码:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="c1">// float maxRadius = MIN(bounds.size.width, bounds.size.height) / 2;</span>
+</span><span class='line'><span class="kt">float</span> <span class="n">maxRadius</span> <span class="o">=</span> <span class="n">hypot</span><span class="p">(</span><span class="n">bounds</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">width</span><span class="p">,</span> <span class="n">bounds</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">height</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>再次运行,就达到了最终的效果:</p>
+
+<p><img src="http://qiusli.github.io/images/ios_concentric.png" width="300" height="600"></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[iOS Programming 3(Managing Memory wih ARC)]]></title>
+    <link href="http://qiusli.github.io/blog/2014/03/08/ios-3/"/>
+    <updated>2014-03-08T18:54:00-07:00</updated>
+    <id>http://qiusli.github.io/blog/2014/03/08/ios-3</id>
+    <content type="html"><![CDATA[<h3>栈和堆</h3>
+
+<p>当一个方法被执行的时候，系统会从栈中分配出一定的内存让代码在其中运行，这一块专门分配出来的内存叫做frame，每一个方法都有一个frame。当方法从main方法中开始执行的时候，main方法的frame被放到了栈上，然后如果在main方法中有其他方法的调用，就会有不断的frame被加到栈上，下图就是在一个栈上不断调用和结束调用方法的对应的frame结构：</p>
+
+<!--more-->
+
+
+<p><img src="http://qiusli.github.io/images/ios_stack.png" width="600" height="900"></p>
+
+<p>在内存中有另外一块区域叫做堆。与栈不同，堆并没有顺序可言，他是用来存放对象的地方，你可以想象里面是一大块无序的区域，每一个在其中的对象都有至少一个外部指针指向他。在objective-c中，我们并不需要具体去关心对象的生命周期，因为这一切都由iOS自己经理，对应的机制叫做ARC(Automatic Reference Counting)。</p>
+
+<h3>对象的所属权(Object Ownership)</h3>
+
+<ol>
+<li>在一个方法中，如果定义了局部变量指向一个对象，那么这个被指向的对象属于那个局部变量。</li>
+<li>当一个对象的实例变量指向一个对象时，那么包含这个实例变量的对象拥有被实例变量指向的对象。</li>
+</ol>
+
+
+<p>对象的所属关系到这个对象在内存中的生命周期。如果一个对象存在指向其的指针，那么这个对象就不能被释放，如果一个对象没有其他指针指向他，那么该对象占有的内存可以被释放。</p>
+
+<h3>强引用和弱引用(Strong and Weak References)</h3>
+
+<p>強引用是当一个指针指向一个对象时，这个对象被那个指针所拥有，所以他不会被销毁。在objective-c中，指向一个对象的指针可以选择不拥有其指向的对象，这叫做弱引用。</p>
+
+<p>弱引用的一大好处是可以用来避免强引用循环(Strong reference Cycle)。例如有两个对象，他们互相指向对方，即使你把所有指向这两个对象的指针都设置为nil，这两个对象也不会被释放，因为他们仍然有来自对方的指针。</p>
+
+<p><img src="http://qiusli.github.io/images/ios_ownership_1.png" width="500" height="800"></p>
+
+<p>当把所有的指针设为nil后</p>
+
+<p><img src="http://qiusli.github.io/images/ios_ownership_2.png" width="500" height="800"></p>
+
+<p>当上述关系出现的时候，可以用把其中一个对象的指针设为弱引用来化解。那么把谁的指针设为弱引用呢？在大部分情况下，两个对象的強引用都可以拆分为一个parent-child关系，这时候我们可以把child指向parent的引用设为weak就行了。例如有一个backpack对象和calculator对象，backpack是parent，calculator是child，我们只需要把calculator指向backpack的引用设为弱引用。当我们完成弱引用的设置后，如果被指向的对象被释放(backpack)，那么发出这个指针的对象也会被释放(calculator)。</p>
+
+<h3>Properties</h3>
+
+<p>当定义一个property属性时，系统会为你做2件事：1、创建一个实例变量 2、创建该实例变量的accessor方法(getter &amp; setter)。所以当你像下面这样定义一个property的时候：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="n">property</span> <span class="kt">int</span> <span class="n">itemName</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>系统会为你创建一个名为_itemName的实例变量(注意underscore)，itemName和setItemName:方法。以前objective-c规定定义property必须在implementation中synthesis，但是大概自从xCode 4之后就不需要了，直接定义property就行了。</p>
+
+<h4>Properties的属性</h4>
+
+<ol>
+<li>atomic/nonatomic。主要是在多线程环境下用，一般情况下，考虑到性能一般使用nonatomic。</li>
+<li>readwrite/readonly。他告诉编译器这个property的可读和可写的属性。如果定义为readwrite，系统会实现setter和getter方法，如果为readonly，系统只会实现getter方法。</li>
+<li>strong/weak/copy/unsafe_unretained。他们都为内存管理属性，strong和weak前面都介绍过了，当一个指针指向的实例有可变子类的时候，应该把这个指针的属性设为copy，这样做是保证他指向的对象不会变化：</li>
+</ol>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">copy</span><span class="p">)</span> <span class="bp">NSString</span> <span class="o">*</span><span class="n">itemName</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>当这样使用后，系统会在后台生成如下代码：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setItemName:</span> <span class="p">(</span><span class="bp">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">itemName</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">_itemName</span> <span class="o">=</span> <span class="p">[</span><span class="n">itemName</span> <span class="k">copy</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>copy返回一个原类型的不可变string类型，即使原类型是可变的，这里也不用担心。</p>
 ]]></content>
   </entry>
   

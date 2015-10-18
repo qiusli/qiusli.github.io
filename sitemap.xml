@@ -37,22 +37,6 @@
     <lastmod>2014-05-18T11:36:00-06:00</lastmod>
   </url>
   <url>
-    <loc>http://qiusli.github.io/blog/2014/05/17/regex4/</loc>
-    <lastmod>2014-05-17T23:25:00-06:00</lastmod>
-  </url>
-  <url>
-    <loc>http://qiusli.github.io/blog/2014/05/17/regex3/</loc>
-    <lastmod>2014-05-17T10:43:00-06:00</lastmod>
-  </url>
-  <url>
-    <loc>http://qiusli.github.io/blog/2014/05/16/regex2/</loc>
-    <lastmod>2014-05-16T21:28:00-06:00</lastmod>
-  </url>
-  <url>
-    <loc>http://qiusli.github.io/blog/2014/05/15/regex/</loc>
-    <lastmod>2014-05-15T22:27:00-06:00</lastmod>
-  </url>
-  <url>
     <loc>http://qiusli.github.io/blog/2014/05/09/ios-programming-8-uitableview-and-uitableviewcontroller/</loc>
     <lastmod>2014-05-09T12:20:00-06:00</lastmod>
   </url>
@@ -212,13 +196,16 @@
     <loc>http://qiusli.github.io/archives/</loc>
   </url>
   <url>
-    <loc>http://qiusli.github.io/blog/archives/</loc>
-  </url>
-  <url>
     <loc>http://qiusli.github.io/blog/</loc>
   </url>
   <url>
     <loc>http://qiusli.github.io/</loc>
+  </url>
+  <url>
+    <loc>http://qiusli.github.io/blog/archives/</loc>
+  </url>
+  <url>
+    <loc>http://qiusli.github.io/about/</loc>
   </url>
   <url>
     <loc>http://qiusli.github.io/blog/categories/technology/</loc>
@@ -228,20 +215,5 @@
   </url>
   <url>
     <loc>http://qiusli.github.io/blog/categories/ke-ji/</loc>
-  </url>
-  <url>
-    <loc>http://qiusli.github.io/posts/2/</loc>
-  </url>
-  <url>
-    <loc>http://qiusli.github.io/posts/3/</loc>
-  </url>
-  <url>
-    <loc>http://qiusli.github.io/posts/4/</loc>
-  </url>
-  <url>
-    <loc>http://qiusli.github.io/posts/5/</loc>
-  </url>
-  <url>
-    <loc>http://qiusli.github.io/posts/6/</loc>
   </url>
 </urlset>
