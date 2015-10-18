@@ -7,7 +7,7 @@
 
 	<meta name="author" content="李秋实"> 
 	
-	<meta name="description" content="重复匹配 匹配一个或多个字符 +: 匹配一个或多个字符(不匹配零个字符的情况). # 文本: Send personal email to &#x62;&#x65;&#x6e;&#64;&#102;&#111;&#x72;&#116;&#97;&#x2e;&#99;&#x6f;&#109;&# &hellip;"> <meta name="keywords" content="">
+	<meta name="description" content="使用子表达式 有些短语虽然中间有空格,但是通常希望被作为一个整体显示在一行以便浏览,比如 Windows 2000.这样通常在Windows和2000之间插入非换行型空格&amp;nbsp,它是non-breaking space的缩写. # 文本: Hello, my name is Ben& &hellip;"> <meta name="keywords" content="">
 
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -40,6 +40,54 @@
     <article class="post">
 	<h2 class="title">
 		
+		<a href="/blog/2014/05/17/regex3/">
+		
+			正则表达式必知必会 3</a>
+	</h2>
+	<div class="entry-content">
+		<h2>使用子表达式</h2>
+
+<p>有些短语虽然中间有空格,但是通常希望被作为一个整体显示在一行以便浏览,比如 Windows 2000.这样通常在Windows和2000之间插入非换行型空格<code>&amp;nbsp</code>,它是non-breaking space的缩写.</p>
+
+<p>#</p>
+
+<p><code>文本</code>: Hello, my name is Ben<code>&amp;nbsp;</code>Forta, and I am the author on SQL, Coldfusion, WAP, windosw<code>&amp;nbsp;&amp;nbsp;</code>2000, and other subjects.</p>
+
+<p><code>正则表达式</code>: <code>&amp;nbsp;</code>{2,}</p>
+
+<p><code>结果</code>: 空</p>
+
+
+		
+		<a href="/blog/2014/05/17/regex3/" class="more-link">Read on &rarr;</a>
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+
+<time datetime="2014-05-17T10:43:00-06:00" pubdate data-updated="true">May 17th, 2014</time></div>
+	
+
+
+</div>
+</article>
+
+
+    <article class="post">
+	<h2 class="title">
+		
 		<a href="/blog/2014/05/16/regex2/">
 		
 			正则表达式必知必会 2</a>
@@ -53,11 +101,11 @@
 
 <p>#</p>
 
-<p><code>文本</code>: Send personal email to <a href="&#109;&#97;&#105;&#108;&#x74;&#111;&#58;&#x62;&#x65;&#x6e;&#x40;&#x66;&#111;&#x72;&#x74;&#x61;&#x2e;&#99;&#x6f;&#x6d;&#46;">&#x62;&#x65;&#x6e;&#64;&#102;&#111;&#x72;&#116;&#97;&#x2e;&#99;&#x6f;&#109;&#x2e;</a> For questions about the book use <a href="&#109;&#97;&#x69;&#108;&#116;&#111;&#x3a;&#x73;&#x75;&#112;&#112;&#111;&#114;&#x74;&#x40;&#x66;&#x6f;&#114;&#116;&#97;&#x2e;&#99;&#111;&#109;&#x2e;">&#x73;&#117;&#x70;&#112;&#111;&#114;&#116;&#64;&#102;&#111;&#114;&#116;&#x61;&#x2e;&#x63;&#111;&#109;&#x2e;</a> Feel free to send unsolicited email to <a href="&#109;&#x61;&#x69;&#x6c;&#116;&#x6f;&#x3a;&#x73;&#112;&#97;&#x6d;&#x40;&#x66;&#111;&#x72;&#116;&#97;&#x2e;&#x63;&#x6f;&#x6d;&#x2e;">&#x73;&#112;&#x61;&#x6d;&#x40;&#x66;&#x6f;&#x72;&#116;&#x61;&#46;&#x63;&#111;&#x6d;&#x2e;</a></p>
+<p><code>文本</code>: Send personal email to <a href="&#109;&#97;&#105;&#x6c;&#116;&#x6f;&#58;&#98;&#x65;&#110;&#x40;&#102;&#111;&#114;&#116;&#97;&#x2e;&#x63;&#x6f;&#109;&#46;">&#98;&#101;&#110;&#x40;&#x66;&#111;&#x72;&#116;&#x61;&#x2e;&#99;&#x6f;&#x6d;&#x2e;</a> For questions about the book use <a href="&#x6d;&#97;&#x69;&#x6c;&#116;&#x6f;&#x3a;&#115;&#117;&#x70;&#112;&#111;&#x72;&#x74;&#64;&#x66;&#x6f;&#114;&#x74;&#97;&#x2e;&#99;&#111;&#109;&#46;">&#115;&#x75;&#112;&#x70;&#x6f;&#x72;&#x74;&#x40;&#x66;&#111;&#x72;&#116;&#x61;&#46;&#99;&#x6f;&#109;&#x2e;</a> Feel free to send unsolicited email to <a href="&#109;&#97;&#x69;&#x6c;&#x74;&#x6f;&#58;&#x73;&#112;&#x61;&#109;&#64;&#x66;&#111;&#x72;&#116;&#x61;&#46;&#x63;&#111;&#109;&#46;">&#x73;&#x70;&#x61;&#109;&#x40;&#x66;&#x6f;&#114;&#116;&#x61;&#46;&#x63;&#111;&#x6d;&#46;</a></p>
 
 <p><code>正则表达式</code>: \w+@\w+.\w+</p>
 
-<p><code>结果</code>: <a href="&#x6d;&#97;&#x69;&#x6c;&#x74;&#111;&#58;&#98;&#x65;&#x6e;&#64;&#102;&#111;&#x72;&#116;&#x61;&#x2e;&#99;&#111;&#109;">&#x62;&#x65;&#x6e;&#x40;&#102;&#111;&#x72;&#x74;&#97;&#46;&#99;&#x6f;&#109;</a>  <a href="&#109;&#x61;&#105;&#108;&#x74;&#111;&#58;&#115;&#117;&#112;&#112;&#111;&#114;&#x74;&#x40;&#102;&#111;&#x72;&#116;&#x61;&#46;&#x63;&#x6f;&#109;">&#115;&#x75;&#112;&#x70;&#x6f;&#x72;&#x74;&#x40;&#102;&#x6f;&#114;&#116;&#x61;&#46;&#99;&#111;&#109;</a>  <a href="&#x6d;&#97;&#x69;&#108;&#x74;&#x6f;&#58;&#115;&#x70;&#97;&#109;&#64;&#x66;&#111;&#x72;&#116;&#97;&#46;&#99;&#x6f;&#x6d;">&#x73;&#112;&#x61;&#x6d;&#64;&#102;&#x6f;&#114;&#116;&#97;&#x2e;&#99;&#x6f;&#109;</a></p>
+<p><code>结果</code>: <a href="&#x6d;&#x61;&#105;&#108;&#x74;&#111;&#x3a;&#x62;&#101;&#x6e;&#64;&#102;&#x6f;&#x72;&#116;&#x61;&#46;&#99;&#111;&#109;">&#x62;&#101;&#110;&#x40;&#102;&#x6f;&#x72;&#116;&#97;&#x2e;&#99;&#x6f;&#109;</a>  <a href="&#x6d;&#x61;&#x69;&#x6c;&#116;&#111;&#x3a;&#115;&#117;&#112;&#x70;&#x6f;&#114;&#116;&#x40;&#102;&#x6f;&#114;&#116;&#x61;&#46;&#x63;&#x6f;&#x6d;">&#x73;&#x75;&#x70;&#112;&#111;&#114;&#116;&#x40;&#x66;&#x6f;&#114;&#116;&#x61;&#46;&#99;&#x6f;&#109;</a>  <a href="&#x6d;&#x61;&#105;&#x6c;&#116;&#x6f;&#58;&#115;&#x70;&#x61;&#109;&#64;&#x66;&#111;&#x72;&#116;&#x61;&#x2e;&#99;&#111;&#x6d;">&#x73;&#x70;&#97;&#109;&#x40;&#x66;&#111;&#x72;&#x74;&#97;&#46;&#99;&#111;&#109;</a></p>
 
 
 		
@@ -425,48 +473,6 @@
 
 
 <time datetime="2014-04-06T19:55:00-06:00" pubdate data-updated="true">Apr 6th, 2014</time></div>
-	
-
-
-</div>
-</article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2014/04/04/ios-programming-5/">
-		
-			iOS Programming 5(Redrawing and UIScrollView)</a>
-	</h2>
-	<div class="entry-content">
-		<p>在上一篇博客中,我们创建了一个画同心圆的app,这篇博客将继续在那上面扩展,当用户在屏幕上点击的时候同心圆会改变颜色.此外,还将在app里面加上UIScrollView,让用户通过scroll的方式浏览比屏幕本身大的view.</p>
-
-<h2>改变同心圆颜色</h2>
-
-<p>既然是通过点击来改变同心圆的颜色,那么我们肯定会想到用touch event来实现,在用户touch之后需要改变颜色,我们可以通过创建一个公有变量,然后在touch方法里改变他的颜色. 我们现在项目的格局如下:</p>
-
-
-		
-		<a href="/blog/2014/04/04/ios-programming-5/" class="more-link">Read on &rarr;</a>
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-
-<time datetime="2014-04-04T13:08:00-06:00" pubdate data-updated="true">Apr 4th, 2014</time></div>
 	
 
 

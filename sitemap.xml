@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>http://qiusli.github.io/blog/2015/10/17/event-and-delegate-in-c-number/</loc>
+    <lastmod>2015-10-17T15:06:20-06:00</lastmod>
+  </url>
+  <url>
     <loc>http://qiusli.github.io/blog/2015/10/17/how-to-blog-with-octopress/</loc>
     <lastmod>2015-10-17T03:12:48-06:00</lastmod>
   </url>
@@ -221,5 +225,23 @@
   </url>
   <url>
     <loc>http://qiusli.github.io/blog/categories/za-ji/</loc>
+  </url>
+  <url>
+    <loc>http://qiusli.github.io/blog/categories/ke-ji/</loc>
+  </url>
+  <url>
+    <loc>http://qiusli.github.io/posts/2/</loc>
+  </url>
+  <url>
+    <loc>http://qiusli.github.io/posts/3/</loc>
+  </url>
+  <url>
+    <loc>http://qiusli.github.io/posts/4/</loc>
+  </url>
+  <url>
+    <loc>http://qiusli.github.io/posts/5/</loc>
+  </url>
+  <url>
+    <loc>http://qiusli.github.io/posts/6/</loc>
   </url>
 </urlset>
