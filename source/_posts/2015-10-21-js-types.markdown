@@ -1,0 +1,121 @@
+---
+layout: post
+title: "JavaScript中的类型"
+date: 2015-10-21 20:34:58 -0600
+comments: true
+categories: 科技
+---
+JavaScript一共有两种类型,非别为原始类型和引用类型.JavaScript使用一个叫做variable object的东西来记录创建的数据类型,如果新建数据为原始类型,则直接存储在variable object中,如果为引用类型,则用variable object来存放指向引用类型的指针.
+<!-- more -->
+
+##原始类型##
+JavaScript一共有5种原始类型:
+1. Boolean
+2. Number
+3. String
+4. Null
+5. Undefined
+当把一个存储原始类型数据的变量赋值给另一个变量时,两个变量存储的值一样,但分别拥有的是各自的拷贝.
+
+``` JavaScript
+var color1 =  "red";
+var color2 = color1;
+color1 = "green";
+console.log(color1); // green
+console.log(color2); // red
+```
+####typeof 关键字####
+用来判断当前原始类型的具体类型:
+
+``` JavaScript
+console.log(typeof 10);        // number
+console.log(typeof "hello");   // string
+console.log(typeof true);      // boolean
+console.log(typeof null);      // object
+console.log(typeof undefined); // undefined
+```
+
+####== 与 ===####
+两者的作用基本一样,唯一的不同就是`==`在比较的时候会进行类型转换,而`===`则按原值比较.
+
+``` JavaScript
+console.log("5" == 5);           // true
+console.log("5" === 5);          // false
+console.log(true == "true");     // false
+console.log(true === "true");    // false
+console.log(null == null);       // true
+console.log(null === null);      // true
+console.log(null == undefined);  // true
+console.log(null === undefined); // false
+```
+
+##引用类型##
+引用类型即对象,它是由一组键值对组成,很像其他语言中的hash.键可以为string或者一般的literal,值为原始类型或者方法.创建对象一般有两种方法: 使用new和使用object literal.
+
+``` JavaScript
+1. 
+var book = new Object();
+book.name = "Head first Java"
+book.year = 2014
+
+2.
+// literal
+var book = {
+    name: "javascript oo design",
+    year: 2014
+}
+```
+
+与原始类型的赋值不同的是,引用类型在赋值过程中不会在内存中再次拷贝指向数据,而是仅仅创建一个新的指针指向原来的引用.
+
+``` JavaScript
+var obj1 = new Object();
+var obj2 = obj1;
+obj1.myCustomProperty = "Qiushi";
+console.log(obj2.myCustomProperty); // "Qiushi"
+```
+
+和Java类似,JavaScript也有垃圾回收机制,也即没有指针指向对象时,其被回收.
+
+``` JavaScript
+var obj = new Object();
+obj = null;
+```
+
+###原始类型的包装###
+原始类型中的String,Number和Boolean分别有其对应的包装类型,当系统检测到原始类型被读取并被当做对象使用时,系统会创建一个零时的原始类型的包装类,当包装类不再被使用的时候立即被系统回收.
+
+``` JavaScript
+var name = "Qiushi";
+var firstChar = name.charAt(0);
+console.log(firstChar);         // "Q"
+
+在系统中被解释为:
+var name = "Qiushi";
+var tmp = new String(name);
+var firstChar = tmp.charAt(0);
+tmp = null;
+console.log(firstChar);
+```
+
+例如如果我们按照下面这么做:
+
+``` JavaScript
+var name = "Nicholas";name.last = "Zakas";console.log(name.last);    // undefined
+
+在系统中被解释为:
+var name = "Nicholas";
+var tmp = new Sring(name)tmp.last = "Zakas";
+tmp = null                 // 零时变量被摧毁
+
+var tmp = new String(name)console.log(name.last);   
+tmp = null
+```
+
+再看下面这个例子:
+
+``` JavaScript
+var name = "Qiushi"
+console.log(name instanceof String) // false
+```
+name在这里没有被当做对象使用(obj.xxx),所以没有零时对象创立,而原始类型不是其包装类的引用,所以会返回false.
