@@ -4,7 +4,7 @@
   <title><![CDATA[逆旅，行人]]></title>
   <link href="http://qiusli.github.io/atom.xml" rel="self"/>
   <link href="http://qiusli.github.io/"/>
-  <updated>2015-10-22T06:33:24-06:00</updated>
+  <updated>2015-10-22T22:01:18-06:00</updated>
   <id>http://qiusli.github.io/</id>
   <author>
     <name><![CDATA[李秋实]]></name>
@@ -12,6 +12,287 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[JavaScript中函数]]></title>
+    <link href="http://qiusli.github.io/blog/2015/10/22/js-functions/"/>
+    <updated>2015-10-22T19:21:12-06:00</updated>
+    <id>http://qiusli.github.io/blog/2015/10/22/js-functions</id>
+    <content type="html"><![CDATA[<p>JavaScript中的函数即对象,它也是以键值对的形式存在,但是它内部有一个internal property叫做[[call]],它区分了其和对象的唯一不同,定义了自身的类型是函数,可以被执行调用,而对象只能被创建使用.同时如果使用typeof来查看类型,会返回function,internal property从外部不可达.</p>
+
+<!-- more -->
+
+
+<h4>两种定义方法</h4>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='JavaScript'><span class='line'><span class="c1">// function declaration</span>
+</span><span class='line'><span class="kd">function</span> <span class="nx">add</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nx">a</span> <span class="o">+</span> <span class="nx">b</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// function expression</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">k</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nx">a</span> <span class="o">+</span> <span class="nx">b</span><span class="p">;</span>
+</span><span class='line'><span class="p">};</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这两种定义方法基本类似,唯一的区别就是使用前者定义的方法可以在任何地方调用,因为系统总会把定义自动放到最前面(function hoist),后者不会.</p>
+
+<p>方法在Javascript中是一等公民,意味着你可以把它赋值给变量,把它加到方法里,作为参数传递,作为返回值等等.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='JavaScript'><span class='line'><span class="c1">// pass function as parameter</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">numbers</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">8</span><span class="p">];</span>
+</span><span class='line'><span class="nx">numbers</span><span class="p">.</span><span class="nx">sort</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">first</span><span class="p">,</span> <span class="nx">second</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nx">first</span> <span class="o">-</span> <span class="nx">second</span><span class="p">;</span>
+</span><span class='line'><span class="p">});</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">numbers</span><span class="p">);</span>  <span class="c1">// [ 1, 2, 3, 4, 6, 6, 7, 8, 8 ]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>参数</h4>
+
+<p>函数可以接受零个或多个参数,函数接受的所有参数都被存在一个叫做arguments的变量中,可以在方法内部用其取出传递进来的参数.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='JavaScript'><span class='line'><span class="kd">function</span> <span class="nx">sum</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">sum</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">for</span><span class="p">(;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">arguments</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">sum</span> <span class="o">+=</span> <span class="nx">arguments</span><span class="p">[</span><span class="nx">i</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nx">sum</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">sum</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">));</span>     <span class="c1">// 6</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">sum</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">));</span>  <span class="c1">// 10</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>上面的例子sum函数没有定义接受的参数个数,因为无论多少个,最终都是被存放在arguments变量里.如果定义了有限个的参数,多余的参数会被忽略.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='JavaScript'><span class='line'><span class="kd">function</span> <span class="nx">refect</span><span class="p">(</span><span class="nx">value</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nx">value</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">refect</span><span class="p">(</span><span class="s2">&quot;hi&quot;</span><span class="p">));</span>           <span class="c1">// hi</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">refect</span><span class="p">(</span><span class="s2">&quot;hi&quot;</span><span class="p">,</span> <span class="mi">25</span><span class="p">));</span>       <span class="c1">// 25</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">refect</span><span class="p">(</span><span class="s2">&quot;hi&quot;</span><span class="p">,</span> <span class="mi">22</span><span class="p">,</span> <span class="kc">true</span><span class="p">));</span> <span class="c1">// hi</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>由于函数在JavaScript中等同于对象,所有函数也可以有自己的属性(property).length就是其中的一个属性,它记录了函数接受的参数个数.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='JavaScript'><span class='line'><span class="kd">function</span> <span class="nx">refect</span><span class="p">(</span><span class="nx">value</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nx">value</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">refect</span><span class="p">.</span><span class="nx">length</span><span class="p">);</span> <span class="c1">// 1</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>多态</h4>
+
+<p>多态的区分是在函数签名,具体是方法名和参数的组合来区分.但是因为JavaScript函数能接受任意多的参数,所以导致不能够用参数来区分多个多态方法,所以JavaScript中没有多态一说.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='JavaScript'><span class='line'><span class="kd">function</span> <span class="nx">sayMessage</span><span class="p">(</span><span class="nx">message</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">message</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">function</span> <span class="nx">sayMessage</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Default Message&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="nx">sayMessage</span><span class="p">(</span><span class="s2">&quot;Chelse&quot;</span><span class="p">);</span>   <span class="c1">// Default Message</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在JavaScript中,如果你定义了多个同名方法,那么在你调用时,系统会取最后一个方法,前面的同名方法都被shadow掉了.因为函数等同于对象,系统在解析上面的代码时,其实是完成了下面的操作:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='JavaScript'><span class='line'><span class="kd">var</span> <span class="nx">sayMessage</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Function</span><span class="p">(</span><span class="s2">&quot;message&quot;</span><span class="p">,</span> <span class="s2">&quot;console.log(message);&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="c1">// 变量指向了另一个对象</span>
+</span><span class='line'><span class="nx">sayMessage</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Function</span><span class="p">(</span><span class="s2">&quot;console.log(\&quot;Default Message chongqing\&quot;);&quot;</span><span class="p">)</span>
+</span><span class='line'><span class="nx">sayMessage</span><span class="p">(</span><span class="s2">&quot;chongqing&quot;</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>关键字: this</h4>
+
+<p>JavaScript代码中每一个scope里都有一个this关键字,代表了调用当前函数的那个对象.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+</pre></td><td class='code'><pre><code class='JavaScript'><span class='line'><span class="kd">var</span> <span class="nx">person</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">name</span><span class="o">:</span> <span class="s2">&quot;Qiushi&quot;</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">sayName</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">name</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'><span class="kd">function</span> <span class="nx">sayNameForAll</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">name</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">person1</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">name</span><span class="o">:</span> <span class="s2">&quot;chelse&quot;</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">sayName</span><span class="o">:</span> <span class="nx">sayNameForAll</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">person2</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">name</span><span class="o">:</span> <span class="s2">&quot;ruth&quot;</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">sayName</span><span class="o">:</span> <span class="nx">sayNameForAll</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'><span class="c1">// 这里的this代表person对象.</span>
+</span><span class='line'><span class="nx">person</span><span class="p">.</span><span class="nx">sayName</span><span class="p">();</span>
+</span><span class='line'><span class="c1">// 这里的this代表person1对象.</span>
+</span><span class='line'><span class="nx">person1</span><span class="p">.</span><span class="nx">sayName</span><span class="p">();</span>
+</span><span class='line'><span class="c1">// 这里的this代表person2对象.</span>
+</span><span class='line'><span class="nx">person2</span><span class="p">.</span><span class="nx">sayName</span><span class="p">();</span>
+</span><span class='line'><span class="nx">name</span> <span class="o">=</span> <span class="s2">&quot;shawnee&quot;</span><span class="p">;</span>
+</span><span class='line'><span class="c1">// 这里的this代表全局对象,即window,所以window.name只能是shawnee.</span>
+</span><span class='line'><span class="nx">sayNameForAll</span><span class="p">();</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>上面的this指向都是隐式的,我们可以通过下面三种方法来显式制定this的指向.</p>
+
+<h4>使用call</h4>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='JavaScript'><span class='line'><span class="kd">function</span> <span class="nx">speak</span><span class="p">(</span><span class="nx">label</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">label</span> <span class="o">+</span> <span class="k">this</span><span class="p">.</span><span class="nx">language</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">p1</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">language</span><span class="o">:</span> <span class="s2">&quot;chinese&quot;</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">p2</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">language</span><span class="o">:</span> <span class="s2">&quot;spanish&quot;</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'><span class="nx">speak</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">p1</span><span class="p">,</span> <span class="s2">&quot;我说 &quot;</span><span class="p">);</span>     <span class="c1">// 我说 chinese</span>
+</span><span class='line'><span class="nx">speak</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">p2</span><span class="p">,</span> <span class="s2">&quot;I speak &quot;</span><span class="p">);</span> <span class="c1">// I speak spanish</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>call方法的第一个参数指定this的指向,后面为参数.</p>
+
+<h4>使用apply</h4>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='JavaScript'><span class='line'><span class="nx">speak</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="nx">p1</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;Kevin speaks &quot;</span><span class="p">]);</span> <span class="c1">// Kevin speaks chinese</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>apply和call的唯一区别就是接受的第二个参数的类型,call接受单个参数,而apply接受一个数组,所以如果定义的方法接受多个参数,最好使用apply,反之则使用call.</p>
+
+<h4>使用bind</h4>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='JavaScript'><span class='line'><span class="kd">function</span> <span class="nx">anotherSayName</span><span class="p">(</span><span class="nx">label</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">label</span> <span class="o">+</span> <span class="k">this</span><span class="p">.</span><span class="nx">name</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">n1</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">name</span><span class="o">:</span> <span class="s2">&quot;Ani&quot;</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">n2</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">name</span><span class="o">:</span> <span class="s2">&quot;Rashmi&quot;</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">sayName1</span> <span class="o">=</span> <span class="nx">anotherSayName</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="nx">n1</span><span class="p">,</span> <span class="s2">&quot;n1&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="nx">sayName1</span><span class="p">();</span>                                          <span class="c1">// n1Ani</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">sayName2</span> <span class="o">=</span> <span class="nx">anotherSayName</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="nx">n2</span><span class="p">,</span> <span class="s2">&quot;n2&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="nx">sayName2</span><span class="p">();</span>                                       <span class="c1">// n2Rashmi</span>
+</span><span class='line'><span class="nx">n2</span><span class="p">.</span><span class="nx">sayName</span> <span class="o">=</span> <span class="nx">sayName1</span><span class="p">;</span>
+</span><span class='line'><span class="nx">n2</span><span class="p">.</span><span class="nx">sayName</span><span class="p">();</span>                                     <span class="c1">// n1Ani</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>值得注意的是最后输出为n1Ani而不是n2Rashmi,因为sayName1在最开始就指向了anotherSayName,this指向了n1,在重新赋值给n2的sayName时,其this指向不会被改变,所以输出n1Ani.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[JavaScript中的类型]]></title>
@@ -3271,315 +3552,6 @@ X X Q X X X X X<br/></p>
 </span><span class='line'><span class="o">}</span>
 </span></code></pre></td></tr></table></div></figure>
 
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[iOS Programming 4(Views and the View Hierarchy)]]></title>
-    <link href="http://qiusli.github.io/blog/2014/03/09/ios-4/"/>
-    <updated>2014-03-09T19:08:00-06:00</updated>
-    <id>http://qiusli.github.io/blog/2014/03/09/ios-4</id>
-    <content type="html"><![CDATA[<h3>View Basics</h3>
-
-<p>在iOS中，每一个应用都有一个UIWindow的对象，他是应用中所有view的容器(container)，其实UIWindow自己也只是一个view，只不过他的职责不是显示view，而是作为容器存放view。当应用启动的时候，这个对象就被创建，我们可以往这个容器里面添加其他的view。那么什么是view呢？他是在屏幕上被显示的元素，例如button。每一个view都是UIView或UIView的子类的一个实例，每一个view都有一个对应的layer，view在其对应的那样儿上显示自己，我们可以想象成每个view都自带了一块画板，在画板上作画然后贴到最大的canvas(UIWindow)上去。view还能handle屏幕上的一些事件，例如button能handle touch事件。view之间存在层级关系(hierarchy),一个view可以包含另一个view，我们可以把其中的关系想象成一棵树，根结点就是UIWindow。</p>
-
-<!--more-->
-
-
-<h3>Frames &amp; View Hierarchy</h3>
-
-<p>我们通过一个小例子来阐述view的frame。首先新建一个empty application，然后创建一个类，继承自UIView：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="k">@interface</span> <span class="nc">BNRHypnosisterView</span> : <span class="bp">UIView</span>
-</span><span class='line'><span class="k">@end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>当一个类继承自UIView时，会继承两个方法，initWithFrame:和drawRect，前者是UIView的默认init方法，后者默认情况下是被注释，因为只有在custome的时候才需要他。initWithFrame接受一个CGRect参数，他是定义在父类(UIView)中的一个property:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">)</span> <span class="bp">CGRect</span> <span class="n">frame</span><span class="p">;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>一个UIView的frame定义了这个view相对于其superview的位置和大小，CRRect中包含了两个关键信息(origin和size)，一是frame左上角初始点的坐标(origin.x, origin.y)，其次定义了这个frame的大小(size.width, size.height)。值得注意的是，这里的origin和size都不是objective-c中的对象，他们均是C语言中的结构体，所以在定义CGRect的时候不能写成：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="bp">CGRect</span> <span class="o">*</span><span class="n">frame</span> <span class="o">=</span> <span class="p">....</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>而应该这样定义：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="bp">CGRect</span> <span class="n">frame</span> <span class="o">=</span> <span class="n">CGRectMake</span><span class="p">(</span><span class="n">origin</span><span class="p">.</span><span class="n">x</span><span class="p">,</span> <span class="n">origin</span><span class="p">.</span><span class="n">y</span><span class="p">,</span> <span class="n">size</span><span class="p">.</span><span class="n">width</span><span class="p">,</span> <span class="n">size</span><span class="p">.</span><span class="n">height</span><span class="p">);</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>现在我们来到应用的appDelegate类，找到application:didFinishLaunchingWithOptions:方法，在里面定义一个view(firstView)，同时定义一个frame(fristFrame)，然后再把这个frame加到view里去，最后需要做的就是把包含有一个frame的这个view加入到application的root view里面去，这样就能被显示了：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nf">application:</span><span class="p">(</span><span class="bp">UIApplication</span> <span class="o">*</span><span class="p">)</span><span class="nv">application</span> <span class="nf">didFinishLaunchingWithOptions:</span><span class="p">(</span><span class="bp">NSDictionary</span>     <span class="o">*</span><span class="p">)</span><span class="nv">launchOptions</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="nb">self</span><span class="p">.</span><span class="n">window</span> <span class="o">=</span> <span class="p">[[</span><span class="bp">UIWindow</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithFrame</span><span class="p">:[[</span><span class="bp">UIScreen</span> <span class="n">mainScreen</span><span class="p">]</span> <span class="n">bounds</span><span class="p">]];</span>
-</span><span class='line'>    <span class="c1">// Override point for customization after application launch.</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="bp">CGRect</span> <span class="n">firstFrame</span> <span class="o">=</span> <span class="n">CGRectMake</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">140</span><span class="p">);</span>
-</span><span class='line'>    <span class="n">BNRHypnosisterView</span> <span class="o">*</span><span class="n">firstView</span> <span class="o">=</span> <span class="p">[[</span><span class="n">BNRHypnosisterView</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithFrame</span><span class="p">:</span><span class="n">firstFrame</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="p">[</span><span class="nb">self</span><span class="p">.</span><span class="n">window</span> <span class="nl">addSubview</span><span class="p">:</span><span class="n">firstView</span><span class="p">];</span>
-</span><span class='line'>    <span class="n">firstView</span><span class="p">.</span><span class="n">backgroundColor</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIColor</span> <span class="n">redColor</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nb">self</span><span class="p">.</span><span class="n">window</span><span class="p">.</span><span class="n">backgroundColor</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIColor</span> <span class="n">whiteColor</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">[</span><span class="nb">self</span><span class="p">.</span><span class="n">window</span> <span class="n">makeKeyAndVisible</span><span class="p">];</span>
-</span><span class='line'>    <span class="k">return</span> <span class="nb">YES</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>运行后，出来的效果会是这样的：</p>
-
-<p><img src="http://qiusli.github.io/images/ios_frame.png" width="300" height="600"></p>
-
-<p>当我们把一个新的view加入到UIWindow之后，他们之间的关系就如下面这样：</p>
-
-<p><img src="http://qiusli.github.io/images/ios_hierarchy.png" width="500" height="800"></p>
-
-<p>此外，当加入一个subview的时候，subview指向superview的关系自动被创建，不过为了避免强引用环(strong reference cycle)，subview指向superview的引用被设为weak(图中虚线部分)。</p>
-
-<p>这时，我们尝试再往UIWindow里面加上一个view：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nf">application:</span><span class="p">(</span><span class="bp">UIApplication</span> <span class="o">*</span><span class="p">)</span><span class="nv">application</span> <span class="nf">didFinishLaunchingWithOptions:</span><span class="p">(</span><span class="bp">NSDictionary</span> <span class="o">*</span><span class="p">)</span><span class="nv">launchOptions</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="nb">self</span><span class="p">.</span><span class="n">window</span> <span class="o">=</span> <span class="p">[[</span><span class="bp">UIWindow</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithFrame</span><span class="p">:[[</span><span class="bp">UIScreen</span> <span class="n">mainScreen</span><span class="p">]</span> <span class="n">bounds</span><span class="p">]];</span>
-</span><span class='line'>    <span class="c1">// Override point for customization after application launch.</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">//    CGRect firstFrame = self.window.bounds;</span>
-</span><span class='line'>    <span class="bp">CGRect</span> <span class="n">firstFrame</span> <span class="o">=</span> <span class="n">CGRectMake</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">140</span><span class="p">);</span>
-</span><span class='line'>    <span class="n">BNRHypnosisterView</span> <span class="o">*</span><span class="n">firstView</span> <span class="o">=</span> <span class="p">[[</span><span class="n">BNRHypnosisterView</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithFrame</span><span class="p">:</span><span class="n">firstFrame</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="p">[</span><span class="nb">self</span><span class="p">.</span><span class="n">window</span> <span class="nl">addSubview</span><span class="p">:</span><span class="n">firstView</span><span class="p">];</span>
-</span><span class='line'>    <span class="n">firstView</span><span class="p">.</span><span class="n">backgroundColor</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIColor</span> <span class="n">redColor</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="bp">CGRect</span> <span class="n">secondFrame</span> <span class="o">=</span> <span class="n">CGRectMake</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">);</span>
-</span><span class='line'>    <span class="n">BNRHypnosisterView</span> <span class="o">*</span><span class="n">secondView</span> <span class="o">=</span> <span class="p">[[</span><span class="n">BNRHypnosisterView</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithFrame</span><span class="p">:</span><span class="n">secondFrame</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">[</span><span class="nb">self</span><span class="p">.</span><span class="n">window</span> <span class="nl">addSubview</span><span class="p">:</span><span class="n">secondView</span><span class="p">];</span>
-</span><span class='line'>    <span class="n">secondView</span><span class="p">.</span><span class="n">backgroundColor</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIColor</span> <span class="n">greenColor</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'>    <span class="nb">self</span><span class="p">.</span><span class="n">window</span><span class="p">.</span><span class="n">backgroundColor</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIColor</span> <span class="n">whiteColor</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">[</span><span class="nb">self</span><span class="p">.</span><span class="n">window</span> <span class="n">makeKeyAndVisible</span><span class="p">];</span>
-</span><span class='line'>    <span class="k">return</span> <span class="nb">YES</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>这时出来的效果应该是这样的：</p>
-
-<p><img src="http://qiusli.github.io/images/ios_frame_2.png" width="300" height="600"></p>
-
-<p>对应的层次关系应该是这样的：</p>
-
-<p><img src="http://qiusli.github.io/images/ios_hierarchy_2.png" width="500" height="800"></p>
-
-<p>我们甚至可以把secondView作为firstView的subView，只需要改一行代码就行：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="c1">// [self.window addSubview:secondView];</span>
-</span><span class='line'><span class="p">[</span><span class="n">fistView</span> <span class="nl">addSubview</span><span class="p">:</span><span class="n">secondView</span><span class="p">];</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p> 这时出来的效果应该是这样的：</p>
-
-<p> <img src="http://qiusli.github.io/images/ios_frame_3.png" width="300" height="600"></p>
-
-<p> 对应的层次关系如下：</p>
-
-<p> <img src="http://qiusli.github.io/images/ios_hierarchy_3.png" width="500" height="800"></p>
-
-<h3>Customer Drawing in drawRect</h3>
-
-<p>每一个view都有一个bounds，他指的是这个view的范围，他与frame的区别在于：bounds是相对于自身来说的范围，而frame是相对于superview的范围(之前在定义frame的时候包含的参数包括起始点和长宽,这个起始点就是相对于superview的距离)。</p>
-
-<p>现在我们回到AppDelegate,把原来声明frame的语句改成下面这样:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="c1">// CGRect frame = CGRectMake(100, 200, 100, 140);</span>
-</span><span class='line'><span class="bp">CGRect</span> <span class="n">frame</span> <span class="o">=</span> <span class="nb">self</span><span class="p">.</span><span class="n">window</span><span class="p">.</span><span class="n">bounds</span><span class="p">;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>他的意思是把root window的bounds作为subview的frame,换句话说就是实现subview全屏.所以现在的运行效果应该是这样的:</p>
-
-<p> <img src="http://qiusli.github.io/images/ios_frame_4.png" width="300" height="600"></p>
-
-<h4>draw concentric circle</h4>
-
-<p>现在我们来做一点有意思的事情:画同心圆. 我们之前说过，如果需要自定义一些drawing，需要在drawRect方法中进行,当xCode发现drawRect方法不是被注释的情况下,会对UIWindow中的每一个view应用drawRect方法中定义的drawing.所以现在我们来到drawRect方法中做一些改变,最后达到的效果就如下图所示:</p>
-
-<p><img src="http://qiusli.github.io/images/ios_concentric.png" width="300" height="600"></p>
-
-<p>首先我们从最外层圆入手,定义圆心和半径:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="bp">CGRect</span> <span class="n">bounds</span> <span class="o">=</span> <span class="nb">self</span><span class="p">.</span><span class="n">bounds</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="bp">CGPoint</span> <span class="n">center</span><span class="p">;</span>
-</span><span class='line'><span class="n">center</span><span class="p">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">bounds</span><span class="p">.</span><span class="n">origin</span><span class="p">.</span><span class="n">x</span> <span class="o">+</span> <span class="n">bounds</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">;</span>
-</span><span class='line'><span class="n">center</span><span class="p">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">bounds</span><span class="p">.</span><span class="n">origin</span><span class="p">.</span><span class="n">y</span> <span class="o">+</span> <span class="n">bounds</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">height</span> <span class="o">/</span> <span class="mi">2</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="kt">float</span> <span class="n">maxRadius</span> <span class="o">=</span> <span class="n">hypot</span><span class="p">(</span><span class="n">bounds</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">width</span><span class="p">,</span> <span class="n">bounds</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">height</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>定义好了圆心和半径,就可以开始画圆了.在objective-c中有一个很常用的画图类,叫做UIBezierPath,这个类里面定义了很多方法可以用来作图,当然画圆也不在话下.通过查看这个类的API,我们发现有一个叫做addArcWithCenter:c radius:r startAngle:s endAngle:e clockwise:的方法可以用来画圆,参数分别的含义是圆心,半径,起始角度(0),终止角度(360)和顺时针/逆时针(这里无所谓).最后定义好一切之后就需要作图了,调用UIBezierPath类的stroke方法即可:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">drawRect:</span><span class="p">(</span><span class="bp">CGRect</span><span class="p">)</span><span class="nv">rect</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="c1">// Drawing code</span>
-</span><span class='line'>    <span class="bp">CGRect</span> <span class="n">bounds</span> <span class="o">=</span> <span class="nb">self</span><span class="p">.</span><span class="n">bounds</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="bp">CGPoint</span> <span class="n">center</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">center</span><span class="p">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">bounds</span><span class="p">.</span><span class="n">origin</span><span class="p">.</span><span class="n">x</span> <span class="o">+</span> <span class="n">bounds</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">center</span><span class="p">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">bounds</span><span class="p">.</span><span class="n">origin</span><span class="p">.</span><span class="n">y</span> <span class="o">+</span> <span class="n">bounds</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">height</span> <span class="o">/</span> <span class="mi">2</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kt">float</span> <span class="n">maxRadius</span> <span class="o">=</span> <span class="n">MIN</span><span class="p">(</span><span class="n">bounds</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">width</span><span class="p">,</span> <span class="n">bounds</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">height</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="bp">UIBezierPath</span> <span class="o">*</span><span class="n">path</span> <span class="o">=</span> <span class="p">[[</span><span class="bp">UIBezierPath</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="p">[</span><span class="n">path</span> <span class="nl">addArcWithCenter</span><span class="p">:</span><span class="n">center</span> <span class="nl">radius</span><span class="p">:</span><span class="n">maxRadius</span> <span class="nl">startAngle</span><span class="p">:</span><span class="mi">0</span> <span class="nl">endAngle</span><span class="p">:</span><span class="n">M_PI</span> <span class="o">*</span> <span class="mi">2</span> <span class="nl">clockwise</span><span class="p">:</span><span class="nb">YES</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">path</span><span class="p">.</span><span class="n">lineWidth</span> <span class="o">=</span> <span class="mi">10</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="p">[[</span><span class="bp">UIColor</span> <span class="n">lightGrayColor</span><span class="p">]</span> <span class="n">setStroke</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="p">[</span><span class="n">path</span> <span class="n">stroke</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>上面的代码中path.lineWidth设置线的宽度,[[UIColor lightGrayColor] setStroke]用来设置线的颜色,最后出来的效果应该如下:</p>
-
-<p><img src="http://qiusli.github.io/images/ios_concentric_2.png" width="300" height="600"></p>
-
-<p>既然画好了一个圆,那么可以开始画其他的了.我们可以定义一个for循环,每次循环减少一定的半径,圆心不变.只需要修改一行代码:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="c1">//  [path addArcWithCenter:center radius:maxRadius startAngle:0 endAngle:M_PI * 2 clockwise:YES];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">for</span> <span class="p">(</span><span class="kt">float</span> <span class="n">currentRadius</span> <span class="o">=</span> <span class="n">maxRadius</span><span class="p">;</span> <span class="n">currentRadius</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">;</span> <span class="n">currentRadius</span> <span class="o">-=</span> <span class="mi">20</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'><span class="c1">//        [path moveToPoint:CGPointMake(center.x + currentRadius, center.y)];</span>
-</span><span class='line'>        <span class="p">[</span><span class="n">path</span> <span class="nl">addArcWithCenter</span><span class="p">:</span><span class="n">center</span> <span class="nl">radius</span><span class="p">:</span><span class="n">currentRadius</span> <span class="nl">startAngle</span><span class="p">:</span><span class="mi">0</span> <span class="nl">endAngle</span><span class="p">:</span><span class="n">M_PI</span> <span class="o">*</span> <span class="mi">2</span> <span class="nl">clockwise</span><span class="p">:</span><span class="nb">YES</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>运行的效果:</p>
-
-<p><img src="http://qiusli.github.io/images/ios_concentric_3.png" width="300" height="600"></p>
-
-<p>这时还有两个问题:1.为什么有一条直线 2.应该是满屏的圆.首先我们来解决第一个问题.画过画的同学都知道,当在画同心圆的时候,从一个圆跳到下一个圆上去应该从纸上拿起铅笔然后开始画下一个圆,如果不拿起来的话就成了一笔画,所以两个圆之间会有一条连线,问题就出在这里.为了让电脑"提起笔",我们应该在每次画完一个圆之后调用一个相应的方法告诉他,所以for循环应该改成下面这样:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="k">for</span> <span class="p">(</span><span class="kt">float</span> <span class="n">currentRadius</span> <span class="o">=</span> <span class="n">maxRadius</span><span class="p">;</span> <span class="n">currentRadius</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">;</span> <span class="n">currentRadius</span> <span class="o">-=</span> <span class="mi">20</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">path</span> <span class="nl">moveToPoint</span><span class="p">:</span><span class="n">CGPointMake</span><span class="p">(</span><span class="n">center</span><span class="p">.</span><span class="n">x</span> <span class="o">+</span> <span class="n">currentRadius</span><span class="p">,</span> <span class="n">center</span><span class="p">.</span><span class="n">y</span><span class="p">)];</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">path</span> <span class="nl">addArcWithCenter</span><span class="p">:</span><span class="n">center</span> <span class="nl">radius</span><span class="p">:</span><span class="n">currentRadius</span> <span class="nl">startAngle</span><span class="p">:</span><span class="mi">0</span> <span class="nl">endAngle</span><span class="p">:</span><span class="n">M_PI</span> <span class="o">*</span> <span class="mi">2</span> <span class="nl">clockwise</span><span class="p">:</span><span class="nb">YES</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>修改完成后运行:</p>
-
-<p><img src="http://qiusli.github.io/images/ios_concentric_3.png" width="300" height="600"></p>
-
-<p>最后修改满屏的问题,想一想就知道,肯定与圆的半径有关,半径大一些的话,屏幕上就都是圆了,那么究竟要多大呢?只需要一个圆能包含屏幕的四个角就行了(circumcircle),而这也只需要修改一行代码:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="c1">// float maxRadius = MIN(bounds.size.width, bounds.size.height) / 2;</span>
-</span><span class='line'><span class="kt">float</span> <span class="n">maxRadius</span> <span class="o">=</span> <span class="n">hypot</span><span class="p">(</span><span class="n">bounds</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">width</span><span class="p">,</span> <span class="n">bounds</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">height</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>再次运行,就达到了最终的效果:</p>
-
-<p><img src="http://qiusli.github.io/images/ios_concentric.png" width="300" height="600"></p>
 ]]></content>
   </entry>
   
