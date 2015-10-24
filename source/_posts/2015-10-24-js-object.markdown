@@ -1,0 +1,199 @@
+---
+layout: post
+title: "JavaScript中的对象"
+date: 2015-10-24 13:32:50 -0600
+comments: true
+categories: 科技
+---
+JavaScript中的对象较之于其他非动态语言的对象,最大的优势在于它能随时被改变.其他语言(例如Java)中一旦创建了class就不能再修改,而JavaScript创建对象只相当于创建了一个框架,后面随时可以往这个框架里添加东西.
+
+<!-- more -->
+
+
+##添加和设置property的原理:Put与Set##
+
+当向对象中添加property时,其实是调用了对象的一个[[Put]]方法,这个方法存在于每个JavaScript对象中.当[[put]]被调用的时候,它创建的proterty是own property,即在当前环境下创建的property,不是从其他对象继承而来.对象中还有另一个[[Set]]方法,它在对象里property被重写的时候被系统调用.
+
+##删除property##
+对象在Javascript中存在的方式类似于键值对,增加property相当于add一个键值对,删除property相当于delete一个键值对.不能简单地通过把property设置为null来删除它,这样做的道理就是调用对象的[[Set]]方法来把键值对的值设置为null,但是键还在.正确的方法是使用delete方法.
+
+``` Javascript
+person.age = 27;
+console.log("age" in person);  // true
+delete  person.age;
+console.log("age" in person);  // false
+```
+
+##检测property是否属于当前对象##
+新手容易犯的一个错误是使用下面这种方法来检测property是否存在于一个对象:
+
+``` JavaScript
+var person = new Object();
+person.name = "Kevin";
+person.isCitizen = true;
+if(person.name) {
+    console.log(person.name); // kevin
+}
+```
+Javascript中的if语句判断为真的条件是value为truthy即可,truthy的范围包括对象,非空字符串,非0,true等等.所以上面的if语句会被判断为真.if语句判断为假的条件是value为falsy,falsy的范围包括null,undefined,0,false,NaN或空字符串等.
+
+正确的检测方法有2种,分别是in关键字和hasOwnproperty方法.前者覆盖的范围更广,所有从Object继承下来的方法都会被用来判断为当前对象的property,而后者更严格,只在当前环境下定义的对象property才被判断为真.
+
+``` Javascript
+person.sayName = function() {
+    console.log("my name is " + this.name);
+};
+if("sayName" in person) {
+    console.log("sayName is in person");       // sayName is in person
+}
+if("toString" in person) {
+    console.log("toString is in person");      // toString is in person
+}
+if(person.hasOwnProperty("isCitizen")) {
+    console.log("has own property isCitizen"); // has own property isCitizen
+}
+if(person.hasOwnProperty("toString")) {        // false
+    console.log("has own property toString");
+}
+```
+
+##property的类型##
+Javascript对象property可以分为两种,分别是Data properties和Accessor properties,前者包括简单的数据条目键值对(name: "Qiushi")和值为方法的键值对(sayName: function(){...}),无论是向对象中天剑简单数据条目或者值为方法的键值对,都调用的是对象的[[Put]]方法.Accessor properties是用来读取或者写入键值对的(类似于getter和setter).
+
+``` Javascript
+var qiushi = {
+	// Javascript中的一种convention,以下划线开始的property被当做private的,但其实还是public的
+    _age: 27,
+    get age() {
+        console.log("read age");
+        return this._age;
+    },
+    set age(value) {
+        console.log("set age");
+        this._age = value;
+    }
+};
+console.log(qiushi.age);  // read age 27
+qiushi.age = 28;          // set age
+```
+
+##property的属性##
+###遍历property(enumerable)###
+可以使用for-in循环来遍历每个property:
+
+``` Javascript
+var usa = {
+    state: 55,
+    population: 320000000
+};
+for(var prop in usa) {
+	 // key
+    console.log("property : " + prop);
+    // value
+    console.log("property value : " + usa[prop]);
+}
+```
+
+对象中的每一个property默认都是能被遍历的,因为每个对象中的property有一个自己内部的叫做[[enumerable]]的属性,它定义当前property是否能被遍历.
+
+``` Javascript
+// state is enumerable : true
+console.log("state is enumerable : " + usa.propertyIsEnumerable("state"));  
+var keys = Object.keys(usa);
+console.log("length" in keys); // true
+// length is enumerable : false
+console.log("length is enumerable : " + usa.propertyIsEnumerable("length"));
+```
+在使用literal或者constructor创建对象的时候,每一个property的[[enumerable]]属性默认为true,如果想创建不能被遍历的property,应该使用defineProperty方法:
+
+``` Javascript
+var person1 = {
+    name: "Qiushi"
+};
+console.log(person1.propertyIsEnumerable("name"));  // true
+Object.defineProperty(person1, "name", {
+    enumerable: false
+});
+console.log(person1.propertyIsEnumerable("name"));  // false
+```
+###删除property(configurable)###
+``` Javascript
+delete person1.name;
+console.log("name" in person1);  // true (意味着没被删除)
+person1.name = "shawnee";
+console.log(person1.name);       // shawnee (不能被删除但能被修改)
+```
+###修改property(writable)###
+``` Javascript
+Object.defineProperty(person1, "age", {
+    value: 27,
+    enumerable: true,
+    configurable: true,
+    writable: false
+});
+console.log(person1.age); // 27
+person1.age = 99;
+console.log(person1.age); // 27 (值没有被修改)
+```
+
+Accessor properties有[[Get]]和[[Set]]两种属性,所以在定义它时可以指定其属性的行为:
+
+``` Javascript
+var person1 = {    _name: "Nicholas"};Object.defineProperty(person1, "name", {    get: function() {        console.log("Reading name");        return this._name;    },    set: function(value) {        console.log("Setting name to %s", value);        this._name = value;    },    enumerable: true,    configurable: true});
+```
+
+##读取property的属性##
+``` Javascript
+Object.defineProperty(person1, "age", {
+    value: 27,
+    enumerable: true,
+    configurable: true,
+    writable: false
+});
+
+// retrieve property attributes
+var descriptor = Object.getOwnPropertyDescriptor(person1, "age");
+console.log(descriptor.enumerable);                               // true
+console.log(descriptor.configurable); 	                          // true
+console.log(descriptor.writable);                                 // false
+```
+
+##防止对象被修改的方法##
+我们在一开始就提到Javascript中的对象可以在创建后被修改,但是在一些情况下我们想防止这种情况的发生,系统提供了3中方法.
+###extensible###
+顾名思义,它防止对象被extend,即不能添加新property到对象,但是能修改和删除已有property的内容.
+
+``` Javascript
+// prevent modification
+console.log("is extensible : " + Object.isExtensible(person1)); // true
+Object.preventExtensions(person1);
+console.log("is extensible : " + Object.isExtensible(person1)); // false
+```
+###seal###
+和extensible,但是不能删除已有的property.
+
+``` Javascript
+Object.seal(person1);
+console.log("is sealed : " + Object.isSealed(person1));         // true
+console.log("is extensible : " + Object.isExtensible(person1)); // false
+person1.name = "Rashmi";
+console.log(person1.name);                                      // Rashmi
+delete person1.name;
+console.log(person1.name);                                      // Rashmi (没有被删除)
+```
+
+###freeze###
+和seal类似但更严厉,只能读取property
+
+``` Javascript
+var company = {
+    name: "Goldman Sachs",
+    size: "big",
+    salary: "low"
+};
+console.log("is frozen " + Object.isFrozen(company)); // is frozen false
+Object.freeze(company);
+console.log("is frozen " + Object.isFrozen(company)); // is frozen true
+company.name = "thoughtworks";
+console.log(company.name);                            // Goldman Sachs
+```
