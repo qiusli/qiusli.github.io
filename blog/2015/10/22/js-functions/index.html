@@ -3,11 +3,12 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<title>JavaScript中函数  | 逆旅，行人</title>
+	<title>JavaScript中的函数  | 逆旅，行人</title>
 
 	<meta name="author" content="李秋实"> 
 	
-	<meta name="description" content="JavaScript中的函数即对象,它也是以键值对的形式存在,但是它内部有一个internal property叫做[[call]],它区分了其和对象的唯一不同,定义了自身的类型是函数,可以被执行调用,而对象只能被创建使用.同时如果使用typeof来查看类型,会返回function, &hellip;"> <meta name="keywords" content="">
+	<meta name="description" content="JavaScript中的函数即对象,它也是以键值对的形式存在,但是它内部有一个internal
+property叫做[[call]],它区分了其和对象的唯一不同,定义了自身的类型是函数,可以被执行调用,而对象只能被创建使用.同时如果使用typeof来查看类型,会返回function, &hellip;"> <meta name="keywords" content="">
 
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -35,8 +36,10 @@
 </header>
 
 	<div id="content" class="inner"><article class="post">
-	<h2 class="title">JavaScript中函数</h2>
-	<div class="entry-content"><p>JavaScript中的函数即对象,它也是以键值对的形式存在,但是它内部有一个internal property叫做[[call]],它区分了其和对象的唯一不同,定义了自身的类型是函数,可以被执行调用,而对象只能被创建使用.同时如果使用typeof来查看类型,会返回function,internal property从外部不可达.</p>
+	<h2 class="title">JavaScript中的函数</h2>
+	<div class="entry-content"><p>JavaScript中的函数即对象,它也是以键值对的形式存在,但是它内部有一个internal
+property叫做[[call]],它区分了其和对象的唯一不同,定义了自身的类型是函数,可以被执行调用,而对象只能被创建使用.同时如果使用typeof来查看类型,会返回function,internal
+property从外部不可达.</p>
 
 <!-- more -->
 
@@ -52,7 +55,7 @@
 <span class='line-number'>7</span>
 <span class='line-number'>8</span>
 <span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='JavaScript'><span class='line'><span class="c1">// function declaration</span>
+</pre></td><td class='code'><pre><code class='Javascript'><span class='line'><span class="c1">// function declaration</span>
 </span><span class='line'><span class="kd">function</span> <span class="nx">add</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">)</span> <span class="p">{</span>
 </span><span class='line'>    <span class="k">return</span> <span class="nx">a</span> <span class="o">+</span> <span class="nx">b</span><span class="p">;</span>
 </span><span class='line'><span class="p">}</span>
@@ -64,7 +67,8 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>这两种定义方法基本类似,唯一的区别就是使用前者定义的方法可以在任何地方调用,因为系统总会把定义自动放到最前面(function hoist),后者不会.</p>
+<p>这两种定义方法基本类似,唯一的区别就是使用前者定义的方法可以在任何地方调用,因为系统总会把定义自动放到最前面(function
+hoist),后者不会.</p>
 
 <p>方法在Javascript中是一等公民,意味着你可以把它赋值给变量,把它加到方法里,作为参数传递,作为返回值等等.</p>
 
@@ -74,7 +78,7 @@
 <span class='line-number'>4</span>
 <span class='line-number'>5</span>
 <span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='JavaScript'><span class='line'><span class="c1">// pass function as parameter</span>
+</pre></td><td class='code'><pre><code class='Javascript'><span class='line'><span class="c1">// pass function as parameter</span>
 </span><span class='line'><span class="kd">var</span> <span class="nx">numbers</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">8</span><span class="p">];</span>
 </span><span class='line'><span class="nx">numbers</span><span class="p">.</span><span class="nx">sort</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">first</span><span class="p">,</span> <span class="nx">second</span><span class="p">)</span> <span class="p">{</span>
 </span><span class='line'>    <span class="k">return</span> <span class="nx">first</span> <span class="o">-</span> <span class="nx">second</span><span class="p">;</span>
@@ -96,7 +100,7 @@
 <span class='line-number'>7</span>
 <span class='line-number'>8</span>
 <span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='JavaScript'><span class='line'><span class="kd">function</span> <span class="nx">sum</span><span class="p">()</span> <span class="p">{</span>
+</pre></td><td class='code'><pre><code class='Javascript'><span class='line'><span class="kd">function</span> <span class="nx">sum</span><span class="p">()</span> <span class="p">{</span>
 </span><span class='line'>    <span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">sum</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
 </span><span class='line'>    <span class="k">for</span><span class="p">(;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">arguments</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
 </span><span class='line'>        <span class="nx">sum</span> <span class="o">+=</span> <span class="nx">arguments</span><span class="p">[</span><span class="nx">i</span><span class="p">];</span>
@@ -116,7 +120,7 @@
 <span class='line-number'>4</span>
 <span class='line-number'>5</span>
 <span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='JavaScript'><span class='line'><span class="kd">function</span> <span class="nx">refect</span><span class="p">(</span><span class="nx">value</span><span class="p">)</span> <span class="p">{</span>
+</pre></td><td class='code'><pre><code class='Javascript'><span class='line'><span class="kd">function</span> <span class="nx">refect</span><span class="p">(</span><span class="nx">value</span><span class="p">)</span> <span class="p">{</span>
 </span><span class='line'>    <span class="k">return</span> <span class="nx">value</span><span class="p">;</span>
 </span><span class='line'><span class="p">}</span>
 </span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">refect</span><span class="p">(</span><span class="s2">&quot;hi&quot;</span><span class="p">));</span>           <span class="c1">// hi</span>
@@ -131,7 +135,7 @@
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='JavaScript'><span class='line'><span class="kd">function</span> <span class="nx">refect</span><span class="p">(</span><span class="nx">value</span><span class="p">)</span> <span class="p">{</span>
+</pre></td><td class='code'><pre><code class='Javascript'><span class='line'><span class="kd">function</span> <span class="nx">refect</span><span class="p">(</span><span class="nx">value</span><span class="p">)</span> <span class="p">{</span>
 </span><span class='line'>    <span class="k">return</span> <span class="nx">value</span><span class="p">;</span>
 </span><span class='line'><span class="p">}</span>
 </span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">refect</span><span class="p">.</span><span class="nx">length</span><span class="p">);</span> <span class="c1">// 1</span>
@@ -150,7 +154,7 @@
 <span class='line-number'>6</span>
 <span class='line-number'>7</span>
 <span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='JavaScript'><span class='line'><span class="kd">function</span> <span class="nx">sayMessage</span><span class="p">(</span><span class="nx">message</span><span class="p">)</span> <span class="p">{</span>
+</pre></td><td class='code'><pre><code class='Javascript'><span class='line'><span class="kd">function</span> <span class="nx">sayMessage</span><span class="p">(</span><span class="nx">message</span><span class="p">)</span> <span class="p">{</span>
 </span><span class='line'>    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">message</span><span class="p">);</span>
 </span><span class='line'><span class="p">}</span>
 </span><span class='line'>
@@ -167,7 +171,7 @@
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='JavaScript'><span class='line'><span class="kd">var</span> <span class="nx">sayMessage</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Function</span><span class="p">(</span><span class="s2">&quot;message&quot;</span><span class="p">,</span> <span class="s2">&quot;console.log(message);&quot;</span><span class="p">);</span>
+</pre></td><td class='code'><pre><code class='Javascript'><span class='line'><span class="kd">var</span> <span class="nx">sayMessage</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Function</span><span class="p">(</span><span class="s2">&quot;message&quot;</span><span class="p">,</span> <span class="s2">&quot;console.log(message);&quot;</span><span class="p">);</span>
 </span><span class='line'><span class="c1">// 变量指向了另一个对象</span>
 </span><span class='line'><span class="nx">sayMessage</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Function</span><span class="p">(</span><span class="s2">&quot;console.log(\&quot;Default Message chongqing\&quot;);&quot;</span><span class="p">)</span>
 </span><span class='line'><span class="nx">sayMessage</span><span class="p">(</span><span class="s2">&quot;chongqing&quot;</span><span class="p">);</span>
@@ -204,7 +208,7 @@
 <span class='line-number'>24</span>
 <span class='line-number'>25</span>
 <span class='line-number'>26</span>
-</pre></td><td class='code'><pre><code class='JavaScript'><span class='line'><span class="kd">var</span> <span class="nx">person</span> <span class="o">=</span> <span class="p">{</span>
+</pre></td><td class='code'><pre><code class='Javascript'><span class='line'><span class="kd">var</span> <span class="nx">person</span> <span class="o">=</span> <span class="p">{</span>
 </span><span class='line'>    <span class="nx">name</span><span class="o">:</span> <span class="s2">&quot;Qiushi&quot;</span><span class="p">,</span>
 </span><span class='line'>    <span class="nx">sayName</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
 </span><span class='line'>        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">name</span><span class="p">);</span>
@@ -248,7 +252,7 @@
 <span class='line-number'>9</span>
 <span class='line-number'>10</span>
 <span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class='JavaScript'><span class='line'><span class="kd">function</span> <span class="nx">speak</span><span class="p">(</span><span class="nx">label</span><span class="p">)</span> <span class="p">{</span>
+</pre></td><td class='code'><pre><code class='Javascript'><span class='line'><span class="kd">function</span> <span class="nx">speak</span><span class="p">(</span><span class="nx">label</span><span class="p">)</span> <span class="p">{</span>
 </span><span class='line'>    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">label</span> <span class="o">+</span> <span class="k">this</span><span class="p">.</span><span class="nx">language</span><span class="p">);</span>
 </span><span class='line'><span class="p">}</span>
 </span><span class='line'><span class="kd">var</span> <span class="nx">p1</span> <span class="o">=</span> <span class="p">{</span>
@@ -267,7 +271,7 @@
 <h4>使用apply</h4>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='JavaScript'><span class='line'><span class="nx">speak</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="nx">p1</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;Kevin speaks &quot;</span><span class="p">]);</span> <span class="c1">// Kevin speaks chinese</span>
+</pre></td><td class='code'><pre><code class='Javascript'><span class='line'><span class="nx">speak</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="nx">p1</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;Kevin speaks &quot;</span><span class="p">]);</span> <span class="c1">// Kevin speaks chinese</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
@@ -290,7 +294,7 @@
 <span class='line-number'>13</span>
 <span class='line-number'>14</span>
 <span class='line-number'>15</span>
-</pre></td><td class='code'><pre><code class='JavaScript'><span class='line'><span class="kd">function</span> <span class="nx">anotherSayName</span><span class="p">(</span><span class="nx">label</span><span class="p">)</span> <span class="p">{</span>
+</pre></td><td class='code'><pre><code class='Javascript'><span class='line'><span class="kd">function</span> <span class="nx">anotherSayName</span><span class="p">(</span><span class="nx">label</span><span class="p">)</span> <span class="p">{</span>
 </span><span class='line'>    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">label</span> <span class="o">+</span> <span class="k">this</span><span class="p">.</span><span class="nx">name</span><span class="p">);</span>
 </span><span class='line'><span class="p">}</span>
 </span><span class='line'><span class="kd">var</span> <span class="nx">n1</span> <span class="o">=</span> <span class="p">{</span>
@@ -300,7 +304,7 @@
 </span><span class='line'>    <span class="nx">name</span><span class="o">:</span> <span class="s2">&quot;Rashmi&quot;</span>
 </span><span class='line'><span class="p">};</span>
 </span><span class='line'><span class="kd">var</span> <span class="nx">sayName1</span> <span class="o">=</span> <span class="nx">anotherSayName</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="nx">n1</span><span class="p">,</span> <span class="s2">&quot;n1&quot;</span><span class="p">);</span>
-</span><span class='line'><span class="nx">sayName1</span><span class="p">();</span>                                          <span class="c1">// n1Ani</span>
+</span><span class='line'><span class="nx">sayName1</span><span class="p">();</span>                                           <span class="c1">// n1Ani</span>
 </span><span class='line'><span class="kd">var</span> <span class="nx">sayName2</span> <span class="o">=</span> <span class="nx">anotherSayName</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="nx">n2</span><span class="p">,</span> <span class="s2">&quot;n2&quot;</span><span class="p">);</span>
 </span><span class='line'><span class="nx">sayName2</span><span class="p">();</span>                                       <span class="c1">// n2Rashmi</span>
 </span><span class='line'><span class="nx">n2</span><span class="p">.</span><span class="nx">sayName</span> <span class="o">=</span> <span class="nx">sayName1</span><span class="p">;</span>

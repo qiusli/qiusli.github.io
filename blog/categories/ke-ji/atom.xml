@@ -4,7 +4,7 @@
   <title><![CDATA[Category: 科技 | 逆旅，行人]]></title>
   <link href="http://qiusli.github.io/blog/categories/ke-ji/atom.xml" rel="self"/>
   <link href="http://qiusli.github.io/"/>
-  <updated>2015-10-22T22:01:18-06:00</updated>
+  <updated>2015-10-24T15:08:37-06:00</updated>
   <id>http://qiusli.github.io/</id>
   <author>
     <name><![CDATA[李秋实]]></name>
@@ -14,18 +14,224 @@
 
   
   <entry>
-    <title type="html"><![CDATA[JavaScript中函数]]></title>
+    <title type="html"><![CDATA[JavaScript中的对象]]></title>
+    <link href="http://qiusli.github.io/blog/2015/10/24/js-object/"/>
+    <updated>2015-10-24T13:32:50-06:00</updated>
+    <id>http://qiusli.github.io/blog/2015/10/24/js-object</id>
+    <content type="html"><![CDATA[<p>JavaScript中的对象较之于其他非动态语言的对象,最大的优势在于它能随时被改变.其他语言(例如Java)中一旦创建了class就不能再修改,而JavaScript创建对象只相当于创建了一个框架,后面随时可以往这个框架里添加东西.</p>
+
+<!-- more -->
+
+
+<h2>添加和设置property的原理:Put与Set</h2>
+
+<p>当向对象中添加property时,其实是调用了对象的一个[[Put]]方法,这个方法存在于每个JavaScript对象中.当[[put]]被调用的时候,它创建的proterty是own property,即在当前环境下创建的property,不是从其他对象继承而来.对象中还有另一个[[Set]]方法,它在对象里property被重写的时候被系统调用.</p>
+
+<h2>删除property</h2>
+
+<p>对象在Javascript中存在的方式类似于键值对,增加property相当于add一个键值对,删除property相当于delete一个键值对.不能简单地通过把property设置为null来删除它,这样做的道理就是调用对象的[[Set]]方法来把键值对的值设置为null,但是键还在.正确的方法是使用delete方法.</p>
+
+<pre><code class="Javascript">person.age = 27;
+console.log("age" in person);  // true
+delete  person.age;
+console.log("age" in person);  // false
+</code></pre>
+
+<h2>检测property是否属于当前对象</h2>
+
+<p>新手容易犯的一个错误是使用下面这种方法来检测property是否存在于一个对象:</p>
+
+<pre><code class="JavaScript">var person = new Object();
+person.name = "Kevin";
+person.isCitizen = true;
+if(person.name) {
+    console.log(person.name); // kevin
+}
+</code></pre>
+
+<p>Javascript中的if语句判断为真的条件是value为truthy即可,truthy的范围包括对象,非空字符串,非0,true等等.所以上面的if语句会被判断为真.if语句判断为假的条件是value为falsy,falsy的范围包括null,undefined,0,false,NaN或空字符串等.</p>
+
+<p>正确的检测方法有2种,分别是in关键字和hasOwnproperty方法.前者覆盖的范围更广,所有从Object继承下来的方法都会被用来判断为当前对象的property,而后者更严格,只在当前环境下定义的对象property才被判断为真.</p>
+
+<pre><code class="Javascript">person.sayName = function() {
+    console.log("my name is " + this.name);
+};
+if("sayName" in person) {
+    console.log("sayName is in person");       // sayName is in person
+}
+if("toString" in person) {
+    console.log("toString is in person");      // toString is in person
+}
+if(person.hasOwnProperty("isCitizen")) {
+    console.log("has own property isCitizen"); // has own property isCitizen
+}
+if(person.hasOwnProperty("toString")) {        // false
+    console.log("has own property toString");
+}
+</code></pre>
+
+<h2>property的类型</h2>
+
+<p>Javascript对象property可以分为两种,分别是Data properties和Accessor properties,前者包括简单的数据条目键值对(name: &ldquo;Qiushi&rdquo;)和值为方法的键值对(sayName: function(){&hellip;}),无论是向对象中天剑简单数据条目或者值为方法的键值对,都调用的是对象的[[Put]]方法.Accessor properties是用来读取或者写入键值对的(类似于getter和setter).</p>
+
+<pre><code class="Javascript">var qiushi = {
+    // Javascript中的一种convention,以下划线开始的property被当做private的,但其实还是public的
+    _age: 27,
+    get age() {
+        console.log("read age");
+        return this._age;
+    },
+    set age(value) {
+        console.log("set age");
+        this._age = value;
+    }
+};
+console.log(qiushi.age);  // read age 27
+qiushi.age = 28;          // set age
+</code></pre>
+
+<h2>property的属性</h2>
+
+<h3>遍历property(enumerable)</h3>
+
+<p>可以使用for-in循环来遍历每个property:</p>
+
+<pre><code class="Javascript">var usa = {
+    state: 55,
+    population: 320000000
+};
+for(var prop in usa) {
+     // key
+    console.log("property : " + prop);
+    // value
+    console.log("property value : " + usa[prop]);
+}
+</code></pre>
+
+<p>对象中的每一个property默认都是能被遍历的,因为每个对象中的property有一个自己内部的叫做[[enumerable]]的属性,它定义当前property是否能被遍历.</p>
+
+<pre><code class="Javascript">// state is enumerable : true
+console.log("state is enumerable : " + usa.propertyIsEnumerable("state"));  
+var keys = Object.keys(usa);
+console.log("length" in keys); // true
+// length is enumerable : false
+console.log("length is enumerable : " + usa.propertyIsEnumerable("length"));
+</code></pre>
+
+<p>在使用literal或者constructor创建对象的时候,每一个property的[[enumerable]]属性默认为true,如果想创建不能被遍历的property,应该使用defineProperty方法:</p>
+
+<pre><code class="Javascript">var person1 = {
+    name: "Qiushi"
+};
+console.log(person1.propertyIsEnumerable("name"));  // true
+Object.defineProperty(person1, "name", {
+    enumerable: false
+});
+console.log(person1.propertyIsEnumerable("name"));  // false
+</code></pre>
+
+<h3>删除property(configurable)</h3>
+
+<pre><code class="Javascript">delete person1.name;
+console.log("name" in person1);  // true (意味着没被删除)
+person1.name = "shawnee";
+console.log(person1.name);       // shawnee (不能被删除但能被修改)
+</code></pre>
+
+<h3>修改property(writable)</h3>
+
+<pre><code class="Javascript">Object.defineProperty(person1, "age", {
+    value: 27,
+    enumerable: true,
+    configurable: true,
+    writable: false
+});
+console.log(person1.age); // 27
+person1.age = 99;
+console.log(person1.age); // 27 (值没有被修改)
+</code></pre>
+
+<p>Accessor properties有[[Get]]和[[Set]]两种属性,所以在定义它时可以指定其属性的行为:</p>
+
+<pre><code class="Javascript">var person1 = {    _name: "Nicholas"};Object.defineProperty(person1, "name", {    get: function() {        console.log("Reading name");        return this._name;    },    set: function(value) {        console.log("Setting name to %s", value);        this._name = value;    },    enumerable: true,    configurable: true});
+</code></pre>
+
+<h2>读取property的属性</h2>
+
+<pre><code class="Javascript">Object.defineProperty(person1, "age", {
+    value: 27,
+    enumerable: true,
+    configurable: true,
+    writable: false
+});
+
+// retrieve property attributes
+var descriptor = Object.getOwnPropertyDescriptor(person1, "age");
+console.log(descriptor.enumerable);                               // true
+console.log(descriptor.configurable);                             // true
+console.log(descriptor.writable);                                 // false
+</code></pre>
+
+<h2>防止对象被修改的方法</h2>
+
+<p>我们在一开始就提到Javascript中的对象可以在创建后被修改,但是在一些情况下我们想防止这种情况的发生,系统提供了3中方法.</p>
+
+<h3>extensible</h3>
+
+<p>顾名思义,它防止对象被extend,即不能添加新property到对象,但是能修改和删除已有property的内容.</p>
+
+<pre><code class="Javascript">// prevent modification
+console.log("is extensible : " + Object.isExtensible(person1)); // true
+Object.preventExtensions(person1);
+console.log("is extensible : " + Object.isExtensible(person1)); // false
+</code></pre>
+
+<h3>seal</h3>
+
+<p>和extensible,但是不能删除已有的property.</p>
+
+<pre><code class="Javascript">Object.seal(person1);
+console.log("is sealed : " + Object.isSealed(person1));         // true
+console.log("is extensible : " + Object.isExtensible(person1)); // false
+person1.name = "Rashmi";
+console.log(person1.name);                                      // Rashmi
+delete person1.name;
+console.log(person1.name);                                      // Rashmi (没有被删除)
+</code></pre>
+
+<h3>freeze</h3>
+
+<p>和seal类似但更严厉,只能读取property</p>
+
+<pre><code class="Javascript">var company = {
+    name: "Goldman Sachs",
+    size: "big",
+    salary: "low"
+};
+console.log("is frozen " + Object.isFrozen(company)); // is frozen false
+Object.freeze(company);
+console.log("is frozen " + Object.isFrozen(company)); // is frozen true
+company.name = "thoughtworks";
+console.log(company.name);                            // Goldman Sachs
+</code></pre>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[JavaScript中的函数]]></title>
     <link href="http://qiusli.github.io/blog/2015/10/22/js-functions/"/>
     <updated>2015-10-22T19:21:12-06:00</updated>
     <id>http://qiusli.github.io/blog/2015/10/22/js-functions</id>
-    <content type="html"><![CDATA[<p>JavaScript中的函数即对象,它也是以键值对的形式存在,但是它内部有一个internal property叫做[[call]],它区分了其和对象的唯一不同,定义了自身的类型是函数,可以被执行调用,而对象只能被创建使用.同时如果使用typeof来查看类型,会返回function,internal property从外部不可达.</p>
+    <content type="html"><![CDATA[<p>JavaScript中的函数即对象,它也是以键值对的形式存在,但是它内部有一个internal
+property叫做[[call]],它区分了其和对象的唯一不同,定义了自身的类型是函数,可以被执行调用,而对象只能被创建使用.同时如果使用typeof来查看类型,会返回function,internal
+property从外部不可达.</p>
 
 <!-- more -->
 
 
 <h4>两种定义方法</h4>
 
-<pre><code class="JavaScript">// function declaration
+<pre><code class="Javascript">// function declaration
 function add(a, b) {
     return a + b;
 }
@@ -36,11 +242,12 @@ var k = function(a, b) {
 };
 </code></pre>
 
-<p>这两种定义方法基本类似,唯一的区别就是使用前者定义的方法可以在任何地方调用,因为系统总会把定义自动放到最前面(function hoist),后者不会.</p>
+<p>这两种定义方法基本类似,唯一的区别就是使用前者定义的方法可以在任何地方调用,因为系统总会把定义自动放到最前面(function
+hoist),后者不会.</p>
 
 <p>方法在Javascript中是一等公民,意味着你可以把它赋值给变量,把它加到方法里,作为参数传递,作为返回值等等.</p>
 
-<pre><code class="JavaScript">// pass function as parameter
+<pre><code class="Javascript">// pass function as parameter
 var numbers = [3, 6, 2, 8, 4, 1, 7, 6, 8];
 numbers.sort(function(first, second) {
     return first - second;
@@ -52,7 +259,7 @@ console.log(numbers);  // [ 1, 2, 3, 4, 6, 6, 7, 8, 8 ]
 
 <p>函数可以接受零个或多个参数,函数接受的所有参数都被存在一个叫做arguments的变量中,可以在方法内部用其取出传递进来的参数.</p>
 
-<pre><code class="JavaScript">function sum() {
+<pre><code class="Javascript">function sum() {
     var i = 0, sum = 0;
     for(; i &lt; arguments.length; i++) {
         sum += arguments[i];
@@ -65,7 +272,7 @@ console.log(sum(1, 2, 3, 4));  // 10
 
 <p>上面的例子sum函数没有定义接受的参数个数,因为无论多少个,最终都是被存放在arguments变量里.如果定义了有限个的参数,多余的参数会被忽略.</p>
 
-<pre><code class="JavaScript">function refect(value) {
+<pre><code class="Javascript">function refect(value) {
     return value;
 }
 console.log(refect("hi"));           // hi
@@ -75,7 +282,7 @@ console.log(refect("hi", 22, true)); // hi
 
 <p>由于函数在JavaScript中等同于对象,所有函数也可以有自己的属性(property).length就是其中的一个属性,它记录了函数接受的参数个数.</p>
 
-<pre><code class="JavaScript">function refect(value) {
+<pre><code class="Javascript">function refect(value) {
     return value;
 }
 console.log(refect.length); // 1
@@ -85,7 +292,7 @@ console.log(refect.length); // 1
 
 <p>多态的区分是在函数签名,具体是方法名和参数的组合来区分.但是因为JavaScript函数能接受任意多的参数,所以导致不能够用参数来区分多个多态方法,所以JavaScript中没有多态一说.</p>
 
-<pre><code class="JavaScript">function sayMessage(message) {
+<pre><code class="Javascript">function sayMessage(message) {
     console.log(message);
 }
 
@@ -97,7 +304,7 @@ sayMessage("Chelse");   // Default Message
 
 <p>在JavaScript中,如果你定义了多个同名方法,那么在你调用时,系统会取最后一个方法,前面的同名方法都被shadow掉了.因为函数等同于对象,系统在解析上面的代码时,其实是完成了下面的操作:</p>
 
-<pre><code class="JavaScript">var sayMessage = new Function("message", "console.log(message);");
+<pre><code class="Javascript">var sayMessage = new Function("message", "console.log(message);");
 // 变量指向了另一个对象
 sayMessage = new Function("console.log(\"Default Message chongqing\");")
 sayMessage("chongqing"); 
@@ -107,7 +314,7 @@ sayMessage("chongqing");
 
 <p>JavaScript代码中每一个scope里都有一个this关键字,代表了调用当前函数的那个对象.</p>
 
-<pre><code class="JavaScript">var person = {
+<pre><code class="Javascript">var person = {
     name: "Qiushi",
     sayName: function() {
         console.log(this.name);
@@ -139,7 +346,7 @@ sayNameForAll();
 
 <h4>使用call</h4>
 
-<pre><code class="JavaScript">function speak(label) {
+<pre><code class="Javascript">function speak(label) {
     console.log(label + this.language);
 }
 var p1 = {
@@ -156,14 +363,14 @@ speak.call(p2, "I speak "); // I speak spanish
 
 <h4>使用apply</h4>
 
-<pre><code class="JavaScript">speak.apply(p1, ["Kevin speaks "]); // Kevin speaks chinese
+<pre><code class="Javascript">speak.apply(p1, ["Kevin speaks "]); // Kevin speaks chinese
 </code></pre>
 
 <p>apply和call的唯一区别就是接受的第二个参数的类型,call接受单个参数,而apply接受一个数组,所以如果定义的方法接受多个参数,最好使用apply,反之则使用call.</p>
 
 <h4>使用bind</h4>
 
-<pre><code class="JavaScript">function anotherSayName(label) {
+<pre><code class="Javascript">function anotherSayName(label) {
     console.log(label + this.name);
 }
 var n1 = {
