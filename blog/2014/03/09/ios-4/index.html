@@ -3,7 +3,7 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<title>iOS Programming 4(Views and the View Hierarchy)  | 逆旅，行人</title>
+	<title>iOS Programming 4(Views and the View Hierarchy) | 逆旅，行人</title>
 
 	<meta name="author" content="李秋实"> 
 	
@@ -23,19 +23,33 @@
 
 
 <body>
-	<header id="header" class="inner"><h1>逆旅，行人</h1>
-<nav id="main-nav"><ul>
-	<li><a href="/">Blog</a></li>
-	<li><a href="/archives">Archive</a></li>
-	<li><a href="/about">About</a></li>
-</ul>
-</nav>
-
-
-</header>
+	<header id="header">
+<div class="inner">
+  <ul class="navigation">
+    <li><a href="/"><h1>逆旅，行人</h1></a></li>
+    <li><a href="/" class="is-selected">Blog</a></li>
+    <li><a href="http://github.com/" target="blank">Github</a></li>
+  </ul>
+</div></header>
 
 	<div id="content" class="inner"><article class="post">
 	<h2 class="title">iOS Programming 4(Views and the View Hierarchy)</h2>
+	<div class="meta">
+		<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+
+<time datetime="2014-03-09T19:08:00-06:00" pubdate data-updated="true">Mar 9th, 2014</time></div>
+	</div>
 	<div class="entry-content"><h3>View Basics</h3>
 
 <p>在iOS中，每一个应用都有一个UIWindow的对象，他是应用中所有view的容器(container)，其实UIWindow自己也只是一个view，只不过他的职责不是显示view，而是作为容器存放view。当应用启动的时候，这个对象就被创建，我们可以往这个容器里面添加其他的view。那么什么是view呢？他是在屏幕上被显示的元素，例如button。每一个view都是UIView或UIView的子类的一个实例，每一个view都有一个对应的layer，view在其对应的那样儿上显示自己，我们可以想象成每个view都自带了一块画板，在画板上作画然后贴到最大的canvas(UIWindow)上去。view还能handle屏幕上的一些事件，例如button能handle touch事件。view之间存在层级关系(hierarchy),一个view可以包含另一个view，我们可以把其中的关系想象成一棵树，根结点就是UIWindow。</p>
@@ -340,31 +354,49 @@
 </div>
 
 
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
+<div class="sharing">
   
-
-
-
-<time datetime="2014-03-09T19:08:00-06:00" pubdate data-updated="true">Mar 9th, 2014</time></div>
-	
-
-
+  
+  
 </div>
 </article>
 </div>
-	<footer id="footer" class="inner">Copyright &copy; 2015
+	<footer id="footer" class="inner"><div class="aboutme">
+<hr>
+  <div class="profile">
+    <a href="http://twitter.com/"><img class="icon" src=""></a>
+
+    <h3>李秋实</h3>
+    <p><a href="http://twitter.com/">@</a></p>
+
+    <div class="codes">
+      <h4>Codes</h4>
+      <div class="github"><a href="https://github.com/">github.com/</a></div>
+    </div>
+  </div>
+
+  <div class="float_clear"></div>
+
+</div>
+Copyright &copy; 2015
  李秋实 
 <br>
 Powered by Octopress.
+
+
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-51075907-5']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
 </footer>
 	
 

@@ -3,7 +3,7 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<title>深入浅出设计模式之迭代器模式(Iterator Pattern)和组合模式(Composite Pattern)  | 逆旅，行人</title>
+	<title>深入浅出设计模式之迭代器模式(Iterator Pattern)和组合模式(Composite Pattern) | 逆旅，行人</title>
 
 	<meta name="author" content="李秋实"> 
 	
@@ -23,19 +23,33 @@
 
 
 <body>
-	<header id="header" class="inner"><h1>逆旅，行人</h1>
-<nav id="main-nav"><ul>
-	<li><a href="/">Blog</a></li>
-	<li><a href="/archives">Archive</a></li>
-	<li><a href="/about">About</a></li>
-</ul>
-</nav>
-
-
-</header>
+	<header id="header">
+<div class="inner">
+  <ul class="navigation">
+    <li><a href="/"><h1>逆旅，行人</h1></a></li>
+    <li><a href="/" class="is-selected">Blog</a></li>
+    <li><a href="http://github.com/" target="blank">Github</a></li>
+  </ul>
+</div></header>
 
 	<div id="content" class="inner"><article class="post">
 	<h2 class="title">深入浅出设计模式之迭代器模式(Iterator Pattern)和组合模式(Composite Pattern)</h2>
+	<div class="meta">
+		<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+
+<time datetime="2013-07-16T16:52:00-06:00" pubdate data-updated="true">Jul 16th, 2013</time></div>
+	</div>
 	<div class="entry-content"><p>一、迭代器模式</p>
 
 <p>迭代器模式应用了封装的原理，封装了可迭代组件的具体实现，游走于聚合内每一个元素，而又不暴露内部的表示。举个例子吧，有两家餐馆，它们现在合并了，这样提供的菜品就是原来的2倍。但是餐馆A使用数组来存储菜品，而餐馆B用列表来存储。如果想看所有的菜品，还得通过两种方式便利得到全部内容，这样很不方便，于是就想到了通过迭代器模式封装它们。</p>
@@ -645,31 +659,49 @@
 </div>
 
 
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
+<div class="sharing">
   
-
-
-
-<time datetime="2013-07-16T16:52:00-06:00" pubdate data-updated="true">Jul 16th, 2013</time></div>
-	
-
-
+  
+  
 </div>
 </article>
 </div>
-	<footer id="footer" class="inner">Copyright &copy; 2015
+	<footer id="footer" class="inner"><div class="aboutme">
+<hr>
+  <div class="profile">
+    <a href="http://twitter.com/"><img class="icon" src=""></a>
+
+    <h3>李秋实</h3>
+    <p><a href="http://twitter.com/">@</a></p>
+
+    <div class="codes">
+      <h4>Codes</h4>
+      <div class="github"><a href="https://github.com/">github.com/</a></div>
+    </div>
+  </div>
+
+  <div class="float_clear"></div>
+
+</div>
+Copyright &copy; 2015
  李秋实 
 <br>
 Powered by Octopress.
+
+
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-51075907-5']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
 </footer>
 	
 

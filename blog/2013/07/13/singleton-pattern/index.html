@@ -3,7 +3,7 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<title>深入浅出设计模式之单件模式(Singleton Pattern)  | 逆旅，行人</title>
+	<title>深入浅出设计模式之单件模式(Singleton Pattern) | 逆旅，行人</title>
 
 	<meta name="author" content="李秋实"> 
 	
@@ -27,19 +27,33 @@
 
 
 <body>
-	<header id="header" class="inner"><h1>逆旅，行人</h1>
-<nav id="main-nav"><ul>
-	<li><a href="/">Blog</a></li>
-	<li><a href="/archives">Archive</a></li>
-	<li><a href="/about">About</a></li>
-</ul>
-</nav>
-
-
-</header>
+	<header id="header">
+<div class="inner">
+  <ul class="navigation">
+    <li><a href="/"><h1>逆旅，行人</h1></a></li>
+    <li><a href="/" class="is-selected">Blog</a></li>
+    <li><a href="http://github.com/" target="blank">Github</a></li>
+  </ul>
+</div></header>
 
 	<div id="content" class="inner"><article class="post">
 	<h2 class="title">深入浅出设计模式之单件模式(Singleton Pattern)</h2>
+	<div class="meta">
+		<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+
+<time datetime="2013-07-13T15:21:00-06:00" pubdate data-updated="true">Jul 13th, 2013</time></div>
+	</div>
 	<div class="entry-content"><p>单件模式是最简单的一种设计模式，因为从头到尾都只涉及到一个类。单件模式想要达到的目的是在程序运行的过程中只创建一个类的对象，在很多场合这都很有用，比如注册表程序，你不会想要很多对象来，因为那样会造成混乱且很占内存，一个对象足矣。那么应该怎么应用单件模式呢？例子很简单，代码如下：</p>
 
 <!-- more -->
@@ -79,31 +93,49 @@
 </div>
 
 
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
+<div class="sharing">
   
-
-
-
-<time datetime="2013-07-13T15:21:00-06:00" pubdate data-updated="true">Jul 13th, 2013</time></div>
-	
-
-
+  
+  
 </div>
 </article>
 </div>
-	<footer id="footer" class="inner">Copyright &copy; 2015
+	<footer id="footer" class="inner"><div class="aboutme">
+<hr>
+  <div class="profile">
+    <a href="http://twitter.com/"><img class="icon" src=""></a>
+
+    <h3>李秋实</h3>
+    <p><a href="http://twitter.com/">@</a></p>
+
+    <div class="codes">
+      <h4>Codes</h4>
+      <div class="github"><a href="https://github.com/">github.com/</a></div>
+    </div>
+  </div>
+
+  <div class="float_clear"></div>
+
+</div>
+Copyright &copy; 2015
  李秋实 
 <br>
 Powered by Octopress.
+
+
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-51075907-5']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
 </footer>
 	
 

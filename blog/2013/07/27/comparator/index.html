@@ -3,7 +3,7 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<title>Java中Comparable和Comparator实现对象比较  | 逆旅，行人</title>
+	<title>Java中Comparable和Comparator实现对象比较 | 逆旅，行人</title>
 
 	<meta name="author" content="李秋实"> 
 	
@@ -23,19 +23,33 @@
 
 
 <body>
-	<header id="header" class="inner"><h1>逆旅，行人</h1>
-<nav id="main-nav"><ul>
-	<li><a href="/">Blog</a></li>
-	<li><a href="/archives">Archive</a></li>
-	<li><a href="/about">About</a></li>
-</ul>
-</nav>
-
-
-</header>
+	<header id="header">
+<div class="inner">
+  <ul class="navigation">
+    <li><a href="/"><h1>逆旅，行人</h1></a></li>
+    <li><a href="/" class="is-selected">Blog</a></li>
+    <li><a href="http://github.com/" target="blank">Github</a></li>
+  </ul>
+</div></header>
 
 	<div id="content" class="inner"><article class="post">
 	<h2 class="title">Java中Comparable和Comparator实现对象比较</h2>
+	<div class="meta">
+		<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+
+<time datetime="2013-07-27T20:20:00-06:00" pubdate data-updated="true">Jul 27th, 2013</time></div>
+	</div>
 	<div class="entry-content"><p>当需要排序的集合或数组不是单纯的数字型时，通常可以使用Comparator或Comparable，以简单的方式实现对象排序或自定义排序。下面通过两个例子分别用Comparable和Comparator实现对User对象中年龄排序。</p>
 
 <!-- more -->
@@ -247,31 +261,49 @@ Comparator可以看成一种算法的实现，将算法和数据分离，Compara
 </div>
 
 
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
+<div class="sharing">
   
-
-
-
-<time datetime="2013-07-27T20:20:00-06:00" pubdate data-updated="true">Jul 27th, 2013</time></div>
-	
-
-
+  
+  
 </div>
 </article>
 </div>
-	<footer id="footer" class="inner">Copyright &copy; 2015
+	<footer id="footer" class="inner"><div class="aboutme">
+<hr>
+  <div class="profile">
+    <a href="http://twitter.com/"><img class="icon" src=""></a>
+
+    <h3>李秋实</h3>
+    <p><a href="http://twitter.com/">@</a></p>
+
+    <div class="codes">
+      <h4>Codes</h4>
+      <div class="github"><a href="https://github.com/">github.com/</a></div>
+    </div>
+  </div>
+
+  <div class="float_clear"></div>
+
+</div>
+Copyright &copy; 2015
  李秋实 
 <br>
 Powered by Octopress.
+
+
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-51075907-5']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
 </footer>
 	
 
