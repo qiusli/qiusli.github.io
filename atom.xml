@@ -4,7 +4,7 @@
   <title><![CDATA[逆旅，行人]]></title>
   <link href="http://qiusli.github.io/atom.xml" rel="self"/>
   <link href="http://qiusli.github.io/"/>
-  <updated>2015-10-25T01:41:52-06:00</updated>
+  <updated>2015-10-25T17:21:50-06:00</updated>
   <id>http://qiusli.github.io/</id>
   <author>
     <name><![CDATA[李秋实]]></name>
@@ -12,6 +12,247 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[JavaScript中的继承]]></title>
+    <link href="http://qiusli.github.io/blog/2015/10/25/js-inheritance/"/>
+    <updated>2015-10-25T16:30:11-06:00</updated>
+    <id>http://qiusli.github.io/blog/2015/10/25/js-inheritance</id>
+    <content type="html"><![CDATA[<p>由于Javascript中的每个对象都有一个prototye,它也是对象的一个property.这个prototype也有自己的prototype,它能继承自那个prototype,而当前对象也能从自己的prototype那里继承property,这样就形成了一个prototype chain,这就是Javascript中继承的实现方式.简单来说,我们可以把当前对象的prototype(原型)看成是一个模板,当前对象继承自那个模板,然后扩充自己的方法.当前对象从其prototype那里获得一些property,而当前对象的prototype从其自身的prototype(prototype&rsquo;s prototype)那里也获得一些property.每一个通过Object literal或者new Object这种方式创建出的对象,其prototype指向object.prototype,意味着当前对象能获得object.prototype里的property.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='Javascript'><span class='line'><span class="kd">var</span> <span class="nx">book</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">title</span><span class="o">:</span> <span class="s2">&quot;red and black&quot;</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">p</span> <span class="o">=</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">getPrototypeOf</span><span class="p">(</span><span class="nx">book</span><span class="p">);</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">p</span> <span class="o">==</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">prototype</span><span class="p">);</span>   <span class="c1">// true</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>所有对象都从Object.prototype那里继承了一些方法,最常见的有5个:<code>hasOwnProperty</code>, <code>propertyIsEnumerable</code>,<code>isPrototypeOf</code>,<code>valueOf</code>,<code>toString</code>.</p>
+
+<p>实现继承最简单的方式就是显式指定当前对象的prototype(原型),这样它就能从其原型那里获得方法.我们可以使用Object.create()方法来实现这个目的,它会新创建一个对象,然后这个对象可以被赋值给一个变量.create第一个参数指定了谁是当前对象的原型,第二个参数是可选的,意味着一些自定义的property和其属性.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='Javascript'><span class='line'><span class="c1">// specify reference of prototypr of current object</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">person1</span> <span class="o">=</span> <span class="p">{</span><span class="nx">name</span><span class="o">:</span> <span class="s2">&quot;Qiushi&quot;</span><span class="p">};</span>
+</span><span class='line'><span class="c1">// is same as</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">person2</span> <span class="o">=</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="nb">Object</span><span class="p">.</span><span class="nx">prototype</span><span class="p">,</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">name</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">enumerable</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>        <span class="nx">configurable</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>        <span class="nx">writable</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>        <span class="nx">value</span><span class="o">:</span> <span class="s2">&quot;Qiushi&quot;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+</pre></td><td class='code'><pre><code class='Javascript'><span class='line'><span class="c1">// inherit from other objects</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">company</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">name</span><span class="o">:</span> <span class="s2">&quot;Goldman Sachs&quot;</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">sayName</span><span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Company name is &quot;</span> <span class="o">+</span> <span class="k">this</span><span class="p">.</span><span class="nx">name</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'><span class="c1">// anotherCompany自己定义了name property,它覆盖了从company那里继承来的name property.</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">anotherCompany</span> <span class="o">=</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="nx">company</span><span class="p">,</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">name</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">enumerable</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>        <span class="nx">configurable</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>        <span class="nx">writable</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>        <span class="nx">value</span><span class="o">:</span> <span class="s2">&quot;ThoughtWorks&quot;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">});</span>
+</span><span class='line'><span class="nx">company</span><span class="p">.</span><span class="nx">sayName</span><span class="p">();</span>    <span class="c1">// Company name is Goldman Sachs</span>
+</span><span class='line'><span class="nx">anotherCompany</span><span class="p">.</span><span class="nx">sayName</span><span class="p">();</span>  <span class="c1">// Company name is ThoughtWorks</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">company</span><span class="p">.</span><span class="nx">hasOwnProperty</span><span class="p">(</span><span class="s2">&quot;sayName&quot;</span><span class="p">));</span> <span class="c1">// true</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">anotherCompany</span><span class="p">.</span><span class="nx">hasOwnProperty</span><span class="p">(</span><span class="s2">&quot;sayName&quot;</span><span class="p">));</span> <span class="c1">// false</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">company</span><span class="p">.</span><span class="nx">isPrototypeOf</span><span class="p">(</span><span class="nx">anotherCompany</span><span class="p">));</span> <span class="c1">// true</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nb">Object</span><span class="p">.</span><span class="nx">getPrototypeOf</span><span class="p">(</span><span class="nx">anotherCompany</span><span class="p">)</span> <span class="o">==</span> <span class="nx">company</span><span class="p">);</span> <span class="c1">// true</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">thirdCompany</span> <span class="o">=</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="nx">anotherCompany</span><span class="p">,</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">name</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">configurable</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>        <span class="nx">writable</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>        <span class="nx">enumerable</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>        <span class="nx">value</span><span class="o">:</span> <span class="s2">&quot;ThinkGeek&quot;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">});</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nb">Object</span><span class="p">.</span><span class="nx">getPrototypeOf</span><span class="p">(</span><span class="nx">thirdCompany</span><span class="p">));</span> <span class="c1">// { name: &#39;ThoughtWorks&#39; }</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>下面这张图解释了原型链:</p>
+
+<p><img src="http://qiusli.github.io/images/JS_inheritance/1.png"></p>
+
+<p>当一个方法被调用时,系统会首先去当前对象的own property里寻找,如果找到了就返回,否则回去当前对象的prototype里寻找,如果找到就返回,否则继续去当前对象的prototype的prototype里继续寻找,这个寻找链的终结是Obejct.prototype.</p>
+
+<p>有时候我们会想创建一个不继承自任何原型的对象,它在一些场景下很实用,例如被当做hash来用.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='Javascript'><span class='line'><span class="kd">var</span> <span class="nx">nakedObject</span> <span class="o">=</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="kc">null</span><span class="p">);</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;toString&quot;</span> <span class="k">in</span> <span class="nx">nakedObject</span><span class="p">);</span>     <span class="c1">// false</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;valueOf&quot;</span> <span class="k">in</span> <span class="nx">nakedObject</span><span class="p">);</span>      <span class="c1">// false</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>结合上面的create方法,同时我们知道每个方法都有自己的prototype,当我们在定义一个方法时,系统为我们指定了当前方法的prototype,同时指定了prototype里constructor的指向,具体如下:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='Javascript'><span class='line'><span class="kd">function</span> <span class="nx">YourConstructor</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="c1">// initialization</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="c1">// JavaScript engine does this for you behind the scenes</span>
+</span><span class='line'><span class="nx">YourConstructor</span><span class="p">.</span><span class="nx">prototype</span> <span class="o">=</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="nb">Object</span><span class="p">.</span><span class="nx">prototype</span><span class="p">,</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">constructor</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">configurable</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>        <span class="nx">enumerable</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>        <span class="nx">value</span><span class="o">:</span> <span class="nx">YourConstructor</span><span class="p">,</span>
+</span><span class='line'>        <span class="nx">writable</span><span class="o">:</span> <span class="kc">true</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这其实是系统创建了一个Obejct.prototype的对象,然后让当前方法的prototype指向它.
+下面我们来看一个复杂一些的例子:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+</pre></td><td class='code'><pre><code class='Javascript'><span class='line'><span class="c1">// overwrite prototype property</span>
+</span><span class='line'><span class="kd">function</span> <span class="nx">Rectangle</span><span class="p">(</span><span class="nx">length</span><span class="p">,</span> <span class="nx">width</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">this</span><span class="p">.</span><span class="nx">length</span> <span class="o">=</span> <span class="nx">length</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">this</span><span class="p">.</span><span class="nx">width</span> <span class="o">=</span> <span class="nx">width</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="nx">Rectangle</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">getArea</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">length</span> <span class="o">*</span> <span class="k">this</span><span class="p">.</span><span class="nx">width</span><span class="p">;</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'><span class="nx">Rectangle</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">toString</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="s2">&quot;[Rectangle &quot;</span> <span class="o">+</span> <span class="k">this</span><span class="p">.</span><span class="nx">length</span> <span class="o">+</span> <span class="s2">&quot;x&quot;</span> <span class="o">+</span> <span class="k">this</span><span class="p">.</span><span class="nx">width</span> <span class="o">+</span> <span class="s2">&quot;]&quot;</span><span class="p">;</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">function</span> <span class="nx">Square</span><span class="p">(</span><span class="nx">size</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="c1">// constructor stealing, 调用父类的构造器</span>
+</span><span class='line'>    <span class="nx">Rectangle</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">size</span><span class="p">,</span> <span class="nx">size</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="nx">Square</span><span class="p">.</span><span class="nx">prototype</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Rectangle</span><span class="p">();</span>
+</span><span class='line'><span class="nx">Square</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">constructor</span> <span class="o">=</span> <span class="nx">Square</span><span class="p">;</span>
+</span><span class='line'><span class="nx">Square</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">toString</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="s2">&quot;[Square &quot;</span> <span class="o">+</span> <span class="k">this</span><span class="p">.</span><span class="nx">length</span> <span class="o">+</span> <span class="s2">&quot;x&quot;</span> <span class="o">+</span> <span class="k">this</span><span class="p">.</span><span class="nx">width</span> <span class="o">+</span> <span class="s2">&quot;]&quot;</span><span class="p">;</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">rect</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Rectangle</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">);</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">square</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Square</span><span class="p">(</span><span class="mi">6</span><span class="p">);</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">rect</span><span class="p">.</span><span class="nx">getArea</span><span class="p">());</span>               <span class="c1">// 50</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">square</span><span class="p">.</span><span class="nx">getArea</span><span class="p">());</span>             <span class="c1">// 36</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">rect</span><span class="p">.</span><span class="nx">toString</span><span class="p">());</span>              <span class="c1">// [Rectangle 5x10]</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">square</span><span class="p">.</span><span class="nx">toString</span><span class="p">());</span>            <span class="c1">// [Square 6x6]</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">rect</span> <span class="k">instanceof</span> <span class="nx">Rectangle</span><span class="p">);</span>    <span class="c1">// true</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">rect</span> <span class="k">instanceof</span> <span class="nb">Object</span><span class="p">);</span>       <span class="c1">// true</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">square</span> <span class="k">instanceof</span> <span class="nx">Square</span><span class="p">);</span>     <span class="c1">// true</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">square</span> <span class="k">instanceof</span> <span class="nx">Rectangle</span><span class="p">);</span>  <span class="c1">// true</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">square</span> <span class="k">instanceof</span> <span class="nb">Object</span><span class="p">);</span>     <span class="c1">// true</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Square的对象同时是Square, Rectangle和Object的对像,下面这张图解释了原因:
+<img src="http://qiusli.github.io/images/JS_inheritance/2.png"></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[JavaScript中的构造器(constructor)和原型(prototype)]]></title>
@@ -126,7 +367,7 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>上面的代码首先打印原型的toString方法,然后试图修改这个prototype的方法,第二次成功打印出修改后的值.其实它并不是修改了prototype,而是创建了自己的一个own property,这个own property和prototype中的toString有相同的函数签名.然后我们试图删除prototype里的toString方法,这只是删除了自己定义的own property,最后一次是真正尝试删除prototype里的toString方法,但是并不成功,因为它不能被删除.</p>
+<p>上面的代码首先打印原型的toString方法,然后试图修改这个prototype的方法,第二次成功打印出修改后的值.其实它并不是修改了prototype,而是创建了自己的一个own property,这个own property和prototype中的toString有相同的函数签名.然后我们试图删除prototype里的toString方法,这只是删除了自己定义的own property,最后一次是真正尝试删除prototype里的toString方法,但是并不成功,因为它不能在对象上删除.</p>
 
 <p> <img src="http://qiusli.github.io/images/JS_prototype/2.png"></p>
 
@@ -2620,11 +2861,11 @@ hoist),后者不会.</p>
 
 <p>#</p>
 
-<p><code>文本</code>: Hello, my name is Ben Forta, my email address is <a href="&#x6d;&#x61;&#105;&#108;&#116;&#x6f;&#x3a;&#98;&#101;&#110;&#x40;&#x66;&#x6f;&#114;&#116;&#97;&#46;&#x63;&#111;&#x6d;">&#x62;&#101;&#x6e;&#64;&#102;&#x6f;&#x72;&#x74;&#97;&#x2e;&#99;&#x6f;&#x6d;</a></p>
+<p><code>文本</code>: Hello, my name is Ben Forta, my email address is <a href="&#109;&#x61;&#105;&#x6c;&#116;&#111;&#x3a;&#x62;&#101;&#x6e;&#x40;&#x66;&#111;&#114;&#116;&#97;&#x2e;&#99;&#111;&#109;">&#x62;&#101;&#110;&#64;&#x66;&#111;&#x72;&#x74;&#97;&#x2e;&#99;&#111;&#109;</a></p>
 
 <p><code>正则表达式</code>: \w[\w.]*@[\w.]+.\w+</p>
 
-<p><code>结果</code>: <a href="&#109;&#x61;&#x69;&#108;&#116;&#x6f;&#58;&#x62;&#x65;&#x6e;&#64;&#x66;&#111;&#x72;&#116;&#x61;&#x2e;&#x63;&#111;&#x6d;">&#x62;&#101;&#110;&#64;&#x66;&#x6f;&#x72;&#x74;&#x61;&#46;&#99;&#x6f;&#109;</a></p>
+<p><code>结果</code>: <a href="&#x6d;&#97;&#105;&#x6c;&#x74;&#111;&#x3a;&#98;&#x65;&#110;&#64;&#x66;&#111;&#114;&#116;&#97;&#46;&#x63;&#x6f;&#109;">&#x62;&#x65;&#110;&#x40;&#102;&#x6f;&#x72;&#x74;&#97;&#46;&#x63;&#x6f;&#109;</a></p>
 
 <p>这里的正则表达式匹配了一个邮件地址.</p>
 
@@ -2634,7 +2875,7 @@ hoist),后者不会.</p>
 
 <p>#</p>
 
-<p><code>文本</code>: Hello, my name is Ben Forta, my email address is <a href="&#x6d;&#x61;&#105;&#x6c;&#116;&#x6f;&#58;&#x62;&#101;&#x6e;&#x40;&#x66;&#x6f;&#114;&#116;&#x61;&#46;&#99;&#111;&#109;">&#98;&#101;&#110;&#x40;&#x66;&#x6f;&#114;&#116;&#x61;&#x2e;&#99;&#111;&#x6d;</a></p>
+<p><code>文本</code>: Hello, my name is Ben Forta, my email address is <a href="&#109;&#97;&#x69;&#108;&#x74;&#111;&#x3a;&#x62;&#101;&#110;&#x40;&#x66;&#111;&#x72;&#x74;&#x61;&#46;&#99;&#111;&#x6d;">&#98;&#x65;&#110;&#x40;&#x66;&#x6f;&#x72;&#x74;&#x61;&#46;&#x63;&#x6f;&#109;</a></p>
 
 <p><code>正则表达式</code>:  (\w[\w.]*@[\w.]+.\w+)</p>
 
@@ -2720,11 +2961,11 @@ hoist),后者不会.</p>
 
 <p>#</p>
 
-<p><code>文本</code>: Send personal email to <a href="&#109;&#97;&#x69;&#x6c;&#x74;&#111;&#x3a;&#x62;&#x65;&#110;&#64;&#102;&#x6f;&#114;&#116;&#97;&#46;&#99;&#x6f;&#x6d;&#x2e;">&#98;&#101;&#110;&#x40;&#x66;&#111;&#x72;&#116;&#x61;&#x2e;&#99;&#x6f;&#109;&#x2e;</a> For questions about the book use <a href="&#x6d;&#97;&#x69;&#108;&#x74;&#x6f;&#58;&#115;&#117;&#112;&#112;&#x6f;&#x72;&#116;&#64;&#102;&#x6f;&#x72;&#116;&#x61;&#46;&#99;&#x6f;&#109;&#46;">&#x73;&#x75;&#112;&#112;&#111;&#x72;&#x74;&#64;&#102;&#x6f;&#114;&#x74;&#97;&#46;&#99;&#111;&#109;&#x2e;</a> Feel free to send unsolicited email to <a href="&#x6d;&#x61;&#x69;&#108;&#116;&#111;&#58;&#115;&#x70;&#97;&#x6d;&#x40;&#102;&#111;&#114;&#116;&#x61;&#46;&#99;&#111;&#x6d;&#46;">&#115;&#x70;&#97;&#109;&#x40;&#102;&#111;&#x72;&#x74;&#97;&#46;&#99;&#111;&#x6d;&#x2e;</a></p>
+<p><code>文本</code>: Send personal email to <a href="&#x6d;&#97;&#105;&#108;&#x74;&#111;&#58;&#x62;&#101;&#x6e;&#x40;&#102;&#x6f;&#114;&#116;&#x61;&#x2e;&#99;&#x6f;&#x6d;&#x2e;">&#98;&#101;&#110;&#x40;&#102;&#111;&#x72;&#116;&#x61;&#46;&#x63;&#x6f;&#x6d;&#x2e;</a> For questions about the book use <a href="&#109;&#x61;&#x69;&#x6c;&#x74;&#111;&#58;&#x73;&#x75;&#112;&#x70;&#x6f;&#x72;&#x74;&#64;&#102;&#x6f;&#114;&#x74;&#x61;&#x2e;&#x63;&#111;&#109;&#x2e;">&#x73;&#117;&#112;&#112;&#x6f;&#x72;&#116;&#64;&#x66;&#x6f;&#114;&#x74;&#x61;&#x2e;&#x63;&#x6f;&#x6d;&#46;</a> Feel free to send unsolicited email to <a href="&#109;&#97;&#105;&#108;&#x74;&#111;&#x3a;&#x73;&#x70;&#x61;&#x6d;&#x40;&#102;&#111;&#x72;&#x74;&#97;&#x2e;&#99;&#111;&#x6d;&#x2e;">&#x73;&#x70;&#x61;&#109;&#x40;&#102;&#x6f;&#114;&#116;&#x61;&#46;&#99;&#x6f;&#109;&#46;</a></p>
 
 <p><code>正则表达式</code>: \w+@\w+.\w+</p>
 
-<p><code>结果</code>: <a href="&#109;&#x61;&#105;&#x6c;&#116;&#x6f;&#x3a;&#x62;&#x65;&#110;&#64;&#102;&#111;&#114;&#x74;&#97;&#46;&#99;&#111;&#109;">&#x62;&#101;&#x6e;&#64;&#x66;&#x6f;&#x72;&#116;&#x61;&#46;&#x63;&#x6f;&#x6d;</a>  <a href="&#x6d;&#97;&#x69;&#108;&#116;&#111;&#x3a;&#115;&#117;&#x70;&#112;&#x6f;&#114;&#116;&#x40;&#102;&#x6f;&#114;&#x74;&#x61;&#x2e;&#99;&#x6f;&#109;">&#x73;&#x75;&#x70;&#x70;&#111;&#114;&#116;&#x40;&#x66;&#x6f;&#x72;&#x74;&#97;&#46;&#x63;&#111;&#109;</a>  <a href="&#x6d;&#x61;&#105;&#x6c;&#x74;&#x6f;&#58;&#x73;&#112;&#97;&#109;&#64;&#x66;&#111;&#x72;&#116;&#x61;&#46;&#99;&#x6f;&#109;">&#x73;&#112;&#97;&#109;&#x40;&#102;&#111;&#114;&#116;&#97;&#x2e;&#99;&#x6f;&#x6d;</a></p>
+<p><code>结果</code>: <a href="&#x6d;&#x61;&#x69;&#108;&#116;&#111;&#58;&#98;&#x65;&#x6e;&#64;&#102;&#111;&#114;&#116;&#x61;&#x2e;&#x63;&#111;&#x6d;">&#98;&#101;&#110;&#64;&#102;&#x6f;&#x72;&#116;&#97;&#x2e;&#99;&#x6f;&#109;</a>  <a href="&#x6d;&#x61;&#105;&#x6c;&#116;&#111;&#x3a;&#x73;&#117;&#x70;&#x70;&#111;&#x72;&#x74;&#x40;&#x66;&#x6f;&#114;&#x74;&#97;&#46;&#99;&#111;&#x6d;">&#x73;&#x75;&#x70;&#112;&#x6f;&#x72;&#116;&#x40;&#102;&#111;&#114;&#116;&#97;&#x2e;&#99;&#111;&#x6d;</a>  <a href="&#x6d;&#97;&#105;&#108;&#x74;&#x6f;&#58;&#x73;&#x70;&#97;&#x6d;&#x40;&#102;&#111;&#114;&#x74;&#x61;&#46;&#x63;&#111;&#109;">&#115;&#x70;&#97;&#109;&#x40;&#102;&#111;&#x72;&#116;&#x61;&#x2e;&#99;&#x6f;&#x6d;</a></p>
 
 <!-- more -->
 
@@ -3535,59 +3776,6 @@ hoist),后者不会.</p>
 <p><code>git push origin master</code>:把master branch push到origin server上去.</p>
 
 <p><code>git remote add sc git://github.com/shacon/grit.git</code>:给server段的地址取个别名(sc),这样每次在操作的时候就不必输入全地址而只需输入sc即可.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Git 1 (Basic Concept)]]></title>
-    <link href="http://qiusli.github.io/blog/2014/05/07/git-1/"/>
-    <updated>2014-05-07T00:27:00-06:00</updated>
-    <id>http://qiusli.github.io/blog/2014/05/07/git-1</id>
-    <content type="html"><![CDATA[<p>原来学过Git,但学得不扎实,而且学过之后也没怎么用,导致每次要用的时候都得重新学一遍.现在再次学习,把学到的记录下来,以后忘了复习起来也方便.</p>
-
-<h2>Centralized Version Control vs Distributed Version Control</h2>
-
-<p>集中式的版本管理把所有的文件放到一个server上面,所有的其他电脑都从这个server上面得到最新的代码.这样的坏处显而易见,如果server宕机了,其他一切有关的活动都得终止.</p>
-
-<!-- more -->
-
-
-<p> <img src="http://qiusli.github.io/images/git-1_1.png"></p>
-
-<p>此外,在集中式版本管理控制下,用户每次checkout的都是最新版本的文件快照,而对之前版本一无所知,如果用户想查看项目之前其他人做的改变,还得连接server然后从server上得到信息.但是分布式版本管理不同,它在每一次checkout的时候,都是checkout的server上项目的所有内容,相当于一次mirror,这样用户几乎不需要连接server就能知道很多事情,包括项目之前的改变等.</p>
-
-<p> <img src="http://qiusli.github.io/images/git-1_2.png"></p>
-
-<h2>Git vs other VCS (Version Control System)</h2>
-
-<p>对于一般的VCS来说,在不同版本之间它存放的是文件在各个版本之间的差异:</p>
-
-<p> <img src="http://qiusli.github.io/images/git-1_3.png"></p>
-
-<p>但是Git在每一个版本存放的都是整体的文件,如果某个文件在版本1和2之间没有改变,那么就只存放一个对上一版本快照的引用.</p>
-
-<p> <img src="http://qiusli.github.io/images/git-1_4.png"></p>
-
-<p>同时因为Git在每次checkout的时候都获取的是整个项目包括项目之前的历史,相当于把服务器上所有的东西都拿下来了,而不是像CVS系统一样自取最新版本,所以Git可以在本地做很多事情,例如查看项目历史提交,本地提交等.</p>
-
-<h2>Three States</h2>
-
-<p>Git的三大state是modified,staged和committed.modified指文件被修改过,staged表示文件被修改过并且在下一次commit的时候自动提交.committed表示已经提交.</p>
-
-<p>比如我们文件A和B,但是这次我只想提交A,我可以stage A并且提交,然后stage B让它在下一次commit的时候提交.Git add 就是把文件stage的指令.</p>
-
-<p> <img src="http://qiusli.github.io/images/git-1_5.png"></p>
-
-<p>在上图中的最左边和最右边分别是Working Directory和Git Repository.后者是从server上下载下来的所有文件,前者是后者中的其中一个版本,用户做的修改和增加都在Working Directory里面进行.</p>
-
-<p>总之,Git的提交流程一般分为3部</p>
-
-<ul>
-<li>修改文件</li>
-<li>stage文件 (git add &hellip;)</li>
-<li>commit文件 (git commit)</li>
-</ul>
-
 ]]></content>
   </entry>
   

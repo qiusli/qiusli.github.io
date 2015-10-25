@@ -168,7 +168,7 @@ function Person(name) { this &hellip;"> <meta name="keywords" content="">
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>上面的代码首先打印原型的toString方法,然后试图修改这个prototype的方法,第二次成功打印出修改后的值.其实它并不是修改了prototype,而是创建了自己的一个own property,这个own property和prototype中的toString有相同的函数签名.然后我们试图删除prototype里的toString方法,这只是删除了自己定义的own property,最后一次是真正尝试删除prototype里的toString方法,但是并不成功,因为它不能被删除.</p>
+<p>上面的代码首先打印原型的toString方法,然后试图修改这个prototype的方法,第二次成功打印出修改后的值.其实它并不是修改了prototype,而是创建了自己的一个own property,这个own property和prototype中的toString有相同的函数签名.然后我们试图删除prototype里的toString方法,这只是删除了自己定义的own property,最后一次是真正尝试删除prototype里的toString方法,但是并不成功,因为它不能在对象上删除.</p>
 
 <p> <img src="/images/JS_prototype/2.png"></p>
 
