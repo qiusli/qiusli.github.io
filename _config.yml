@@ -4,7 +4,7 @@
 
 url: http://qiusli.github.io
 title: 逆旅，行人
-subtitle: 暗淡蓝点
+subtitle: 
 author: 李秋实
 simple_search: https://www.google.com/search
 description:
@@ -41,7 +41,7 @@ rdiscount:
     - smart
 highlighter: pygments # default python pygments have been replaced by pygments.rb
 
-paginate: 100          # Posts per page on the blog index
+paginate: 1000          # Posts per page on the blog index
 # paginate_path: "posts/:num"  # Directory base for pagination URLs eg. /posts/2/
 # pagination_dir: blog
 recent_posts: 5       # Posts in the sidebar Recent Posts section
@@ -68,4 +68,4 @@ default_asides: [asides/recent_posts.html, asides/github.html, asides/delicious.
 google_analytics_tracking_id: UA-51075907-5
 
 # Facebook Like
-facebook_like: true
+facebook_like: false

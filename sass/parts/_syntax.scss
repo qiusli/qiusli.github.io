@@ -1,5 +1,5 @@
-$pre-bg: $color-gray04;
-$pre-border: $color-gray03;
+$pre-bg: $color08;
+$pre-border: $color06;
 
 article{
 	code, pre{
@@ -87,7 +87,7 @@ figure.code{
 }
 .entry-content .gist{
 	background: $pre-bg;
-	color: $color-gray01;
+	color: $color01;
 	padding: 30px 15px 5px;
 	margin-top: 10px;
 	margin-bottom: 1.5em;

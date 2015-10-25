@@ -1,5 +1,6 @@
 .archives{
 	position: relative;
+	margin-bottom: 90px;
 	&:last-of-type{
 		&:before{
 			content: "";
@@ -9,62 +10,70 @@
 		}
 	}
 	.year{
+		margin: 0px;
 		line-height: 35px;
 		width: 200px;
-		position: absolute;
 		top: 0;
 		&:before{
 			content: "";
 			position: absolute;
 			width: 100%;
 		}
-		@media screen and (max-width: 600px){
+		@media screen and (max-width: 620px){
 			position: relative;
 			width: 100%;
+			margin: 10px 0 25px 0;
 		}
 	}
 	article{
-		margin-left: 200px;
-		padding-bottom: 30px;
-		@media screen and (max-width: 600px){
+		padding-bottom: 20px;
+		@media screen and (max-width: 620px){
 			margin-left: 0;
 			&:first-of-type{
 				border-top: none;
-				padding-top: 30px;
+				padding-top: 0px;
 			}
 		}
 		.title{
-			margin-bottom: 0;
+			padding-top: 30px;
+			padding-bottom: 0px;
+			font-weight: normal;
+			font-size: 25px;
+			@media screen and (max-width: 620px){
+				font-size: 20px;
+			}
 		}
 		.meta{
-			color: $color-gray02;
+			color: $color01;
 			font-size: 0.9em;
 			line-height: 2;
-			margin-top: 15px;
-			@media screen and (max-width: 600px){
+			margin-top: 10px;
+			@media screen and (max-width: 200px){
 				display: none;
 			}
 			span{
 				margin-right: 30px;
 				@include inline-block;
 				&:before{
-					color: $color-gray03;
+					color: $color03;
 					font: 1.3em $font-icon;
 					padding-right: 10px;
 				}
 			}
 			a{
-				color: $color-gray02;
+				color: $color01;
 				@include transition(0.3s);
 				&:hover{
-					color: $color-gray01;
+					color: $color01;
 				}
 			}
 			.date, .tags, .comments {
 			    padding-left: 30px;
+			    margin-right: 20px;
 			    position: relative;
+			    float: left;
 			    &:before{
-			      color: $color-gray02;
+			      color: $color01;
 			      font: 1.3em $font-icon;
 			      line-height: 1.6em;
 			      position: absolute;

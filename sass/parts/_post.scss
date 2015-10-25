@@ -1,12 +1,12 @@
 .post{
 	.meta{
-		margin-top: 10px;
+		margin-top: 0px;
 		line-height: 2;
 		font-size: 0.9em;
-		color: $color-gray02;
+		color: $color01;
 		//width: 170px;
 		@media screen and (max-width: 620px){
-			margin-top: 15px;
+			margin-top: 5px;
 			position: static;
 			width: auto;
 		}
@@ -25,10 +25,9 @@
 		}
 
 		a:hover {
-			border-bottom:1px solid #bf0222;
+			border-bottom:1px solid $color-link;
 		}
 		.date, .tags, .comments{
-			padding-left: 30px;
 			//position: relative;
 			display: inline;
 			&:before{

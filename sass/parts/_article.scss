@@ -1,42 +1,40 @@
 article{
 	padding: 0 0 60px 0;
+	margin-top: 40px;
 	position: relative;
 	@media screen and (max-width: 620px){
-		padding-bottom: 15px;
-	}
-	@media screen and (max-width: 620px){
-		padding: 15px 0;
+		padding-top: 10px;
+		margin-top: 0px;
 	}
 	h2.title{
-		font-size: 32px;
-		font-weight: 300;
+		font-size: 27px;
+		font-weight: normal;
 		line-height: 1;
-		margin-bottom: 20px;
-		margin-left:0px;
+		margin: 10px 0 0 0;
 		text-align:left;
 		border-bottom: 0px;
 		a{
-			color: $color-gray01;
+			color: $color-link;
 		}
 		a:hover{
-		color: $color-main;
+		color: $color-link-hover;
 		border-bottom: 0px;
 		}
-		border-bottom: 1px solid $color-gray04;
-		padding-bottom: 20px;
+		padding-bottom: 10px;
 		@media screen and (max-width: 620px) {
 		font-size: 18px;
+		margin: 5px 0 0 0;
 		}
-
 	}
 	
 	.entry-content{
 		line-height: 1.5;
 		text-align: left;
+		margin-top: 20px;
 		
 				a {
  			text-decoration:none;
-			color:#bf0222;
+			color:$color-link;
 			-webkit-transition:border .25s linear;
 			-moz-transition:border .25s linear;
 			-ms-transition:border .25s linear;
@@ -49,7 +47,8 @@ article{
 		}
 
 		a:hover {
-			border-bottom:1px solid #bf0222;
+			color: $color-link-hover;
+			border-bottom:1px solid;
 		}
 
 		
@@ -87,18 +86,6 @@ article{
 		p{
 			margin-top: 10px;	
 		}
-		h2{
-			font-weight: 300;
-			border-bottom: 1px solid $color-gray04;
-			position: relative;
-			&:before{
-				content: "";
-				position: absolute;
-				bottom: -2px;
-				border-bottom: 1px solid $color-gray05;
-				width: 100%;
-			}
-		}
 		
 		img, video{
 			max-width: 100%;
@@ -116,8 +103,8 @@ article{
 		}
 		
 		blockquote{
-			background: $color-gray04;
-			border-left: 5px solid $color-gray03;
+			background: $color08;
+			border-left: 5px solid $color03;
 			padding: 15px 20px;
 			margin-top: 10px;
 			& > p:first-of-type{
@@ -128,12 +115,12 @@ article{
 			border: none;
 		}
 		table{
-			background: $color-gray04;
-			border: 1px solid $color-gray03;
+			background: $color08;
+			border: 1px solid $color03;
 			border-spacing: 0;
 			margin-top: 10px;
 			th{
-				background: $color-gray03;
+				background: $color03;
 				padding: 0 15px;
 			}
 			td{
@@ -148,12 +135,12 @@ article{
 		.caption{
 			display: block;
 			font-size: 0.9em;
-			color: $color-gray02;
+			color: $color01;
 			padding-left: 25px;
 			position: relative;
 			&:before{
 				content: "\f040";
-				color: $color-gray03;
+				color: $color03;
 				font: 1.3em $font-icon;
 				line-height: 1.6em;
 				position: absolute;
@@ -184,4 +171,30 @@ article{
 	padding-left: 0px;
 	}
 	@include border-shadow();
+}
+
+.sharing{
+	padding: 40px 0px;
+}
+
+.sns-fb{
+	display: inline;
+	margin: 3px;
+	float: left;
+	vertical-align: top;
+}
+
+.sns-tw{
+	display: inline;
+	width: 90px;
+	padding: 8px 0px 0px 0px;
+	float: left;
+	vertical-align: top;
+}
+
+.sns-hb{
+	display: inline;
+	padding: 8px 8px 0px 0px;
+	float: left;
+	vertical-align: top;
 }
