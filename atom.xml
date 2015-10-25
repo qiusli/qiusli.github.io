@@ -4,7 +4,7 @@
   <title><![CDATA[逆旅，行人]]></title>
   <link href="http://qiusli.github.io/atom.xml" rel="self"/>
   <link href="http://qiusli.github.io/"/>
-  <updated>2015-10-24T17:56:54-06:00</updated>
+  <updated>2015-10-24T23:40:20-06:00</updated>
   <id>http://qiusli.github.io/</id>
   <author>
     <name><![CDATA[李秋实]]></name>
@@ -12,6 +12,263 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[JavaScript中的构造器(constructor)和原型(prototype)]]></title>
+    <link href="http://qiusli.github.io/blog/2015/10/24/js-prototype/"/>
+    <updated>2015-10-24T22:22:16-06:00</updated>
+    <id>http://qiusli.github.io/blog/2015/10/24/js-prototype</id>
+    <content type="html"><![CDATA[<h2>构造器</h2>
+
+<p>JavaScript中的构造器其实就是方法/函数,我们新建一个方法,然后使用new去创建对象,可以说这个方法就是被创建的对象的原型.如果一个方法被作为对象的原型,约定俗成它应该大写字母开头.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='Javascript'><span class='line'><span class="kd">function</span> <span class="nx">Person</span><span class="p">(</span><span class="nx">name</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">this</span><span class="p">.</span><span class="nx">name</span> <span class="o">=</span> <span class="nx">name</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">this</span><span class="p">.</span><span class="nx">sayName</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">name</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">};</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">person1</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Person</span><span class="p">(</span><span class="s2">&quot;Nick&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">person2</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Person</span><span class="p">(</span><span class="s2">&quot;Craig&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">person1</span> <span class="k">instanceof</span>  <span class="nx">Person</span><span class="p">);</span>    <span class="c1">// true</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">person2</span> <span class="k">instanceof</span>  <span class="nx">Person</span><span class="p">);</span>    <span class="c1">// true</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>如果方法不接受参数,在使用new创建的时候可以省去括号</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='Javascript'><span class='line'><span class="kd">function</span> <span class="nx">Person</span><span class="p">(){...}</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">person1</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Person</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>每个新建的对象都有一个constructor property,它指向创建这个对象的方法.如果这个对象是使用Obejct literal或者new Object方法创建的,那么该对象的constructor指向object.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='JavaScript'><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">person1</span><span class="p">.</span><span class="nx">constructor</span> <span class="o">==</span> <span class="nx">Person</span><span class="p">);</span> <span class="c1">// true</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">person2</span><span class="p">.</span><span class="nx">constructor</span> <span class="o">==</span> <span class="nx">Person</span><span class="p">);</span> <span class="c1">// true</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在使用构造器的时候前面要加上new关键字,表示被赋值的是一个对象,否则只是简单的方法调用.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='Javascript'><span class='line'><span class="kd">var</span> <span class="nx">person1</span> <span class="o">=</span> <span class="nx">Person</span><span class="p">(</span><span class="s2">&quot;Nicholas&quot;</span><span class="p">);</span>         <span class="c1">// note: missing &quot;new&quot;</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">person1</span> <span class="k">instanceof</span> <span class="nx">Person</span><span class="p">);</span>   <span class="c1">// false</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="k">typeof</span> <span class="nx">person1</span><span class="p">);</span>              <span class="c1">// &quot;undefined&quot;</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">name</span><span class="p">);</span>                        <span class="c1">// &quot;Nicholas&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>原型</h2>
+
+<p>在创建对象时,我们有时会有这样一个疑虑:既然一些方法处理的事情是一样的,不过接受的参数不一样,我们为什么不能让许多对象共用这些方法呢?这就是prototype的由来.</p>
+
+<p>每个对象都有一个prototype,prototype自身也是一个对象,它也有自己的property.几乎每一个方法都有自己的prototype property,所有通过该方法创建的对象都能访问该方法的propotype.我们可以把一个对象的原型想象成它的一个模板,这个对象从它的模板原型中得到一些property,然后基于这个继续扩展.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='Javascript'><span class='line'><span class="kd">var</span> <span class="nx">book</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">title</span><span class="o">:</span> <span class="s2">&quot;the principle of object oriented javascript&quot;</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;hasOwnProperty&quot;</span> <span class="k">in</span> <span class="nx">book</span><span class="p">);</span>                            <span class="c1">// true</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">book</span><span class="p">.</span><span class="nx">hasOwnProperty</span><span class="p">(</span><span class="s2">&quot;hasOwnProperty&quot;</span><span class="p">));</span>               <span class="c1">// false</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nb">Object</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">hasOwnProperty</span><span class="p">(</span><span class="s2">&quot;hasOwnProperty&quot;</span><span class="p">));</span>   <span class="c1">// true</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>每一个对象在被创建后都有自己的[[Prototype]]property,它指向创建它的方法的prototype.</p>
+
+<p> <img src="http://qiusli.github.io/images/JS_prototype/1.png"></p>
+
+<p>当在试图访问一个对象上得某个property时,系统会先查看当前对象是否有这个own property,如果有则返回,否则继续查找它的[[Prototype]]指向的对象(即这个对象的原型)是否有这个property,有则返回否则返回undefined.prototype property不能被复写或者删除:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='Javascript'><span class='line'><span class="kd">var</span> <span class="nx">object</span> <span class="o">=</span> <span class="p">{};</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">object</span><span class="p">.</span><span class="nx">toString</span><span class="p">());</span>  <span class="c1">// [object Object]</span>
+</span><span class='line'><span class="nx">object</span><span class="p">.</span><span class="nx">toString</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="s2">&quot;[object Custom]&quot;</span><span class="p">;</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">object</span><span class="p">.</span><span class="nx">toString</span><span class="p">());</span>  <span class="c1">// [object Custom]</span>
+</span><span class='line'><span class="k">delete</span> <span class="nx">object</span><span class="p">.</span><span class="nx">toString</span><span class="p">;</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">object</span><span class="p">.</span><span class="nx">toString</span><span class="p">());</span>  <span class="c1">// [object Object]</span>
+</span><span class='line'><span class="k">delete</span> <span class="nx">object</span><span class="p">.</span><span class="nx">toString</span><span class="p">;</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">object</span><span class="p">.</span><span class="nx">toString</span><span class="p">());</span>  <span class="c1">// [object Object]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>上面的代码首先打印原型的toString方法,然后试图修改这个prototype的方法,第二次成功打印出修改后的值.其实它并不是修改了prototype,而是创建了自己的一个own property,这个own property和prototype中的toString有相同的函数签名.然后我们试图删除prototype里的toString方法,这只是删除了自己定义的own property,最后一次是真正尝试删除prototype里的toString方法,但是并不成功,因为它不能被删除.</p>
+
+<p> <img src="http://qiusli.github.io/images/JS_prototype/2.png"></p>
+
+<h3>创建prototype</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='Javascript'><span class='line'><span class="kd">function</span> <span class="nx">Car</span><span class="p">(</span><span class="nx">brand</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">this</span><span class="p">.</span><span class="nx">brand</span> <span class="o">=</span> <span class="nx">brand</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="nx">Car</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">sayBrand</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">brand</span><span class="p">);</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">car1</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Car</span><span class="p">(</span><span class="s2">&quot;BMW&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">car2</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Car</span><span class="p">(</span><span class="s2">&quot;Benz&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="nx">car1</span><span class="p">.</span><span class="nx">sayBrand</span><span class="p">();</span>                       <span class="c1">// BMW</span>
+</span><span class='line'><span class="nx">car2</span><span class="p">.</span><span class="nx">sayBrand</span><span class="p">();</span>                       <span class="c1">// Benz</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>因为prototype里地property是所有对象共用的,这也许会产生一些潜在问题,即一个对象对prototype做出的改变会影响到另一个对象.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='Javascript'><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;5. ------&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="nx">Car</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">manufacureLocation</span> <span class="o">=</span> <span class="p">[];</span>
+</span><span class='line'><span class="nx">car1</span><span class="p">.</span><span class="nx">manufacureLocation</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="s2">&quot;Chongqing&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="nx">car2</span><span class="p">.</span><span class="nx">manufacureLocation</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="s2">&quot;Beijing&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">car1</span><span class="p">.</span><span class="nx">manufacureLocation</span><span class="p">);</span>      <span class="c1">// [ &#39;Chongqing&#39;, &#39;Beijing&#39; ]</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">car2</span><span class="p">.</span><span class="nx">manufacureLocation</span><span class="p">);</span>      <span class="c1">// [ &#39;Chongqing&#39;, &#39;Beijing&#39; ]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>同时创建多个prototype的property</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='Javascript'><span class='line'><span class="kd">function</span> <span class="nx">University</span><span class="p">(</span><span class="nx">name</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">this</span><span class="p">.</span><span class="nx">name</span> <span class="o">=</span> <span class="nx">name</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="nx">University</span><span class="p">.</span><span class="nx">prototype</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">sayName</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">name</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">},</span>
+</span><span class='line'>    <span class="nx">toString</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;WUSTL&quot;</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">};</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这样做很方便,但是它也有一个潜在的问题,即复写了方法自身的prototype.之前,在方法被创建时,它在prototype里有自己的constructor,它指向方法自身.但是在上面的University.prototype = {&hellip;}语句其实是使用Object literal方法对University方法的prototype重新赋值了,所以它的prototype里的constructor指向了新的对象的prototype,即object得prototype.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='Javascript'><span class='line'><span class="kd">var</span> <span class="nx">univ</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">University</span><span class="p">(</span><span class="s2">&quot;Washington University&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">univ</span> <span class="k">instanceof</span> <span class="nx">University</span><span class="p">);</span>     <span class="c1">// true</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">univ</span><span class="p">.</span><span class="nx">constructor</span> <span class="o">==</span> <span class="nx">University</span><span class="p">);</span> <span class="c1">// false</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">univ</span><span class="p">.</span><span class="nx">constructor</span> <span class="o">==</span> <span class="nb">Object</span><span class="p">);</span>     <span class="c1">// true</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>为了避免这种情况的出现,我们可以显式制定方法的constructor的指向:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='Javascript'><span class='line'><span class="c1">// solution to the above issue</span>
+</span><span class='line'><span class="kd">function</span> <span class="nx">Computer</span><span class="p">(</span><span class="nx">brand</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">this</span><span class="p">.</span><span class="nx">brand</span> <span class="o">=</span> <span class="nx">brand</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="nx">Computer</span><span class="p">.</span><span class="nx">prototype</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">constructor</span><span class="o">:</span> <span class="nx">Computer</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">sayBrand</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;brand is &quot;</span> <span class="o">+</span> <span class="k">this</span><span class="p">.</span><span class="nx">brand</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">},</span>
+</span><span class='line'>    <span class="nx">statePrice</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;price is quite high&quot;</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">computer</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Computer</span><span class="p">(</span><span class="s2">&quot;Lenovo&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">computer</span> <span class="k">instanceof</span> <span class="nx">Computer</span><span class="p">);</span>     <span class="c1">// true</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">computer</span><span class="p">.</span><span class="nx">constructor</span> <span class="o">==</span> <span class="nx">Computer</span><span class="p">);</span> <span class="c1">// true</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='Javascript'><span class='line'><span class="kd">var</span> <span class="nx">computer1</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Computer</span><span class="p">(</span><span class="s2">&quot;Apple&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">computer2</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Computer</span><span class="p">(</span><span class="s2">&quot;Dell&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="nx">Computer</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">quote</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">quote</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;quote of &quot;</span> <span class="o">+</span> <span class="k">this</span><span class="p">.</span><span class="nx">brand</span> <span class="o">+</span> <span class="s2">&quot; is &quot;</span> <span class="o">+</span> <span class="nx">quote</span><span class="p">)</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'><span class="nx">computer1</span><span class="p">.</span><span class="nx">quote</span><span class="p">(</span><span class="s2">&quot;Think Different&quot;</span><span class="p">);</span> <span class="c1">// quote of Apple is Think Different</span>
+</span><span class='line'><span class="nx">computer2</span><span class="p">.</span><span class="nx">quote</span><span class="p">(</span><span class="s2">&quot;Whatever&quot;</span><span class="p">);</span>        <span class="c1">// quote of Dell is Whatever</span>
+</span></code></pre></td></tr></table></div></figure>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[JavaScript中的对象]]></title>
@@ -3076,208 +3333,6 @@ hoist),后者不会.</p>
 
 
 <p>因为如果直接调用init方法,系统最终还是会调用initWithNibName,所以调用init只是相当于把initWithNibName方法的两个参数都设为nil,不过系统会默认到当前应用的bundle下面去找对应的资源,他会去尝试找与当前view controller同名的Nib文件(Nib是XIB编译后的产物),所以为了方便起见,我们一般把XIB文件的名字和view controller的名字保持一致.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[iOS Programming 5(Redrawing and UIScrollView)]]></title>
-    <link href="http://qiusli.github.io/blog/2014/04/04/ios-programming-5/"/>
-    <updated>2014-04-04T13:08:00-06:00</updated>
-    <id>http://qiusli.github.io/blog/2014/04/04/ios-programming-5</id>
-    <content type="html"><![CDATA[<p>在上一篇博客中,我们创建了一个画同心圆的app,这篇博客将继续在那上面扩展,当用户在屏幕上点击的时候同心圆会改变颜色.此外,还将在app里面加上UIScrollView,让用户通过scroll的方式浏览比屏幕本身大的view.</p>
-
-<h2>改变同心圆颜色</h2>
-
-<p>既然是通过点击来改变同心圆的颜色,那么我们肯定会想到用touch event来实现,在用户touch之后需要改变颜色,我们可以通过创建一个公有变量,然后在touch方法里改变他的颜色. 我们现在项目的格局如下:</p>
-
-<!--more-->
-
-
-<p> <img src="http://qiusli.github.io/images/ios-5_1.png" width="300" height="600"></p>
-
-<p>首先我们在<code>BNRHypnosisterView.m</code>的头部创建一个property文件:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="k">@interface</span> <span class="nc">BNRHypnosisterView</span> <span class="p">()</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">strong</span><span class="p">,</span> <span class="k">nonatomic</span><span class="p">)</span> <span class="bp">UIColor</span> <span class="o">*</span><span class="n">circleColor</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@end</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@implementation</span> <span class="nc">BNRHypnosisterView</span>
-</span><span class='line'><span class="p">...</span>
-</span><span class='line'><span class="k">@end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>在这里创建property而不是在header文件里面创建的原因是隐藏这个变量.一个类的header文件是对所有类可见,一种默认的做法是如果变量是定义在header文件里面,那么就表示他可以和其他所有的类互动,如果我想要这个变量或者方法只在这个类中使用,那么可以把它定义在.m的category里面.这相当于对其他类隐藏了这个变量或方法,即使其子类都不能看到.</p>
-
-<p>声明完之后就应该开始定义了,我们可以到<code>initWithFrame</code>方法里给它首先赋予一个默认值:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">initWithFrame:</span><span class="p">(</span><span class="bp">CGRect</span><span class="p">)</span><span class="nv">frame</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="nb">self</span> <span class="o">=</span> <span class="p">[</span><span class="nb">super</span> <span class="nl">initWithFrame</span><span class="p">:</span><span class="n">frame</span><span class="p">];</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="nb">self</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="c1">// Initialization code</span>
-</span><span class='line'>        <span class="nb">self</span><span class="p">.</span><span class="n">backgroundColor</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIColor</span> <span class="n">clearColor</span><span class="p">];</span>
-</span><span class='line'>        <span class="nb">self</span><span class="p">.</span><span class="n">circleColor</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIColor</span> <span class="n">lightGrayColor</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>    <span class="k">return</span> <span class="nb">self</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>这样在程序启动的时候同心圆的颜色是灰色.接下来就应该实现touch even了, 当用户点击后就改变<code>circleColor</code>的颜色我们通过实现默认的<code>touchesBegan</code>方法来实现.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="nf">touchesBegan:</span><span class="p">(</span><span class="bp">NSSet</span> <span class="o">*</span><span class="p">)</span><span class="nv">touches</span> <span class="nf">withEvent:</span><span class="p">(</span><span class="bp">UIEvent</span> <span class="o">*</span><span class="p">)</span><span class="nv">event</span> <span class="p">{</span>
-</span><span class='line'>    <span class="kt">float</span> <span class="n">red</span> <span class="o">=</span> <span class="p">(</span><span class="n">arc4random</span><span class="p">()</span> <span class="o">%</span> <span class="mi">100</span><span class="p">)</span> <span class="o">/</span> <span class="mf">100.0</span><span class="p">;</span>
-</span><span class='line'>    <span class="kt">float</span> <span class="n">green</span> <span class="o">=</span> <span class="p">(</span><span class="n">arc4random</span><span class="p">()</span> <span class="o">%</span> <span class="mi">100</span><span class="p">)</span> <span class="o">/</span> <span class="mf">100.0</span><span class="p">;</span>
-</span><span class='line'>    <span class="kt">float</span> <span class="n">blue</span> <span class="o">=</span> <span class="p">(</span><span class="n">arc4random</span><span class="p">()</span> <span class="o">%</span> <span class="mi">100</span><span class="p">)</span> <span class="o">/</span> <span class="mf">100.0</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="bp">UIColor</span> <span class="o">*</span><span class="n">randomColor</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIColor</span> <span class="nl">colorWithRed</span><span class="p">:</span><span class="n">red</span> <span class="nl">green</span><span class="p">:</span><span class="n">green</span> <span class="nl">blue</span><span class="p">:</span><span class="n">blue</span> <span class="nl">alpha</span><span class="p">:</span><span class="mi">1</span><span class="p">];</span>
-</span><span class='line'>    <span class="nb">self</span><span class="p">.</span><span class="n">circleColor</span> <span class="o">=</span> <span class="n">randomColor</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>上面这个方法就是在每次用户点击的时候都重新开始算rgb在<code>randomColor</code>中的分量,然后得到一个新的<code>randomColor</code>并把它赋值给circleColor.这样<code>circleColor</code>的颜色就变了,现在我们可以运行看看效果:</p>
-
-<p> <img src="http://qiusli.github.io/images/ios-5_2.png" width="300" height="600"></p>
-
-<p>我们发现无论怎么点击屏幕,颜色都不会改变,这是为什么呢?这里有两个原因:</p>
-
-<ul>
-<li>UIView的drawRect方法默认情况下只在加载的时候被调用,所以无论我们怎么点击屏幕,这个方法都不会被再次调用,所以所有的view都没有被重新render.</li>
-<li>在drawRect方法里面没有改变同心圆的颜色,改变的代码如下:</li>
-</ul>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='objective-c'><span class='line'> <span class="c1">// [[UIColor lightGrayColor] setStroke];</span>
-</span><span class='line'>    <span class="p">[</span><span class="nb">self</span><span class="p">.</span><span class="n">circleColor</span> <span class="n">setStroke</span><span class="p">];</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>这里又涉及到iOS的一种机制:<code>run loop</code>. 它指的是当iOS app 在运行的时候,他会开始一个<code>run loop</code>,这个loop是专门用来监听事件的.当一次事件发生时(例如touch),<code>run loop</code>会找到相应的handler来处理这次事件,当这个事件被处理后,<code>run loop</code>继续执行. 在我们这个程序中,当<code>run loop</code>发现touch事件时,会停下来调用<code>touchesBegan</code>方法处理它,在处理完后重新回到<code>tun loop</code>中.在重新回到<code>run loop</code>后,它会检查那些在上次执行handler之后有改变并且需要重新render的view,然后<code>run loop</code>会发送drawRect:方法给这些view,然他们重新去render.但是为什么我们在点击屏幕后view并没有被重新render呢?原来这是因为需要被重新render的view不是系统默认的,如果他们是默认的(例如UIButton, UIText),render会自动执行,否则我们需要调用view的<code>setNeedsDisplay</code>方法来让他重新render.在<code>touchesBegan:</code>方法的最后一句,我们看到<code>circleColor</code>被重新赋值(其实是它的setter方法被调用了),那么我们可以重载它的setter方法,并在里面调用<code>setNeedsDisplay</code>方法.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="nf">setCircleColor:</span><span class="p">(</span><span class="bp">UIColor</span> <span class="o">*</span><span class="p">)</span><span class="nv">circleColor</span> <span class="p">{</span>
-</span><span class='line'>    <span class="n">_circleColor</span> <span class="o">=</span> <span class="n">circleColor</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">[</span><span class="nb">self</span> <span class="n">setNeedsDisplay</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>再次运行,一切OK.</p>
-
-<p> <img src="http://qiusli.github.io/images/ios-5_3.png" width="250" height="500">
- <img src="http://qiusli.github.io/images/ios-5_4.png" width="250" height="500">
- <img src="http://qiusli.github.io/images/ios-5_5.png" width="250" height="500"></p>
-
-<h2>使用UIScrollView</h2>
-
-<p>Scroll view通常是为比屏幕更大的view准备的,这样就能通过上下左右滚动来查看完整的图片.之前我们是直接把当前的view加到<code>UIWindow</code>中,不过为了实现scroll view,我们需要把当前view加到scroll view中,然后再把这个scroll view加到<code>UIWindow</code>中去.</p>
-
-<p> <img src="http://qiusli.github.io/images/ios-5_UIScrollView.png" width="900" height="1200"></p>
-
-<p>然后到app delegate的<code>didFinishLaunchingWithOptions</code>里加上如下代码:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class='objective-c'><span class='line'>    <span class="bp">CGRect</span> <span class="n">screenRect</span> <span class="o">=</span> <span class="nb">self</span><span class="p">.</span><span class="n">window</span><span class="p">.</span><span class="n">bounds</span><span class="p">;</span>
-</span><span class='line'>    <span class="bp">CGRect</span> <span class="n">bigRect</span> <span class="o">=</span> <span class="n">screenRect</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">bigRect</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">width</span> <span class="o">*=</span> <span class="mi">2</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">bigRect</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">height</span> <span class="o">*=</span> <span class="mi">2</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="bp">UIScrollView</span> <span class="o">*</span><span class="n">scrollView</span> <span class="o">=</span> <span class="p">[[</span><span class="bp">UIScrollView</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithFrame</span><span class="p">:</span><span class="n">screenRect</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">[</span><span class="nb">self</span><span class="p">.</span><span class="n">window</span> <span class="nl">addSubview</span><span class="p">:</span><span class="n">scrollView</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">BNRHypnosisterView</span> <span class="o">*</span><span class="n">hypnosisView</span> <span class="o">=</span> <span class="p">[[</span><span class="n">BNRHypnosisterView</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithFrame</span><span class="p">:</span><span class="n">bigRect</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">scrollView</span> <span class="nl">addSubview</span><span class="p">:</span><span class="n">hypnosisView</span><span class="p">];</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>首先建立一个屏幕大小的CGRect作为<code>UIScrollView</code>的显示范围,然后建立一个两倍屏幕大小的CGRect作为view的显示范围,最后把view加到UIScrollView中.显示的效果如下:</p>
-
-<p> <img src="http://qiusli.github.io/images/ios-5_6.png" width="300" height="600"></p>
-
-<p>最后,我们可以把它做的更好看一些,我们给<code>UIScrollView</code>加两个view,并让他们在不同的屏幕显示:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-</pre></td><td class='code'><pre><code class='objective-c'><span class='line'>    <span class="bp">CGRect</span> <span class="n">screenRect</span> <span class="o">=</span> <span class="nb">self</span><span class="p">.</span><span class="n">window</span><span class="p">.</span><span class="n">bounds</span><span class="p">;</span>
-</span><span class='line'>    <span class="bp">CGRect</span> <span class="n">bigRect</span> <span class="o">=</span> <span class="n">screenRect</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">bigRect</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">width</span> <span class="o">*=</span> <span class="mi">2</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'> <span class="bp">UIScrollView</span> <span class="o">*</span><span class="n">scrollView</span> <span class="o">=</span> <span class="p">[[</span><span class="bp">UIScrollView</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithFrame</span><span class="p">:</span><span class="n">screenRect</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">[</span><span class="nb">self</span><span class="p">.</span><span class="n">window</span> <span class="nl">addSubview</span><span class="p">:</span><span class="n">scrollView</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">BNRHypnosisterView</span> <span class="o">*</span><span class="n">hypnosisView</span> <span class="o">=</span> <span class="p">[[</span><span class="n">BNRHypnosisterView</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithFrame</span><span class="p">:</span><span class="n">screenRect</span><span class="p">];</span>
-</span><span class='line'>    <span class="n">scrollView</span><span class="p">.</span><span class="n">pagingEnabled</span> <span class="o">=</span> <span class="nb">YES</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">scrollView</span> <span class="nl">addSubview</span><span class="p">:</span><span class="n">hypnosisView</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">screenRect</span><span class="p">.</span><span class="n">origin</span><span class="p">.</span><span class="n">x</span> <span class="o">+=</span> <span class="n">screenRect</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">width</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">BNRHypnosisterView</span> <span class="o">*</span><span class="n">hypnosisView2</span> <span class="o">=</span> <span class="p">[[</span><span class="n">BNRHypnosisterView</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithFrame</span><span class="p">:</span><span class="n">screenRect</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">scrollView</span> <span class="nl">addSubview</span><span class="p">:</span><span class="n">hypnosisView2</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">scrollView</span><span class="p">.</span><span class="n">contentSize</span> <span class="o">=</span> <span class="n">bigRect</span><span class="p">.</span><span class="n">size</span><span class="p">;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>其中<code>scrollView.pagingEnabled = YES</code>的意思是在左右滑动的时候有翻页的效果,屏幕不会停在两个view的中间.
- <img src="http://qiusli.github.io/images/ios-5_7.png" width="300" height="600"></p>
 ]]></content>
   </entry>
   
