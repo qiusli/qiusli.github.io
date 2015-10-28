@@ -4,7 +4,7 @@
   <title><![CDATA[Category: 科技 | 逆旅，行人]]></title>
   <link href="http://qiusli.github.io/blog/categories/ke-ji/atom.xml" rel="self"/>
   <link href="http://qiusli.github.io/"/>
-  <updated>2015-10-25T22:51:13-06:00</updated>
+  <updated>2015-10-27T19:49:02-06:00</updated>
   <id>http://qiusli.github.io/</id>
   <author>
     <name><![CDATA[李秋实]]></name>
@@ -12,6 +12,149 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[JavaScript中的闭包]]></title>
+    <link href="http://qiusli.github.io/blog/2015/10/27/js-closure/"/>
+    <updated>2015-10-27T19:02:20-06:00</updated>
+    <id>http://qiusli.github.io/blog/2015/10/27/js-closure</id>
+    <content type="html"><![CDATA[<h2>为什么要用闭包</h2>
+
+<p>在JavaScript中没有私有变量的概念，即使一个变量定义在方法或者对象内部，在外面也仍然能够直接访问，闭包的出现解决了这个问题。</p>
+
+<h2>什么是闭包</h2>
+
+<p>简单地说，闭包就是定义在一个函数内部的函数，它能访问其父级函数里定义的变量。比如下面这个例子</p>
+
+<pre><code class="JavaScript">function outer() {
+    var i = 1;
+
+    function inner() {
+        i++;
+        return i;
+    }
+
+    return inner;
+}
+var k = outer();       
+k();
+console.log(k()); // 3
+</code></pre>
+
+<p>inner定义在outer内部，它能访问定义在outer中的变量i，outer返回inner函数的引用。变量k接受outer函数执行后的返回值（即inner），然后执行一次，i增加了1，最后再执行了一次，最后被打印出来。我们看到在outer执行完并返回之后，定义在outer内部的变量i并没有随之消逝，而是一直存在于内存中直到整个程序结束。</p>
+
+<pre><code class="Javascript">function sayName(firstname) {
+    var x = "Full name: ";
+
+    function inner(lastName) {
+        return x + firstname + " " + lastName;
+    }
+
+    return inner;
+}
+var a = sayName("Qiushi");
+console.log(a("Li"));      // Full name: Qiushi Li
+</code></pre>
+
+<p>上面的程序第一次调用sayName的时候传入了firstname，然后x和firstname都被记录在内存中，然后inner函数被返回并被a引用。下一次执行a的时候，其实是执行了inner函数，这时lastname被传入，结合之前记录的结合起来形成了最终的结果。</p>
+
+<p>使用闭包实现getter和setter并隐藏被操作的变量：</p>
+
+<pre><code class="Javascript">function modify() {
+    var i = 100;
+    return {
+        set: function (k) {
+            i = k;
+        },
+        get: function () {
+            return i;
+        }
+    };
+}
+var m = modify();
+console.log(m.get()); // 100
+m.set(103); 
+console.log(m.get()); // 103
+</code></pre>
+
+<h2>闭包的原理</h2>
+
+<p>我们都知道一个变量或者函数都有其作用域和定义域，它们不能脱离定义其的环境。例如一个定义在函数中的变量，当这个函数执行完毕并返回结果之后，定义在其中的变量也会被系统回收。类似于Java，Javavascript也有垃圾回收机制，可以概括为:
+1. 如果一个对象没有被其他对象指向，它会被GC回收
+2. 如果两个对象互相指向，同时不再被其他对象指向，那么这2个对象都会被回收</p>
+
+<p>回到闭包的原理上来，当我们把内部函数返回时，它通常会被外部的一个变量引用，这时系统不能回收内部函数，同时因为这个内部函数依赖于定义其的外部函数而存在，所以这个内部函数的外部环境也不能被回收，所以定义在其中的变量也一直常驻于内存。虽然这个变量在内存中，但是我们不能通过除了内部函数访问之外的方式去访问它，因为外部函数已经执行完毕了。</p>
+
+<pre><code class="Javascript">var obj = (function(){
+    var a = 1;
+    function increase1(){
+        a++;
+        console.log(a);
+    }
+    function increase2(){
+        a++;
+        console.log(a);
+    }
+    return {
+        b:increase1,            
+        c:increase2
+    }
+})();
+obj.b();      //2
+obj.c();      //3
+</code></pre>
+
+<p>上面的例子的意思是，首先定义一个外部函数，它里面有两个内部函数，返回一个有两个property的对象，这两个property分别是对两个内部函数的引用。这个外部函数在定义完成之后被立即执行，所以obj指向的是包含两个property的对象。然后obj调用那个对象的property，访问property指向的内部函数。</p>
+
+<h2>写闭包常犯的错</h2>
+
+<p>我们来看下面这段代码：</p>
+
+<pre><code class="Javascript">function addId(dogArray) {
+    var i;
+    var commonPre = 100;
+    for (i = 0; i &lt; dogArray.length; i++) {
+        dogArray[i]["id"] = function () {
+            return commonPre + i;
+        }
+    }
+}
+var dogArray = [
+    {name: "Ted", id: new Function()},
+    {name: "Snoop", id: new Function()},
+    {name: "Husky", id: new Function()}
+];
+addId(dogArray);
+var ted = dogArray[0];
+console.log(ted["id"]()); // 103
+</code></pre>
+
+<p>预计输出的结果应该是100，为什么是103呢？原因久在于在for循环时，每个dogArray元素的id property被赋值了一个方法，即指向了那个方法，但是那个方法并没有立即执行，而是在试图打印的时候才开始执行。同时那个方法中存放的是对i的引用，即for循环中的i，而不是i的值，所以在for循环执行完成之后i的值是3，所以该内部函数在执行的时候i等于3，得到最终结果为103.</p>
+
+<p>怎么修改呢？其实很简单，就是在定义该内部函数的地方立即执行它，此时i的引用的值就是当前i的值。</p>
+
+<pre><code class="Javascript">// modified
+function addIdBetter(dogArray) {
+    var i;
+    var commonPre = 100;
+    for (i = 0; i &lt; dogArray.length; i++) {
+        dogArray[i]["id"] = (function () {
+            return commonPre + i;
+        })();
+    }
+}
+addIdBetter(dogArray);
+var snoop = dogArray[1];
+console.log(snoop["id"]); // 101
+</code></pre>
+
+<h2>闭包的潜在危害</h2>
+
+<p>因为外部函数在其内部函数被引用时不能被释放，所以会增加内存的消耗。</p>
+
+<p>简而言之，闭包的出现使Javascript隐藏内部变量成为可能，他是Javascript中的难点，也是其特色之一。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[JavaScript中的继承]]></title>
@@ -676,128 +819,6 @@ n2.sayName();                                     // n1Ani
 </code></pre>
 
 <p>值得注意的是最后输出为n1Ani而不是n2Rashmi,因为sayName1在最开始就指向了anotherSayName,this指向了n1,在重新赋值给n2的sayName时,其this指向不会被改变,所以输出n1Ani.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[JavaScript中的类型]]></title>
-    <link href="http://qiusli.github.io/blog/2015/10/21/js-types/"/>
-    <updated>2015-10-21T20:34:58-06:00</updated>
-    <id>http://qiusli.github.io/blog/2015/10/21/js-types</id>
-    <content type="html"><![CDATA[<p>JavaScript一共有两种类型,非别为原始类型和引用类型.JavaScript使用一个叫做variable object的东西来记录创建的数据类型,如果新建数据为原始类型,则直接存储在variable object中,如果为引用类型,则用variable object来存放指向引用类型的指针.</p>
-
-<!-- more -->
-
-
-<h2>原始类型</h2>
-
-<p>JavaScript一共有5种原始类型:
-1. Boolean
-2. Number
-3. String
-4. Null
-5. Undefined
-当把一个存储原始类型数据的变量赋值给另一个变量时,两个变量存储的值一样,但分别拥有的是各自的拷贝.</p>
-
-<pre><code class="JavaScript">var color1 =  "red";
-var color2 = color1;
-color1 = "green";
-console.log(color1); // green
-console.log(color2); // red
-</code></pre>
-
-<h4>typeof 关键字</h4>
-
-<p>用来判断当前原始类型的具体类型:</p>
-
-<pre><code class="JavaScript">console.log(typeof 10);        // number
-console.log(typeof "hello");   // string
-console.log(typeof true);      // boolean
-console.log(typeof null);      // object
-console.log(typeof undefined); // undefined
-</code></pre>
-
-<h4>== 与 ===</h4>
-
-<p>两者的作用基本一样,唯一的不同就是<code>==</code>在比较的时候会进行类型转换,而<code>===</code>则按原值比较.</p>
-
-<pre><code class="JavaScript">console.log("5" == 5);           // true
-console.log("5" === 5);          // false
-console.log(true == "true");     // false
-console.log(true === "true");    // false
-console.log(null == null);       // true
-console.log(null === null);      // true
-console.log(null == undefined);  // true
-console.log(null === undefined); // false
-</code></pre>
-
-<h2>引用类型</h2>
-
-<p>引用类型即对象,它是由一组键值对组成,很像其他语言中的hash.键可以为string或者一般的literal,值为原始类型或者方法.创建对象一般有两种方法: 使用new和使用object literal.</p>
-
-<pre><code class="JavaScript">1. 
-var book = new Object();
-book.name = "Head first Java"
-book.year = 2014
-
-2.
-// literal
-var book = {
-    name: "javascript oo design",
-    year: 2014
-}
-</code></pre>
-
-<p>与原始类型的赋值不同的是,引用类型在赋值过程中不会在内存中再次拷贝指向数据,而是仅仅创建一个新的指针指向原来的引用.</p>
-
-<pre><code class="JavaScript">var obj1 = new Object();
-var obj2 = obj1;
-obj1.myCustomProperty = "Qiushi";
-console.log(obj2.myCustomProperty); // "Qiushi"
-</code></pre>
-
-<p>和Java类似,JavaScript也有垃圾回收机制,也即没有指针指向对象时,其被回收.</p>
-
-<pre><code class="JavaScript">var obj = new Object();
-obj = null;
-</code></pre>
-
-<h3>原始类型的包装</h3>
-
-<p>原始类型中的String,Number和Boolean分别有其对应的包装类型,当系统检测到原始类型被读取并被当做对象使用时,系统会创建一个零时的原始类型的包装类,当包装类不再被使用的时候立即被系统回收.</p>
-
-<pre><code class="JavaScript">var name = "Qiushi";
-var firstChar = name.charAt(0);
-console.log(firstChar);         // "Q"
-
-在系统中被解释为:
-var name = "Qiushi";
-var tmp = new String(name);
-var firstChar = tmp.charAt(0);
-tmp = null;
-console.log(firstChar);
-</code></pre>
-
-<p>例如如果我们按照下面这么做:</p>
-
-<pre><code class="JavaScript">var name = "Nicholas";name.last = "Zakas";console.log(name.last);    // undefined
-
-在系统中被解释为:
-var name = "Nicholas";
-var tmp = new Sring(name)tmp.last = "Zakas";
-tmp = null                 // 零时变量被摧毁
-
-var tmp = new String(name)console.log(name.last);   
-tmp = null
-</code></pre>
-
-<p>再看下面这个例子:</p>
-
-<pre><code class="JavaScript">var name = "Qiushi"
-console.log(name instanceof String) // false
-</code></pre>
-
-<p>name在这里没有被当做对象使用(obj.xxx),所以没有零时对象创立,而原始类型不是其包装类的引用,所以会返回false.</p>
 ]]></content>
   </entry>
   

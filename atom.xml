@@ -4,7 +4,7 @@
   <title><![CDATA[逆旅，行人]]></title>
   <link href="http://qiusli.github.io/atom.xml" rel="self"/>
   <link href="http://qiusli.github.io/"/>
-  <updated>2015-10-25T22:51:13-06:00</updated>
+  <updated>2015-10-27T19:49:02-06:00</updated>
   <id>http://qiusli.github.io/</id>
   <author>
     <name><![CDATA[李秋实]]></name>
@@ -12,6 +12,241 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[JavaScript中的闭包]]></title>
+    <link href="http://qiusli.github.io/blog/2015/10/27/js-closure/"/>
+    <updated>2015-10-27T19:02:20-06:00</updated>
+    <id>http://qiusli.github.io/blog/2015/10/27/js-closure</id>
+    <content type="html"><![CDATA[<h2>为什么要用闭包</h2>
+
+<p>在JavaScript中没有私有变量的概念，即使一个变量定义在方法或者对象内部，在外面也仍然能够直接访问，闭包的出现解决了这个问题。</p>
+
+<h2>什么是闭包</h2>
+
+<p>简单地说，闭包就是定义在一个函数内部的函数，它能访问其父级函数里定义的变量。比如下面这个例子</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='JavaScript'><span class='line'><span class="kd">function</span> <span class="nx">outer</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">function</span> <span class="nx">inner</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">i</span><span class="o">++</span><span class="p">;</span>
+</span><span class='line'>        <span class="k">return</span> <span class="nx">i</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">return</span> <span class="nx">inner</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">k</span> <span class="o">=</span> <span class="nx">outer</span><span class="p">();</span>
+</span><span class='line'><span class="nx">k</span><span class="p">();</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">k</span><span class="p">());</span> <span class="c1">// 3</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>inner定义在outer内部，它能访问定义在outer中的变量i，outer返回inner函数的引用。变量k接受outer函数执行后的返回值（即inner），然后执行一次，i增加了1，最后再执行了一次，最后被打印出来。我们看到在outer执行完并返回之后，定义在outer内部的变量i并没有随之消逝，而是一直存在于内存中直到整个程序结束。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='Javascript'><span class='line'><span class="kd">function</span> <span class="nx">sayName</span><span class="p">(</span><span class="nx">firstname</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">x</span> <span class="o">=</span> <span class="s2">&quot;Full name: &quot;</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">function</span> <span class="nx">inner</span><span class="p">(</span><span class="nx">lastName</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="nx">x</span> <span class="o">+</span> <span class="nx">firstname</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="nx">lastName</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">return</span> <span class="nx">inner</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">a</span> <span class="o">=</span> <span class="nx">sayName</span><span class="p">(</span><span class="s2">&quot;Qiushi&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">a</span><span class="p">(</span><span class="s2">&quot;Li&quot;</span><span class="p">));</span>      <span class="c1">// Full name: Qiushi Li</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>上面的程序第一次调用sayName的时候传入了firstname，然后x和firstname都被记录在内存中，然后inner函数被返回并被a引用。下一次执行a的时候，其实是执行了inner函数，这时lastname被传入，结合之前记录的结合起来形成了最终的结果。</p>
+
+<p>使用闭包实现getter和setter并隐藏被操作的变量：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='Javascript'><span class='line'><span class="kd">function</span> <span class="nx">modify</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">100</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">return</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">set</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">k</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="nx">i</span> <span class="o">=</span> <span class="nx">k</span><span class="p">;</span>
+</span><span class='line'>        <span class="p">},</span>
+</span><span class='line'>        <span class="nx">get</span><span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>            <span class="k">return</span> <span class="nx">i</span><span class="p">;</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">};</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">m</span> <span class="o">=</span> <span class="nx">modify</span><span class="p">();</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">m</span><span class="p">.</span><span class="nx">get</span><span class="p">());</span> <span class="c1">// 100</span>
+</span><span class='line'><span class="nx">m</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="mi">103</span><span class="p">);</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">m</span><span class="p">.</span><span class="nx">get</span><span class="p">());</span> <span class="c1">// 103</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>闭包的原理</h2>
+
+<p>我们都知道一个变量或者函数都有其作用域和定义域，它们不能脱离定义其的环境。例如一个定义在函数中的变量，当这个函数执行完毕并返回结果之后，定义在其中的变量也会被系统回收。类似于Java，Javavascript也有垃圾回收机制，可以概括为:
+1. 如果一个对象没有被其他对象指向，它会被GC回收
+2. 如果两个对象互相指向，同时不再被其他对象指向，那么这2个对象都会被回收</p>
+
+<p>回到闭包的原理上来，当我们把内部函数返回时，它通常会被外部的一个变量引用，这时系统不能回收内部函数，同时因为这个内部函数依赖于定义其的外部函数而存在，所以这个内部函数的外部环境也不能被回收，所以定义在其中的变量也一直常驻于内存。虽然这个变量在内存中，但是我们不能通过除了内部函数访问之外的方式去访问它，因为外部函数已经执行完毕了。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='Javascript'><span class='line'><span class="kd">var</span> <span class="nx">obj</span> <span class="o">=</span> <span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">a</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+</span><span class='line'>    <span class="kd">function</span> <span class="nx">increase1</span><span class="p">(){</span>
+</span><span class='line'>        <span class="nx">a</span><span class="o">++</span><span class="p">;</span>
+</span><span class='line'>        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">a</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="kd">function</span> <span class="nx">increase2</span><span class="p">(){</span>
+</span><span class='line'>        <span class="nx">a</span><span class="o">++</span><span class="p">;</span>
+</span><span class='line'>        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">a</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">return</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">b</span><span class="o">:</span><span class="nx">increase1</span><span class="p">,</span>
+</span><span class='line'>        <span class="nx">c</span><span class="o">:</span><span class="nx">increase2</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">})();</span>
+</span><span class='line'><span class="nx">obj</span><span class="p">.</span><span class="nx">b</span><span class="p">();</span>      <span class="c1">//2</span>
+</span><span class='line'><span class="nx">obj</span><span class="p">.</span><span class="nx">c</span><span class="p">();</span>      <span class="c1">//3</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>上面的例子的意思是，首先定义一个外部函数，它里面有两个内部函数，返回一个有两个property的对象，这两个property分别是对两个内部函数的引用。这个外部函数在定义完成之后被立即执行，所以obj指向的是包含两个property的对象。然后obj调用那个对象的property，访问property指向的内部函数。</p>
+
+<h2>写闭包常犯的错</h2>
+
+<p>我们来看下面这段代码：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='Javascript'><span class='line'><span class="kd">function</span> <span class="nx">addId</span><span class="p">(</span><span class="nx">dogArray</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">i</span><span class="p">;</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">commonPre</span> <span class="o">=</span> <span class="mi">100</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">for</span> <span class="p">(</span><span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">dogArray</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">dogArray</span><span class="p">[</span><span class="nx">i</span><span class="p">][</span><span class="s2">&quot;id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>            <span class="k">return</span> <span class="nx">commonPre</span> <span class="o">+</span> <span class="nx">i</span><span class="p">;</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">dogArray</span> <span class="o">=</span> <span class="p">[</span>
+</span><span class='line'>    <span class="p">{</span><span class="nx">name</span><span class="o">:</span> <span class="s2">&quot;Ted&quot;</span><span class="p">,</span> <span class="nx">id</span><span class="o">:</span> <span class="k">new</span> <span class="nb">Function</span><span class="p">()},</span>
+</span><span class='line'>    <span class="p">{</span><span class="nx">name</span><span class="o">:</span> <span class="s2">&quot;Snoop&quot;</span><span class="p">,</span> <span class="nx">id</span><span class="o">:</span> <span class="k">new</span> <span class="nb">Function</span><span class="p">()},</span>
+</span><span class='line'>    <span class="p">{</span><span class="nx">name</span><span class="o">:</span> <span class="s2">&quot;Husky&quot;</span><span class="p">,</span> <span class="nx">id</span><span class="o">:</span> <span class="k">new</span> <span class="nb">Function</span><span class="p">()}</span>
+</span><span class='line'><span class="p">];</span>
+</span><span class='line'><span class="nx">addId</span><span class="p">(</span><span class="nx">dogArray</span><span class="p">);</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">ted</span> <span class="o">=</span> <span class="nx">dogArray</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">ted</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]());</span> <span class="c1">// 103</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>预计输出的结果应该是100，为什么是103呢？原因久在于在for循环时，每个dogArray元素的id property被赋值了一个方法，即指向了那个方法，但是那个方法并没有立即执行，而是在试图打印的时候才开始执行。同时那个方法中存放的是对i的引用，即for循环中的i，而不是i的值，所以在for循环执行完成之后i的值是3，所以该内部函数在执行的时候i等于3，得到最终结果为103.</p>
+
+<p>怎么修改呢？其实很简单，就是在定义该内部函数的地方立即执行它，此时i的引用的值就是当前i的值。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='Javascript'><span class='line'><span class="c1">// modified</span>
+</span><span class='line'><span class="kd">function</span> <span class="nx">addIdBetter</span><span class="p">(</span><span class="nx">dogArray</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">i</span><span class="p">;</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">commonPre</span> <span class="o">=</span> <span class="mi">100</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">for</span> <span class="p">(</span><span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">dogArray</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">dogArray</span><span class="p">[</span><span class="nx">i</span><span class="p">][</span><span class="s2">&quot;id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>            <span class="k">return</span> <span class="nx">commonPre</span> <span class="o">+</span> <span class="nx">i</span><span class="p">;</span>
+</span><span class='line'>        <span class="p">})();</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="nx">addIdBetter</span><span class="p">(</span><span class="nx">dogArray</span><span class="p">);</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">snoop</span> <span class="o">=</span> <span class="nx">dogArray</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">snoop</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]);</span> <span class="c1">// 101</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>闭包的潜在危害</h2>
+
+<p>因为外部函数在其内部函数被引用时不能被释放，所以会增加内存的消耗。</p>
+
+<p>简而言之，闭包的出现使Javascript隐藏内部变量成为可能，他是Javascript中的难点，也是其特色之一。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[归去来兮辞]]></title>
@@ -2876,11 +3111,11 @@ hoist),后者不会.</p>
 
 <p>#</p>
 
-<p><code>文本</code>: Hello, my name is Ben Forta, my email address is <a href="&#109;&#97;&#105;&#108;&#116;&#x6f;&#58;&#x62;&#x65;&#x6e;&#x40;&#102;&#x6f;&#x72;&#116;&#97;&#x2e;&#99;&#x6f;&#109;">&#98;&#x65;&#110;&#x40;&#x66;&#x6f;&#x72;&#x74;&#97;&#x2e;&#x63;&#111;&#109;</a></p>
+<p><code>文本</code>: Hello, my name is Ben Forta, my email address is <a href="&#x6d;&#x61;&#105;&#108;&#x74;&#x6f;&#x3a;&#x62;&#x65;&#110;&#64;&#x66;&#111;&#x72;&#116;&#97;&#x2e;&#99;&#111;&#x6d;">&#98;&#101;&#x6e;&#x40;&#102;&#x6f;&#x72;&#116;&#97;&#x2e;&#99;&#x6f;&#x6d;</a></p>
 
 <p><code>正则表达式</code>: \w[\w.]*@[\w.]+.\w+</p>
 
-<p><code>结果</code>: <a href="&#x6d;&#x61;&#105;&#108;&#x74;&#111;&#x3a;&#98;&#x65;&#x6e;&#64;&#102;&#111;&#114;&#x74;&#97;&#46;&#99;&#111;&#x6d;">&#98;&#101;&#x6e;&#x40;&#x66;&#111;&#x72;&#x74;&#x61;&#46;&#x63;&#111;&#x6d;</a></p>
+<p><code>结果</code>: <a href="&#109;&#x61;&#105;&#x6c;&#x74;&#x6f;&#x3a;&#x62;&#x65;&#110;&#64;&#x66;&#111;&#114;&#116;&#97;&#46;&#x63;&#111;&#109;">&#98;&#x65;&#110;&#x40;&#102;&#111;&#x72;&#116;&#97;&#46;&#x63;&#x6f;&#109;</a></p>
 
 <p>这里的正则表达式匹配了一个邮件地址.</p>
 
@@ -2890,7 +3125,7 @@ hoist),后者不会.</p>
 
 <p>#</p>
 
-<p><code>文本</code>: Hello, my name is Ben Forta, my email address is <a href="&#x6d;&#x61;&#105;&#x6c;&#116;&#111;&#58;&#98;&#101;&#110;&#64;&#x66;&#111;&#114;&#x74;&#97;&#x2e;&#99;&#111;&#x6d;">&#x62;&#101;&#110;&#x40;&#x66;&#x6f;&#114;&#x74;&#97;&#x2e;&#99;&#111;&#109;</a></p>
+<p><code>文本</code>: Hello, my name is Ben Forta, my email address is <a href="&#x6d;&#97;&#x69;&#108;&#x74;&#111;&#x3a;&#x62;&#101;&#110;&#x40;&#102;&#x6f;&#114;&#116;&#97;&#46;&#x63;&#x6f;&#109;">&#x62;&#101;&#110;&#64;&#102;&#111;&#114;&#116;&#x61;&#x2e;&#99;&#111;&#109;</a></p>
 
 <p><code>正则表达式</code>:  (\w[\w.]*@[\w.]+.\w+)</p>
 
@@ -2976,11 +3211,11 @@ hoist),后者不会.</p>
 
 <p>#</p>
 
-<p><code>文本</code>: Send personal email to <a href="&#109;&#x61;&#x69;&#108;&#116;&#x6f;&#x3a;&#98;&#101;&#110;&#x40;&#x66;&#111;&#114;&#116;&#97;&#x2e;&#99;&#111;&#109;&#46;">&#x62;&#101;&#x6e;&#64;&#102;&#x6f;&#114;&#116;&#97;&#46;&#99;&#x6f;&#109;&#x2e;</a> For questions about the book use <a href="&#x6d;&#x61;&#105;&#108;&#x74;&#111;&#x3a;&#x73;&#117;&#x70;&#x70;&#111;&#114;&#x74;&#x40;&#x66;&#x6f;&#114;&#x74;&#x61;&#46;&#x63;&#111;&#109;&#46;">&#115;&#x75;&#112;&#x70;&#x6f;&#x72;&#x74;&#64;&#x66;&#x6f;&#x72;&#x74;&#97;&#46;&#x63;&#x6f;&#x6d;&#46;</a> Feel free to send unsolicited email to <a href="&#109;&#97;&#x69;&#x6c;&#116;&#x6f;&#58;&#x73;&#x70;&#x61;&#x6d;&#x40;&#x66;&#111;&#114;&#116;&#x61;&#x2e;&#x63;&#111;&#x6d;&#x2e;">&#x73;&#x70;&#97;&#x6d;&#x40;&#102;&#x6f;&#x72;&#116;&#x61;&#x2e;&#x63;&#111;&#x6d;&#46;</a></p>
+<p><code>文本</code>: Send personal email to <a href="&#x6d;&#x61;&#105;&#108;&#x74;&#111;&#58;&#98;&#x65;&#x6e;&#64;&#x66;&#x6f;&#114;&#x74;&#x61;&#46;&#99;&#111;&#109;&#46;">&#x62;&#x65;&#110;&#x40;&#x66;&#111;&#114;&#x74;&#97;&#46;&#x63;&#111;&#109;&#x2e;</a> For questions about the book use <a href="&#x6d;&#x61;&#105;&#x6c;&#116;&#x6f;&#x3a;&#x73;&#117;&#x70;&#x70;&#x6f;&#114;&#x74;&#x40;&#102;&#x6f;&#x72;&#116;&#97;&#46;&#x63;&#111;&#109;&#x2e;">&#115;&#117;&#112;&#112;&#x6f;&#x72;&#x74;&#64;&#x66;&#x6f;&#114;&#116;&#97;&#46;&#x63;&#111;&#x6d;&#46;</a> Feel free to send unsolicited email to <a href="&#109;&#97;&#105;&#108;&#116;&#x6f;&#58;&#115;&#x70;&#97;&#109;&#x40;&#x66;&#111;&#114;&#x74;&#x61;&#x2e;&#99;&#111;&#x6d;&#46;">&#x73;&#x70;&#97;&#109;&#x40;&#x66;&#111;&#114;&#116;&#97;&#x2e;&#99;&#111;&#x6d;&#x2e;</a></p>
 
 <p><code>正则表达式</code>: \w+@\w+.\w+</p>
 
-<p><code>结果</code>: <a href="&#109;&#97;&#x69;&#x6c;&#116;&#111;&#x3a;&#98;&#x65;&#x6e;&#x40;&#102;&#111;&#114;&#116;&#x61;&#x2e;&#x63;&#111;&#x6d;">&#98;&#101;&#110;&#x40;&#102;&#x6f;&#x72;&#x74;&#x61;&#46;&#x63;&#x6f;&#x6d;</a>  <a href="&#109;&#97;&#x69;&#108;&#x74;&#x6f;&#x3a;&#115;&#117;&#112;&#x70;&#111;&#114;&#116;&#64;&#x66;&#111;&#x72;&#x74;&#97;&#x2e;&#x63;&#111;&#109;">&#115;&#x75;&#x70;&#112;&#111;&#114;&#x74;&#64;&#102;&#111;&#x72;&#116;&#x61;&#46;&#99;&#111;&#109;</a>  <a href="&#x6d;&#97;&#105;&#108;&#116;&#x6f;&#58;&#x73;&#x70;&#x61;&#109;&#64;&#x66;&#111;&#114;&#x74;&#x61;&#46;&#x63;&#x6f;&#109;">&#115;&#112;&#97;&#x6d;&#64;&#102;&#x6f;&#114;&#116;&#97;&#46;&#99;&#111;&#109;</a></p>
+<p><code>结果</code>: <a href="&#x6d;&#x61;&#105;&#x6c;&#x74;&#x6f;&#58;&#x62;&#x65;&#x6e;&#64;&#102;&#x6f;&#x72;&#x74;&#x61;&#46;&#x63;&#111;&#109;">&#98;&#x65;&#110;&#x40;&#x66;&#111;&#114;&#x74;&#x61;&#x2e;&#99;&#111;&#109;</a>  <a href="&#109;&#x61;&#x69;&#108;&#x74;&#111;&#x3a;&#115;&#x75;&#112;&#x70;&#111;&#x72;&#x74;&#64;&#102;&#x6f;&#x72;&#x74;&#97;&#x2e;&#99;&#111;&#109;">&#115;&#x75;&#x70;&#x70;&#111;&#x72;&#x74;&#64;&#102;&#111;&#114;&#x74;&#97;&#46;&#x63;&#x6f;&#109;</a>  <a href="&#109;&#x61;&#x69;&#x6c;&#116;&#111;&#58;&#x73;&#x70;&#x61;&#109;&#x40;&#x66;&#111;&#x72;&#116;&#x61;&#46;&#99;&#111;&#x6d;">&#x73;&#112;&#x61;&#x6d;&#x40;&#x66;&#x6f;&#114;&#x74;&#x61;&#x2e;&#99;&#x6f;&#109;</a></p>
 
 <!-- more -->
 
@@ -3489,179 +3724,6 @@ hoist),后者不会.</p>
 <p><code>结果</code>: #336655, #FFFFFF</p>
 
 <p>这里的POSIX使用了两层括号,里面的一层表示POSIX字符类,外面的那一层表示字符集和.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[iOS Programming 8 (UITableView &amp; UITableViewController)]]></title>
-    <link href="http://qiusli.github.io/blog/2014/05/09/ios-programming-8-uitableview-and-uitableviewcontroller/"/>
-    <updated>2014-05-09T12:20:00-06:00</updated>
-    <id>http://qiusli.github.io/blog/2014/05/09/ios-programming-8-uitableview-and-uitableviewcontroller</id>
-    <content type="html"><![CDATA[<p><code>UITableView</code>在iOS中是一个很重要的概念,它会把数据像列表一样显示在屏幕上.首先需要介绍几个概念:</p>
-
-<ul>
-<li><code>UITableView</code>: 它是一个view,用于在屏幕上显示数据.它会向其对应的<code>dataSource</code>询问应该显示什么数据,然后再显示.对应的<code>dataShource</code>需要遵循<code>UITableViewDataSource</code>Protocol.</li>
-<li><code>UITableView</code>同时需要一个delegate,用来处理在<code>UITableView</code>上传出来的事件.这个delegate需要遵循<code>UITableViewDelegate</code> Protocol.</li>
-<li><code>UITableView</code>需要一个view controller来与之协作.</li>
-</ul>
-
-
-<!-- more -->
-
-
-<p><code>UITableViewController</code>同时兼顾了view controller, delegate和data source这三个角色.<code>UITableViewController</code>继承自<code>UIViewController</code>,所以它有自己的view,这个view就是<code>UITableView</code>.<code>UITableViewController</code>负责<code>UITableView</code>的准备和显示.同时<code>UITableViewController</code>遵循了<code>UITableViewDataSource</code>和<code>UITableViewDelegate</code>Protocol,所以它既是data source又是delegate.</p>
-
-<p><code>UITableView</code> <code>UITableViewController</code>对应的关系如下:</p>
-
-<p> <img src="http://qiusli.github.io/images/ios-8_1.png"></p>
-
-<p>首先创建一个<code>UITableViewController</code>的子类.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="k">@interface</span> <span class="nc">BNRItemsViewController</span> : <span class="bp">UITableViewController</span>
-</span><span class='line'><span class="k">@end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p><code>UITableViewController</code>默认的初始化方法是<code>initWithStyle:</code>,这里的style可以是<code>UITableViewStylePlain</code>或者<code>UITableViewStyleGrouped</code>,不过在iOS7里面,两者的差别并不大.为了传给它一个style,我们可以让这个默认初始化方法调用另一个init方法,然后再到里面去调用默认的初始化方法:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">instancetype</span><span class="p">)</span> <span class="nf">init</span> <span class="p">{</span>
-</span><span class='line'>    <span class="nb">self</span> <span class="o">=</span> <span class="p">[</span><span class="nb">super</span> <span class="nl">initWithStyle</span><span class="p">:</span><span class="n">UITableViewStylePlain</span><span class="p">];</span>
-</span><span class='line'>    <span class="k">return</span> <span class="nb">self</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">instancetype</span><span class="p">)</span> <span class="nf">initWithStyle:</span><span class="p">(</span><span class="n">UITableViewStyle</span><span class="p">)</span><span class="nv">style</span> <span class="p">{</span>
-</span><span class='line'>    <span class="k">return</span> <span class="p">[</span><span class="nb">self</span> <span class="n">init</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>这个时候我们只是建立了一个<code>UITableViewController</code>,但是并没有把它加到view hierachy里面去,所以我们来到AppDelegate的<code>application:didFinishLaunchingWithOptions</code>方法,在里面初始化这个<code>BNRItemsViewController</code>并把它作为window的root controller.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="n">BNRItemsViewController</span> <span class="o">*</span><span class="n">itemsViewController</span> <span class="o">=</span> <span class="p">[[</span><span class="n">BNRItemsViewController</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
-</span><span class='line'><span class="nb">self</span><span class="p">.</span><span class="n">window</span><span class="p">.</span><span class="n">rootViewController</span> <span class="o">=</span> <span class="n">itemsViewController</span><span class="p">;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>现在运行,可以看到已经有table view的效果了,但是里面没有数据</p>
-
-<p> <img src="http://qiusli.github.io/images/ios-8_2.png" width="300" height="600"></p>
-
-<p>接下来我们就应该往里面加数据.需要复用在前几章建立的BNRItem类,这个类代表了具体的商品.接下来还需要建立一个BNRItemStore类,我们的tableview controller会从这个store里面获取数据.具体怎么建立的这里就不阐述了,总之这个store有<code>createItem</code>和<code>allItems</code>两个方法,前者用来创建item后者用来获取所有的item用来显示.现在我们可以创建50个item用于显示:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">instancetype</span><span class="p">)</span> <span class="nf">init</span> <span class="p">{</span>
-</span><span class='line'>    <span class="nb">self</span> <span class="o">=</span> <span class="p">[</span><span class="nb">super</span> <span class="nl">initWithStyle</span><span class="p">:</span><span class="n">UITableViewStylePlain</span><span class="p">];</span>
-</span><span class='line'>    <span class="n">BNRItemStore</span> <span class="o">*</span><span class="n">store</span> <span class="o">=</span> <span class="p">[</span><span class="n">BNRItemStore</span> <span class="n">sharedStore</span><span class="p">];</span>
-</span><span class='line'>    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">50</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="p">[</span><span class="n">store</span> <span class="n">createItem</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>    <span class="k">return</span> <span class="nb">self</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>当<code>UITableView</code>需要显示的时候,它会向data source发送一些消息,然后通过这些回馈判断应该显示多少行数据,每行都显示什么等等.<code>UITableViewController</code>有两个必须实现的方法,这两个方法被定义在了Protocol中,它们分别是<code>tableView:numberOfRowsInSection</code>和<code>tableView:cellForRowAtIndexPath</code>,前者是用来得到需要显示多少行,后者是用来告诉每行显示的数据的具体内容.因为我们一共建立了50条数据,所以可以用前面的方法来得到行数:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="bp">NSInteger</span><span class="p">)</span> <span class="nf">tableView:</span><span class="p">(</span><span class="bp">UITableView</span> <span class="o">*</span><span class="p">)</span><span class="nv">tableView</span> <span class="nf">numberOfRowsInSection:</span><span class="p">(</span><span class="bp">NSInteger</span><span class="p">)</span><span class="nv">section</span> <span class="p">{</span>
-</span><span class='line'>    <span class="k">return</span> <span class="p">[[[</span><span class="n">BNRItemStore</span> <span class="n">sharedStore</span><span class="p">]</span> <span class="n">allItems</span><span class="p">]</span> <span class="n">count</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>在介绍后者之前,需要插入解释一个概念 &ndash; <code>UITableViewCell</code>,这个对象对应于table中每一行的数据,即table中的每一行都由一个<code>UITableViewCell</code>填充.这个对象有一个subview名叫<code>contentView</code>,它是用来具体显示数据的,以文本或图片的形式.这个<code>contentView</code>里有三个property:<code>detailTextLabel</code> <code>textLabel</code> <code>imageView</code>,今天我们将会用到第二个.</p>
-
-<p>下面是方法的实现:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="bp">UITableViewCell</span> <span class="o">*</span><span class="p">)</span> <span class="nf">tableView:</span><span class="p">(</span><span class="bp">UITableView</span> <span class="o">*</span><span class="p">)</span><span class="nv">tableView</span> <span class="nf">cellForRowAtIndexPath:</span><span class="p">(</span><span class="bp">NSIndexPath</span> <span class="o">*</span><span class="p">)</span><span class="nv">indexPath</span> <span class="p">{</span>
-</span><span class='line'>    <span class="bp">UITableViewCell</span> <span class="o">*</span><span class="n">tableViewCell</span> <span class="o">=</span> <span class="p">[[</span><span class="bp">UITableViewCell</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithStyle</span><span class="p">:</span><span class="n">UITableViewCellStyleDefault</span> <span class="nl">reuseIdentifier</span><span class="p">:</span><span class="s">@&quot;UITableViewCell&quot;</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="bp">NSArray</span> <span class="o">*</span><span class="n">items</span> <span class="o">=</span> <span class="p">[[</span><span class="n">BNRItemStore</span> <span class="n">sharedStore</span><span class="p">]</span> <span class="n">allItems</span><span class="p">];</span>
-</span><span class='line'>    <span class="n">tableViewCell</span><span class="p">.</span><span class="n">textLabel</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="p">[[</span><span class="n">items</span> <span class="nl">objectAtIndex</span><span class="p">:</span><span class="n">indexPath</span><span class="p">.</span><span class="n">row</span><span class="p">]</span> <span class="n">description</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">return</span> <span class="n">tableViewCell</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>首先建立一个cell,然后得到所有items,并根据传进来的indexPath获取到特定的item,然后把item的description赋给cell的textLabel.这个方法是在每一行需要显示的时候被调用,所以indexPath对应于table view中对应的行数.</p>
-
-<p>再次运行,发现tableview被填充了数据:</p>
-
-<p> <img src="http://qiusli.github.io/images/ios-8_3.png" width="300" height="600"></p>
-
-<p>有时候,由于需要显示的内容非常多,如果使用上面的方法需要每次都建立tableviewcell,这样非常耗时耗内存,一个解决方法是建立特定数量的cell把它们放到一个cell pool里,然后当下滑tableview的时候,从pool里面提取cell来显示数据,把刚刚消失的cell放回到pool里去.为了达到上面的效果,我们只需要做两处改变:</p>
-
-<ul>
-<li>注册cell类</li>
-<li>在<code>tableView:cellForRowAtIndexPath</code>方法里面提取</li>
-</ul>
-
-
-<p>我们可以在<code>BNRTableViewController</code>的<code>viewDidLoad</code>方法里注册:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="nf">viewDidLoad</span> <span class="p">{</span>
-</span><span class='line'>    <span class="p">[</span><span class="nb">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">[</span><span class="nb">self</span><span class="p">.</span><span class="n">tableView</span> <span class="nl">registerClass</span><span class="p">:[</span><span class="bp">UITableViewCell</span> <span class="k">class</span><span class="p">]</span> <span class="nl">forCellReuseIdentifier</span><span class="p">:</span><span class="s">@&quot;UITableViewCell&quot;</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>然后修改<code>tableView:cellForRowAtIndexPath</code>方法:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="bp">UITableViewCell</span> <span class="o">*</span><span class="p">)</span> <span class="nf">tableView:</span><span class="p">(</span><span class="bp">UITableView</span> <span class="o">*</span><span class="p">)</span><span class="nv">tableView</span> <span class="nf">cellForRowAtIndexPath:</span><span class="p">(</span><span class="bp">NSIndexPath</span> <span class="o">*</span><span class="p">)</span><span class="nv">indexPath</span> <span class="p">{</span>
-</span><span class='line'>    <span class="bp">UITableViewCell</span> <span class="o">*</span><span class="n">tableViewCell</span> <span class="o">=</span> <span class="p">[</span><span class="n">tableView</span> <span class="nl">dequeueReusableCellWithIdentifier</span><span class="p">:</span><span class="s">@&quot;UITableViewCell&quot;</span> <span class="nl">forIndexPath</span><span class="p">:</span><span class="n">indexPath</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="bp">NSArray</span> <span class="o">*</span><span class="n">items</span> <span class="o">=</span> <span class="p">[[</span><span class="n">BNRItemStore</span> <span class="n">sharedStore</span><span class="p">]</span> <span class="n">allItems</span><span class="p">];</span>
-</span><span class='line'>    <span class="n">tableViewCell</span><span class="p">.</span><span class="n">textLabel</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="p">[[</span><span class="n">items</span> <span class="nl">objectAtIndex</span><span class="p">:</span><span class="n">indexPath</span><span class="p">.</span><span class="n">row</span><span class="p">]</span> <span class="n">description</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">return</span> <span class="n">tableViewCell</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>这里有一个identifier参数叫做UITableViewCell,这是因为我们通常在pool里面会放着各种不同类型的cell,在注册和提取的时候都给identifier标上名相当于给它们贴了标签,想要什么类型的cell只需要在提取的时候带上同样的标签就可以了.</p>
 ]]></content>
   </entry>
   
