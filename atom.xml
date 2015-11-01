@@ -4,7 +4,7 @@
   <title><![CDATA[逆旅，行人]]></title>
   <link href="http://qiusli.github.io/atom.xml" rel="self"/>
   <link href="http://qiusli.github.io/"/>
-  <updated>2015-10-27T19:49:02-06:00</updated>
+  <updated>2015-10-31T18:12:34-06:00</updated>
   <id>http://qiusli.github.io/</id>
   <author>
     <name><![CDATA[李秋实]]></name>
@@ -12,6 +12,308 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[javaScript中的This关键字]]></title>
+    <link href="http://qiusli.github.io/blog/2015/10/31/js-this/"/>
+    <updated>2015-10-31T16:44:42-06:00</updated>
+    <id>http://qiusli.github.io/blog/2015/10/31/js-this</id>
+    <content type="html"><![CDATA[<h2>一言以蔽之</h2>
+
+<p>JavaScript中this关键字的应用一直是个难点，但是只需要记住一点：this始终定义在函数中，当这个函数被调用的时候，this会执行调用该函数的那个对象。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">person</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">firstName</span><span class="o">:</span> <span class="s2">&quot;Qiushi&quot;</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">lastName</span><span class="o">:</span> <span class="s2">&quot;Li&quot;</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">fullName</span><span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">firstName</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="k">this</span><span class="p">.</span><span class="nx">lastName</span><span class="p">);</span>
+</span><span class='line'>        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">person</span><span class="p">.</span><span class="nx">firstName</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="nx">person</span><span class="p">.</span><span class="nx">lastName</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'><span class="nx">person</span><span class="p">.</span><span class="nx">fullName</span><span class="p">();</span> <span class="c1">// 会输出两行 &quot;Qiushi Li&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>上面的代码定义了一个person对象，fullName方法是其中一个property，this定义在呢fullName方法中。在这个方法没有被person对象调用之前，this不指向任何对象，当执行<code>person.fullName()</code>后，this指向person对象，所以会输出person对象的firstName和lastName。下面再看一个类似的例子，在浏览器中执行jQuery代码：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">$</span><span class="p">(</span><span class="s2">&quot;button&quot;</span><span class="p">).</span><span class="nx">click</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">event</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">).</span><span class="nx">prop</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">));</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这里的this定义定义在一个匿名函数里，这个匿名函数又作为click的参数传递。在jQuery里，系统默认把this和调用click的对象绑定在一起，所以这里的this指向的是button对象，这和JavaScript稍微有点不同。</p>
+
+<h2>this在不同情况下的指向问题</h2>
+
+<h3>1. 在全局范围内使用this</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">firstName</span> <span class="o">=</span> <span class="s2">&quot;Qiushi&quot;</span><span class="p">,</span> <span class="nx">lastName</span> <span class="o">=</span> <span class="s2">&quot;Li&quot;</span><span class="p">;</span>
+</span><span class='line'><span class="kd">function</span> <span class="nx">showFullName</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">firstName</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="nx">lastName</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">var</span> <span class="nx">person2</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">firstName</span><span class="o">:</span> <span class="s2">&quot;Eric&quot;</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">lastName</span><span class="o">:</span> <span class="s2">&quot;Chho&quot;</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">showFullName</span><span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">firstName</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="k">this</span><span class="p">.</span><span class="nx">lastName</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'><span class="nx">showFullName</span><span class="p">();</span>         <span class="c1">// Qiushi Li</span>
+</span><span class='line'><span class="nb">window</span><span class="p">.</span><span class="nx">showFullName</span><span class="p">();</span>  <span class="c1">// Qiushi Li</span>
+</span><span class='line'><span class="nx">person2</span><span class="p">.</span><span class="nx">showFullName</span><span class="p">();</span> <span class="c1">// Eric Chho</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>如果直接调用showFullName，系统会调用全局showFullName函数，在那个函数里的firstName和lastName亦是全局变量firstName和lastName。如果食用window调用，和直接调用一样，都是被全局对象，即window对象调用。最后我们食用person2对象对用其内部定义的showFullName方法，this会指向person2对象，所以this.firstName和this.lastName会是person2里的属性。</p>
+
+<h3>2. 在闭包里使用this</h3>
+
+<p>闭包，即定义在一个函数内部的函数，通常情况下，闭包能使用其外部函数里定义的属性，但是闭包不能使用外部函数的this。具体看下面这个例子：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">user</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">tournament</span><span class="o">:</span> <span class="s2">&quot;The Masters&quot;</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">data</span><span class="o">:</span> <span class="p">[</span>
+</span><span class='line'>        <span class="p">{</span><span class="nx">name</span><span class="o">:</span> <span class="s2">&quot;Kevin&quot;</span><span class="p">,</span> <span class="nx">age</span><span class="o">:</span> <span class="mi">27</span><span class="p">},</span>
+</span><span class='line'>        <span class="p">{</span><span class="nx">name</span><span class="o">:</span> <span class="s2">&quot;Rashmi&quot;</span><span class="p">,</span> <span class="nx">age</span><span class="o">:</span> <span class="mi">26</span><span class="p">}</span>
+</span><span class='line'>    <span class="p">],</span>
+</span><span class='line'>    <span class="nx">clickHandler</span><span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">this</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">forEach</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">person</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;What is THIS referring to? &quot;</span> <span class="o">+</span> <span class="k">this</span><span class="p">);</span>
+</span><span class='line'>            <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">person</span><span class="p">.</span><span class="nx">name</span> <span class="o">+</span> <span class="s2">&quot; is playing at &quot;</span> <span class="o">+</span> <span class="k">this</span><span class="p">.</span><span class="nx">tournament</span><span class="p">);</span>
+</span><span class='line'>        <span class="p">});</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'><span class="nx">user</span><span class="p">.</span><span class="nx">clickHandler</span><span class="p">();</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>上面的代码会输出：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">What</span> <span class="nx">is</span> <span class="nx">THIS</span> <span class="nx">referring</span> <span class="nx">to</span><span class="o">?</span> <span class="p">[</span><span class="nx">object</span> <span class="nx">global</span><span class="p">]</span>
+</span><span class='line'><span class="nx">Kevin</span> <span class="nx">is</span> <span class="nx">playing</span> <span class="nx">at</span> <span class="kc">undefined</span>
+</span><span class='line'><span class="nx">What</span> <span class="nx">is</span> <span class="nx">THIS</span> <span class="nx">referring</span> <span class="nx">to</span><span class="o">?</span> <span class="p">[</span><span class="nx">object</span> <span class="nx">global</span><span class="p">]</span>
+</span><span class='line'><span class="nx">Rashmi</span> <span class="nx">is</span> <span class="nx">playing</span> <span class="nx">at</span> <span class="kc">undefined</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>clickHander作为user对象里的一个属性，其指向一个方法，在这个方法内部，我们首先遍历user对象的data property，这里的this指向的是调用clickHandler方法的对象，即user对象。在forEach里，我们声明了一个匿名函数，在这个匿名函数里也使用了this。第一行说明闭包里的this指向的不是user，而是global，如果在浏览器里运行，会是window对象。第二行的person.name会正确输出名字，因为这个person，即匿名函数里的参数是遍历数组里在某一时刻的某个值，但是this.tournament会输出undefined，因为这个this此时不是指向user对象，而是指向了全局对象，即global或window，但是它们均没有tournament这个property，所以会输出undefined。</p>
+
+<h4>解决方案</h4>
+
+<p>既然我们想使用外部的this,我们可以把外部的this保存在一个变量里,然后在闭包里使用这个变量就是了.虽然闭包不能使用外部函数的this,但它能使用外部函数的变量啊.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">user2</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">tournament</span><span class="o">:</span> <span class="s2">&quot;The Masters&quot;</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">data</span><span class="o">:</span> <span class="p">[</span>
+</span><span class='line'>        <span class="p">{</span><span class="nx">name</span><span class="o">:</span> <span class="s2">&quot;Kevin&quot;</span><span class="p">,</span> <span class="nx">age</span><span class="o">:</span> <span class="mi">27</span><span class="p">},</span>
+</span><span class='line'>        <span class="p">{</span><span class="nx">name</span><span class="o">:</span> <span class="s2">&quot;Rashmi&quot;</span><span class="p">,</span> <span class="nx">age</span><span class="o">:</span> <span class="mi">26</span><span class="p">}</span>
+</span><span class='line'>    <span class="p">],</span>
+</span><span class='line'>    <span class="nx">clickHandler</span><span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">that</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>           <span class="c1">// 唯一的区别</span>
+</span><span class='line'>        <span class="k">this</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">forEach</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">person</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;What is THIS referring to? &quot;</span> <span class="o">+</span> <span class="nx">that</span><span class="p">);</span>
+</span><span class='line'>            <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">person</span><span class="p">.</span><span class="nx">name</span> <span class="o">+</span> <span class="s2">&quot; is playing at &quot;</span> <span class="o">+</span> <span class="nx">that</span><span class="p">.</span><span class="nx">tournament</span><span class="p">);</span>
+</span><span class='line'>        <span class="p">});</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'><span class="nx">user2</span><span class="p">.</span><span class="nx">clickHandler</span><span class="p">();</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>上面的代码会输出：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">What</span> <span class="nx">is</span> <span class="nx">THIS</span> <span class="nx">referring</span> <span class="nx">to</span><span class="o">?</span> <span class="p">[</span><span class="nx">object</span> <span class="nb">Object</span><span class="p">]</span>
+</span><span class='line'><span class="nx">Kevin</span> <span class="nx">is</span> <span class="nx">playing</span> <span class="nx">at</span> <span class="nx">The</span> <span class="nx">Masters</span>
+</span><span class='line'><span class="nx">What</span> <span class="nx">is</span> <span class="nx">THIS</span> <span class="nx">referring</span> <span class="nx">to</span><span class="o">?</span> <span class="p">[</span><span class="nx">object</span> <span class="nb">Object</span><span class="p">]</span>
+</span><span class='line'><span class="nx">Rashmi</span> <span class="nx">is</span> <span class="nx">playing</span> <span class="nx">at</span> <span class="nx">The</span> <span class="nx">Masters</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>3. 包含this的函数被直接执行,而不是被对象调用</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">data</span> <span class="o">=</span> <span class="p">[</span>
+</span><span class='line'>    <span class="p">{</span><span class="nx">name</span><span class="o">:</span> <span class="s2">&quot;Sam&quot;</span><span class="p">,</span> <span class="nx">age</span><span class="o">:</span> <span class="mi">28</span><span class="p">},</span>
+</span><span class='line'>    <span class="p">{</span><span class="nx">name</span><span class="o">:</span> <span class="s2">&quot;Kurly&quot;</span><span class="p">,</span> <span class="nx">age</span><span class="o">:</span> <span class="mi">21</span><span class="p">}</span>
+</span><span class='line'><span class="p">];</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">user3</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">data</span><span class="o">:</span> <span class="p">[</span>
+</span><span class='line'>        <span class="p">{</span><span class="nx">name</span><span class="o">:</span> <span class="s2">&quot;Roy&quot;</span><span class="p">,</span> <span class="nx">age</span><span class="o">:</span> <span class="mi">26</span><span class="p">},</span>
+</span><span class='line'>        <span class="p">{</span><span class="nx">name</span><span class="o">:</span> <span class="s2">&quot;Sean&quot;</span><span class="p">,</span> <span class="nx">age</span><span class="o">:</span> <span class="mi">27</span><span class="p">}</span>
+</span><span class='line'>    <span class="p">],</span>
+</span><span class='line'>    <span class="nx">showData</span><span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">rand</span> <span class="o">=</span> <span class="p">((</span><span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">()</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">|</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span>
+</span><span class='line'>        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">data</span><span class="p">[</span><span class="nx">rand</span><span class="p">].</span><span class="nx">name</span> <span class="o">+</span> <span class="s2">&quot;: &quot;</span> <span class="o">+</span> <span class="k">this</span><span class="p">.</span><span class="nx">data</span><span class="p">[</span><span class="nx">rand</span><span class="p">].</span><span class="nx">age</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">showUserData</span> <span class="o">=</span> <span class="nx">user3</span><span class="p">.</span><span class="nx">showData</span><span class="p">;</span>
+</span><span class='line'><span class="nx">showUserData</span><span class="p">();</span>  <span class="c1">// 会输出sam或者kurly</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>因为此时虽然调用的user3内部的方法,但是因为这个方法没有被某个对象调用,所以this会指向全局对象,所以this.data会是全局对象的变量,即最上面定义的data.</p>
+
+<h4>解决方案</h4>
+
+<p>使用bind,apply等方法强行绑定this的指向,然后执行即可.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">showUserData</span> <span class="o">=</span> <span class="nx">user3</span><span class="p">.</span><span class="nx">showData</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="nx">user3</span><span class="p">);</span>
+</span><span class='line'><span class="nx">showUserData</span><span class="p">();</span> <span class="c1">// Sean: 27</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>第一句话的意思是无论在什么情况下,user3对象的showData方法里的this都指向user3对象,所以下面即使直接调用该方法,this也会始终指向user3对象.</p>
+
+<h3>4. this被定义在从其他地方借来的方法中</h3>
+
+<p>有时候,我们在定义函数或对象时使用其他地方已经定义过的方法,例如:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">gameController</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">scores</span><span class="o">:</span> <span class="p">[</span><span class="mi">20</span><span class="p">,</span> <span class="mi">34</span><span class="p">,</span> <span class="mi">55</span><span class="p">,</span> <span class="mi">46</span><span class="p">,</span> <span class="mi">77</span><span class="p">],</span>
+</span><span class='line'>    <span class="nx">avgScore</span><span class="o">:</span> <span class="kc">null</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">players</span><span class="o">:</span> <span class="p">[</span>
+</span><span class='line'>        <span class="p">{</span><span class="nx">name</span><span class="o">:</span> <span class="s2">&quot;Ruth&quot;</span><span class="p">,</span> <span class="nx">playerId</span><span class="o">:</span> <span class="mi">100</span><span class="p">,</span> <span class="nx">age</span><span class="o">:</span> <span class="mi">22</span><span class="p">},</span>
+</span><span class='line'>        <span class="p">{</span><span class="nx">name</span><span class="o">:</span> <span class="s2">&quot;Shawnee&quot;</span><span class="p">,</span> <span class="nx">playerId</span><span class="o">:</span> <span class="mi">101</span><span class="p">,</span> <span class="nx">age</span><span class="o">:</span> <span class="mi">21</span><span class="p">}</span>
+</span><span class='line'>    <span class="p">]</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">appController</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">scores</span><span class="o">:</span> <span class="p">[</span><span class="mi">900</span><span class="p">,</span> <span class="mi">845</span><span class="p">,</span> <span class="mi">809</span><span class="p">,</span> <span class="mi">950</span><span class="p">],</span>
+</span><span class='line'>    <span class="nx">avgScore</span><span class="o">:</span> <span class="kc">null</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">avg</span><span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">sumOfScores</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">scores</span><span class="p">.</span><span class="nx">reduce</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">prev</span><span class="p">,</span> <span class="nx">cur</span><span class="p">,</span> <span class="nx">index</span><span class="p">,</span> <span class="nx">array</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="k">return</span> <span class="nx">prev</span> <span class="o">+</span> <span class="nx">cur</span><span class="p">;</span>
+</span><span class='line'>        <span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">this</span><span class="p">.</span><span class="nx">avgScore</span> <span class="o">=</span> <span class="nx">sumOfScores</span> <span class="o">/</span> <span class="k">this</span><span class="p">.</span><span class="nx">scores</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'><span class="nx">gameController</span><span class="p">.</span><span class="nx">avgScore</span> <span class="o">=</span> <span class="nx">appController</span><span class="p">.</span><span class="nx">avg</span><span class="p">();</span> <span class="c1">// undefined</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这里gameController你的avgScore预留为null,目的是借用appController里定义的方法来使用自己的数据去计算结果.但是avg方法里的this仍然指向appController对象,因为avg方法是被其调用的,然后更新的this.avgScore也只是appController里的那个property,所以gameController里的acgScore仍然是null.</p>
+
+<h4>解决方案</h4>
+
+<p>把avg里的this强行绑定为指向gameController.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">appController</span><span class="p">.</span><span class="nx">avg</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="nx">gameController</span><span class="p">,</span> <span class="nx">gameController</span><span class="p">.</span><span class="nx">avgScore</span><span class="p">);</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">gameController</span><span class="p">.</span><span class="nx">avgScore</span><span class="p">);</span>  <span class="c1">// 46.4</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">appController</span><span class="p">.</span><span class="nx">avgScore</span><span class="p">);</span>   <span class="c1">// null</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>因为此时avg里的this指向了gameController,即使再次使用appController去调用它,其this也不会改变,所以不会更新appController里的avgScore这个property,输出仍然为null.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[JavaScript中的闭包]]></title>
@@ -3111,11 +3413,11 @@ hoist),后者不会.</p>
 
 <p>#</p>
 
-<p><code>文本</code>: Hello, my name is Ben Forta, my email address is <a href="&#x6d;&#x61;&#105;&#108;&#x74;&#x6f;&#x3a;&#x62;&#x65;&#110;&#64;&#x66;&#111;&#x72;&#116;&#97;&#x2e;&#99;&#111;&#x6d;">&#98;&#101;&#x6e;&#x40;&#102;&#x6f;&#x72;&#116;&#97;&#x2e;&#99;&#x6f;&#x6d;</a></p>
+<p><code>文本</code>: Hello, my name is Ben Forta, my email address is <a href="&#x6d;&#97;&#105;&#108;&#116;&#x6f;&#x3a;&#98;&#101;&#x6e;&#x40;&#x66;&#x6f;&#114;&#x74;&#97;&#46;&#99;&#111;&#109;">&#98;&#101;&#x6e;&#x40;&#x66;&#111;&#114;&#116;&#x61;&#46;&#x63;&#111;&#109;</a></p>
 
 <p><code>正则表达式</code>: \w[\w.]*@[\w.]+.\w+</p>
 
-<p><code>结果</code>: <a href="&#109;&#x61;&#105;&#x6c;&#x74;&#x6f;&#x3a;&#x62;&#x65;&#110;&#64;&#x66;&#111;&#114;&#116;&#97;&#46;&#x63;&#111;&#109;">&#98;&#x65;&#110;&#x40;&#102;&#111;&#x72;&#116;&#97;&#46;&#x63;&#x6f;&#109;</a></p>
+<p><code>结果</code>: <a href="&#x6d;&#x61;&#105;&#108;&#116;&#111;&#58;&#98;&#x65;&#x6e;&#x40;&#102;&#x6f;&#x72;&#116;&#x61;&#x2e;&#x63;&#x6f;&#x6d;">&#98;&#101;&#110;&#x40;&#x66;&#x6f;&#114;&#x74;&#97;&#46;&#x63;&#x6f;&#x6d;</a></p>
 
 <p>这里的正则表达式匹配了一个邮件地址.</p>
 
@@ -3125,7 +3427,7 @@ hoist),后者不会.</p>
 
 <p>#</p>
 
-<p><code>文本</code>: Hello, my name is Ben Forta, my email address is <a href="&#x6d;&#97;&#x69;&#108;&#x74;&#111;&#x3a;&#x62;&#101;&#110;&#x40;&#102;&#x6f;&#114;&#116;&#97;&#46;&#x63;&#x6f;&#109;">&#x62;&#101;&#110;&#64;&#102;&#111;&#114;&#116;&#x61;&#x2e;&#99;&#111;&#109;</a></p>
+<p><code>文本</code>: Hello, my name is Ben Forta, my email address is <a href="&#x6d;&#x61;&#105;&#108;&#116;&#111;&#x3a;&#x62;&#x65;&#x6e;&#64;&#x66;&#111;&#x72;&#116;&#x61;&#x2e;&#99;&#x6f;&#x6d;">&#98;&#101;&#110;&#x40;&#102;&#x6f;&#x72;&#x74;&#97;&#46;&#99;&#111;&#109;</a></p>
 
 <p><code>正则表达式</code>:  (\w[\w.]*@[\w.]+.\w+)</p>
 
@@ -3211,11 +3513,11 @@ hoist),后者不会.</p>
 
 <p>#</p>
 
-<p><code>文本</code>: Send personal email to <a href="&#x6d;&#x61;&#105;&#108;&#x74;&#111;&#58;&#98;&#x65;&#x6e;&#64;&#x66;&#x6f;&#114;&#x74;&#x61;&#46;&#99;&#111;&#109;&#46;">&#x62;&#x65;&#110;&#x40;&#x66;&#111;&#114;&#x74;&#97;&#46;&#x63;&#111;&#109;&#x2e;</a> For questions about the book use <a href="&#x6d;&#x61;&#105;&#x6c;&#116;&#x6f;&#x3a;&#x73;&#117;&#x70;&#x70;&#x6f;&#114;&#x74;&#x40;&#102;&#x6f;&#x72;&#116;&#97;&#46;&#x63;&#111;&#109;&#x2e;">&#115;&#117;&#112;&#112;&#x6f;&#x72;&#x74;&#64;&#x66;&#x6f;&#114;&#116;&#97;&#46;&#x63;&#111;&#x6d;&#46;</a> Feel free to send unsolicited email to <a href="&#109;&#97;&#105;&#108;&#116;&#x6f;&#58;&#115;&#x70;&#97;&#109;&#x40;&#x66;&#111;&#114;&#x74;&#x61;&#x2e;&#99;&#111;&#x6d;&#46;">&#x73;&#x70;&#97;&#109;&#x40;&#x66;&#111;&#114;&#116;&#97;&#x2e;&#99;&#111;&#x6d;&#x2e;</a></p>
+<p><code>文本</code>: Send personal email to <a href="&#x6d;&#97;&#105;&#x6c;&#116;&#111;&#x3a;&#98;&#x65;&#x6e;&#x40;&#x66;&#111;&#x72;&#x74;&#97;&#46;&#x63;&#x6f;&#x6d;&#46;">&#98;&#101;&#110;&#64;&#102;&#x6f;&#x72;&#x74;&#97;&#x2e;&#99;&#x6f;&#x6d;&#x2e;</a> For questions about the book use <a href="&#x6d;&#x61;&#105;&#x6c;&#116;&#x6f;&#58;&#115;&#117;&#112;&#x70;&#111;&#114;&#x74;&#x40;&#x66;&#x6f;&#114;&#x74;&#x61;&#46;&#99;&#111;&#x6d;&#x2e;">&#x73;&#117;&#112;&#112;&#111;&#x72;&#x74;&#x40;&#102;&#111;&#114;&#x74;&#x61;&#46;&#x63;&#x6f;&#x6d;&#46;</a> Feel free to send unsolicited email to <a href="&#x6d;&#97;&#x69;&#x6c;&#x74;&#x6f;&#58;&#115;&#112;&#97;&#x6d;&#x40;&#102;&#111;&#114;&#116;&#97;&#46;&#x63;&#x6f;&#x6d;&#x2e;">&#x73;&#x70;&#x61;&#109;&#x40;&#102;&#x6f;&#x72;&#116;&#x61;&#x2e;&#99;&#111;&#x6d;&#x2e;</a></p>
 
 <p><code>正则表达式</code>: \w+@\w+.\w+</p>
 
-<p><code>结果</code>: <a href="&#x6d;&#x61;&#105;&#x6c;&#x74;&#x6f;&#58;&#x62;&#x65;&#x6e;&#64;&#102;&#x6f;&#x72;&#x74;&#x61;&#46;&#x63;&#111;&#109;">&#98;&#x65;&#110;&#x40;&#x66;&#111;&#114;&#x74;&#x61;&#x2e;&#99;&#111;&#109;</a>  <a href="&#109;&#x61;&#x69;&#108;&#x74;&#111;&#x3a;&#115;&#x75;&#112;&#x70;&#111;&#x72;&#x74;&#64;&#102;&#x6f;&#x72;&#x74;&#97;&#x2e;&#99;&#111;&#109;">&#115;&#x75;&#x70;&#x70;&#111;&#x72;&#x74;&#64;&#102;&#111;&#114;&#x74;&#97;&#46;&#x63;&#x6f;&#109;</a>  <a href="&#109;&#x61;&#x69;&#x6c;&#116;&#111;&#58;&#x73;&#x70;&#x61;&#109;&#x40;&#x66;&#111;&#x72;&#116;&#x61;&#46;&#99;&#111;&#x6d;">&#x73;&#112;&#x61;&#x6d;&#x40;&#x66;&#x6f;&#114;&#x74;&#x61;&#x2e;&#99;&#x6f;&#109;</a></p>
+<p><code>结果</code>: <a href="&#109;&#x61;&#x69;&#x6c;&#116;&#x6f;&#x3a;&#98;&#x65;&#x6e;&#64;&#x66;&#111;&#x72;&#116;&#97;&#x2e;&#99;&#x6f;&#x6d;">&#x62;&#x65;&#x6e;&#64;&#102;&#111;&#114;&#116;&#97;&#x2e;&#x63;&#111;&#109;</a>  <a href="&#x6d;&#x61;&#x69;&#108;&#116;&#x6f;&#x3a;&#x73;&#117;&#112;&#112;&#x6f;&#114;&#116;&#64;&#102;&#x6f;&#114;&#116;&#97;&#x2e;&#99;&#111;&#x6d;">&#115;&#117;&#x70;&#x70;&#111;&#x72;&#116;&#x40;&#x66;&#x6f;&#x72;&#x74;&#97;&#46;&#x63;&#111;&#109;</a>  <a href="&#x6d;&#97;&#105;&#x6c;&#116;&#x6f;&#58;&#115;&#x70;&#97;&#x6d;&#x40;&#x66;&#111;&#114;&#x74;&#x61;&#x2e;&#x63;&#x6f;&#x6d;">&#115;&#112;&#97;&#x6d;&#x40;&#x66;&#x6f;&#114;&#x74;&#x61;&#x2e;&#x63;&#111;&#109;</a></p>
 
 <!-- more -->
 
@@ -3513,217 +3815,6 @@ hoist),后者不会.</p>
 <p><code>结果</code>: // make sure not empty        // init       // Done</p>
 
 <p><code>^\s*//.*$</code>匹配一个字符串的开始,然后是任意多的空白字符,然后是//.再往后是任意文本,最后是字符串的结束.不过因为<code>*</code>是贪婪型字符,它将匹配第一条注释开始直到文本的结尾.加上<code>?m</code>之后,<code>?m^\s*//.*$</code>将把换行符作为一个字符串分隔符,这样就可以把每一行注释匹配出来了.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[正则表达式必知必会 1]]></title>
-    <link href="http://qiusli.github.io/blog/2014/05/15/regex/"/>
-    <updated>2014-05-15T22:27:00-06:00</updated>
-    <id>http://qiusli.github.io/blog/2014/05/15/regex</id>
-    <content type="html"><![CDATA[<h2>匹配单个字符</h2>
-
-<h3>匹配纯文本</h3>
-
-<p>#</p>
-
-<p><code>文本</code>: My name is Ben</p>
-
-<p><code>正则表达式</code>:  Ben</p>
-
-<p><code>结果</code>: <code>Ben</code></p>
-
-<p>这里使用的正则表达式是纯文本,匹配原始文本里面的<code>Ben</code>.</p>
-
-<!-- more -->
-
-
-<p>#</p>
-
-<p><code>文本</code>: Hello, my name is Ben, my website is benforta.com</p>
-
-<p><code>正则表达式</code>:  my</p>
-
-<p><code>结果</code>: <code>my</code></p>
-
-<p>这里的正则表达式匹配了第一个<code>my</code>,但忽略了第二个<code>my</code>.默认情况下,正则表达式只匹配第一个匹配的结果,如果想把所有结果找出来,(例如在JavaScript里),可以使用g(global).</p>
-
-<p>此外,正则表达式会区分大小写,my可以匹配my,但不能匹配My.</p>
-
-<h3>匹配任意字符</h3>
-
-<p><code>.</code>在正则表达式里面可以匹配任意字符,甚至是字符本身.</p>
-
-<p>#</p>
-
-<p><code>文本</code>: sales.xls  sales1.xls   sales2.xls   ape.xls   enrope.xls   na1.xls  na2.xls</p>
-
-<p><code>正则表达式</code>: sales.</p>
-
-<p><code>结果</code>: sales.  sales1  sales2</p>
-
-<p>这里的<code>.</code>匹配了sales后的单个字符,所以只有sales1.xls和sales2.xls与之匹配.</p>
-
-<p>#</p>
-
-<p><code>文本</code>: sales.xls  sales1.xls   sales2.xls   ape.xls   enrope.xls   na1.xls  na2.xls</p>
-
-<p><code>正则表达式</code>: .a..xls</p>
-
-<p><code>结果</code>: na1.xls  na2.xls</p>
-
-<p>这里的正则表达式中有一个<code>\</code>,表示转义.转义之后的<code>.</code>字符不再表示其在正则表达式里的意思,而只匹配一个普通的点.</p>
-
-<h2>匹配一组字符</h2>
-
-<h3>匹配多个字符中的某一个</h3>
-
-<p>#</p>
-
-<p><code>文本</code>: sales.xls  sales1.xls   sales2.xls  sa1.xls  ape.xls   enrope.xls   na1.xls  na2.xls</p>
-
-<p><code>正则表达式</code>: [ns]a..xls</p>
-
-<p><code>结果</code>: sa1.xls  na1.xls  na2.xls</p>
-
-<p>这里的正则表达式中的<code>[na]</code>表示匹配n和a中的任意一个字符.</p>
-
-<p>#</p>
-
-<p><code>文本</code>: The phrase &ldquo;regular expression&rdquo; is often abbreviated as &ldquo;regex&rdquo; or &ldquo;RegEx&rdquo;</p>
-
-<p><code>正则表达式</code>: [Rr]eg[Ee]x</p>
-
-<p><code>结果</code>: regex, RegEx</p>
-
-<h3>利用字符集合区间</h3>
-
-<p>#</p>
-
-<p><code>文本</code>: sales.xls  sales1.xls   sales2.xls  sa1.xls  ape.xls   enrope.xls   na1.xls  na2.xls  sam.xls</p>
-
-<p><code>正则表达式</code>: [ns]a[0123456789].xls</p>
-
-<p><code>结果</code>: sa1.xls  na1.xls  na2.xls</p>
-
-<p>这里的文本中新加了一个sam.xls,但是我们只想匹配以n或s开头,以数字结尾的字符串,所以我们定义了一个数字区间来匹配所有的数字.但是这里的字符区间只匹配0-9,不能匹配10,20或者100.</p>
-
-<ul>
-<li>tips: 上面的[0123456789]可以用[0-9]来代替</li>
-<li>还有一些可以也能使用连字符来代替的有: [a-z] [A-Z] 等等.</li>
-</ul>
-
-
-<p><code>note</code>: 连字符<code>-</code>是一个特殊的元字符,作为元字符它只能被用在[]之间,否则它就只是一个普通的字符与-匹配,不需要转义.</p>
-
-<p>在一个字符集合里可以给出多个字符区间,比如下面这个集合里可以匹配任意的字母和数字(0-9之间):</p>
-
-<p><code>[a-zA-Z0-9]</code></p>
-
-<p>#</p>
-
-<p>匹配RGB值(RGB值是由6个连续的任意字符或者0-9间的数字构成)</p>
-
-<p><code>文本</code>: \<body bgcolor="#336655" text="#FFFFFF" height=10 width=20></p>
-
-<p><code>正则表达式</code>: #[a-zA-Z0-9][a-zA-Z0-9][a-zA-Z0-9][a-zA-Z0-9][a-zA-Z0-9][a-zA-Z0-9]</p>
-
-<p><code>结果</code>: #336655, #FFFFFF</p>
-
-<h3>取非匹配</h3>
-
-<p>#</p>
-
-<p><code>文本</code>: sales.xls  sales1.xls   sales2.xls  sa1.xls  ape.xls   enrope.xls   na1.xls  na2.xls  sam.xls</p>
-
-<p><code>正则表达式</code>: [ns]a[^0-9].xls</p>
-
-<p><code>结果</code>: sam.xls</p>
-
-<p>这里的<code>^</code>表示非,所以[^0-9]就表示不是0-9中数字的任意一个.</p>
-
-<h2>使用元字符</h2>
-
-<h3>对特殊字符进行转义</h3>
-
-<p><code>元字符</code>: 在正则表达式里面有特殊含义的字符,例如<code>.</code>是一个元字符,用来匹配任意字符.<code>^</code>是一个元字符,用来取非.</p>
-
-<p><code>转义</code>: 如果想要匹配字面意义上的元字符(而不是其在正则表达式里的意思),就需要进行转义.通常是在元字符前面加上反斜杠<code>\</code>.</p>
-
-<h1></h1>
-
-<p><code>文本</code>:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">myArray</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Array</span><span class="p">();</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">if</span> <span class="p">(</span><span class="nx">myArray</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>  <span class="p">...</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p><code>正则表达式</code>: myArray[0]</p>
-
-<p><code>结果</code>: myArray</p>
-
-<p>本想匹配整个myArray[0],但却只匹配了myArray.因为[0]在正则表达式里表示集合中的一个,这里就是0,所以它期待的结果是myArray后面跟上0-9之间任意一个数字,这里没有匹配的结果,所以只匹配到了前面的字符串,所以需要对[]进行转义.</p>
-
-<p><code>正确的正则表达式</code>: myArray[0] 或者myArray[[0-9]]来匹配第0个到第9个数组.</p>
-
-<p><code>note</code>: 因为<code>\</code>在正则表达式里面也是一个元字符,如果想要匹配\,也需要对其转义,即<code>\\</code>.</p>
-
-<p>下面的这张图表总结了一些特殊的元字符:</p>
-
-<p> <img src="http://qiusli.github.io/images/regex-1_1.png"></p>
-
-<p><code>tips</code>: 可以使用<code>\r\n</code>来匹配一个回车+换行的组合.</p>
-
-<h3>匹配特定的字符类别</h3>
-
-<h4>匹配数字与非数字</h4>
-
-<p><code>\d</code>: 匹配任意一个数字字符,等价于[0-9]</p>
-
-<p><code>\D</code>: 匹配任意一个非数字字符,等价于[^0-9]</p>
-
-<h4>匹配字母和数字与非字母和数字</h4>
-
-<p><code>字母和数字</code>: A-Z, a-z, 0-9和下划线<code>_</code>.</p>
-
-<p><code>\w</code>: 匹配任意一个字母数字字符或下划线集合(等价于[A-Za-a0-9])</p>
-
-<p><code>\W</code>: 与上面的匹配相反(等价于[^A-Za-a0-9])</p>
-
-<h4>匹配空白字符和飞空白字符</h4>
-
-<p><code>\s</code>: 匹配任意一个空白字符(等价于[\f\n\r\t\v])</p>
-
-<p><code>\S</code>: 匹配任意一个非空白字符(等价于[^\f\n\r\t\v])</p>
-
-<h4>使用POSIX字符类</h4>
-
-<p>POSIX是许多正则表达式(但不是所有,例如JavaScript就不支持POSIX)都支持的一种简写形式.</p>
-
-<p>下面是POSIX字符表:</p>
-
-<p> <img src="http://qiusli.github.io/images/regex-1_2.png"></p>
-
-<p>可以使用POSIX来代替上面的一个例子:</p>
-
-<p>#</p>
-
-<p><code>文本</code>: \<body bgcolor="#336655" text="#FFFFFF" height=10 width=20></p>
-
-<p><code>正则表达式</code>: #[[:xdigit:]][[:xdigit:]][[:xdigit:]][[:xdigit:]][[:xdigit:]][[:xdigit:]]</p>
-
-<p><code>结果</code>: #336655, #FFFFFF</p>
-
-<p>这里的POSIX使用了两层括号,里面的一层表示POSIX字符类,外面的那一层表示字符集和.</p>
 ]]></content>
   </entry>
   

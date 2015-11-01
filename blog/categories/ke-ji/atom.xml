@@ -4,7 +4,7 @@
   <title><![CDATA[Category: 科技 | 逆旅，行人]]></title>
   <link href="http://qiusli.github.io/blog/categories/ke-ji/atom.xml" rel="self"/>
   <link href="http://qiusli.github.io/"/>
-  <updated>2015-10-27T19:49:02-06:00</updated>
+  <updated>2015-10-31T18:12:34-06:00</updated>
   <id>http://qiusli.github.io/</id>
   <author>
     <name><![CDATA[李秋实]]></name>
@@ -12,6 +12,191 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[javaScript中的This关键字]]></title>
+    <link href="http://qiusli.github.io/blog/2015/10/31/js-this/"/>
+    <updated>2015-10-31T16:44:42-06:00</updated>
+    <id>http://qiusli.github.io/blog/2015/10/31/js-this</id>
+    <content type="html"><![CDATA[<h2>一言以蔽之</h2>
+
+<p>JavaScript中this关键字的应用一直是个难点，但是只需要记住一点：this始终定义在函数中，当这个函数被调用的时候，this会执行调用该函数的那个对象。</p>
+
+<pre><code class="javascript">var person = {
+    firstName: "Qiushi",
+    lastName: "Li",
+    fullName: function () {
+        console.log(this.firstName + " " + this.lastName);
+        console.log(person.firstName + " " + person.lastName);
+    }
+};
+person.fullName(); // 会输出两行 "Qiushi Li"
+</code></pre>
+
+<p>上面的代码定义了一个person对象，fullName方法是其中一个property，this定义在呢fullName方法中。在这个方法没有被person对象调用之前，this不指向任何对象，当执行<code>person.fullName()</code>后，this指向person对象，所以会输出person对象的firstName和lastName。下面再看一个类似的例子，在浏览器中执行jQuery代码：</p>
+
+<pre><code class="javascript">$("button").click(function (event) {
+        console.log($(this).prop("name"));
+    }
+);
+</code></pre>
+
+<p>这里的this定义定义在一个匿名函数里，这个匿名函数又作为click的参数传递。在jQuery里，系统默认把this和调用click的对象绑定在一起，所以这里的this指向的是button对象，这和JavaScript稍微有点不同。</p>
+
+<h2>this在不同情况下的指向问题</h2>
+
+<h3>1. 在全局范围内使用this</h3>
+
+<pre><code class="javascript">var firstName = "Qiushi", lastName = "Li";
+function showFullName() {
+    console.log(firstName + " " + lastName);
+}
+
+var person2 = {
+    firstName: "Eric",
+    lastName: "Chho",
+    showFullName: function () {
+        console.log(this.firstName + " " + this.lastName);
+    }
+};
+showFullName();         // Qiushi Li
+window.showFullName();  // Qiushi Li
+person2.showFullName(); // Eric Chho
+</code></pre>
+
+<p>如果直接调用showFullName，系统会调用全局showFullName函数，在那个函数里的firstName和lastName亦是全局变量firstName和lastName。如果食用window调用，和直接调用一样，都是被全局对象，即window对象调用。最后我们食用person2对象对用其内部定义的showFullName方法，this会指向person2对象，所以this.firstName和this.lastName会是person2里的属性。</p>
+
+<h3>2. 在闭包里使用this</h3>
+
+<p>闭包，即定义在一个函数内部的函数，通常情况下，闭包能使用其外部函数里定义的属性，但是闭包不能使用外部函数的this。具体看下面这个例子：</p>
+
+<pre><code class="javascript">var user = {
+    tournament: "The Masters",
+    data: [
+        {name: "Kevin", age: 27},
+        {name: "Rashmi", age: 26}
+    ],
+    clickHandler: function () {
+        this.data.forEach(function (person) {
+            console.log("What is THIS referring to? " + this);
+            console.log(person.name + " is playing at " + this.tournament);
+        });
+    }
+};
+user.clickHandler();
+</code></pre>
+
+<p>上面的代码会输出：</p>
+
+<pre><code class="javascript">What is THIS referring to? [object global]
+Kevin is playing at undefined
+What is THIS referring to? [object global]
+Rashmi is playing at undefined
+</code></pre>
+
+<p>clickHander作为user对象里的一个属性，其指向一个方法，在这个方法内部，我们首先遍历user对象的data property，这里的this指向的是调用clickHandler方法的对象，即user对象。在forEach里，我们声明了一个匿名函数，在这个匿名函数里也使用了this。第一行说明闭包里的this指向的不是user，而是global，如果在浏览器里运行，会是window对象。第二行的person.name会正确输出名字，因为这个person，即匿名函数里的参数是遍历数组里在某一时刻的某个值，但是this.tournament会输出undefined，因为这个this此时不是指向user对象，而是指向了全局对象，即global或window，但是它们均没有tournament这个property，所以会输出undefined。</p>
+
+<h4>解决方案</h4>
+
+<p>既然我们想使用外部的this,我们可以把外部的this保存在一个变量里,然后在闭包里使用这个变量就是了.虽然闭包不能使用外部函数的this,但它能使用外部函数的变量啊.</p>
+
+<pre><code class="javascript">var user2 = {
+    tournament: "The Masters",
+    data: [
+        {name: "Kevin", age: 27},
+        {name: "Rashmi", age: 26}
+    ],
+    clickHandler: function () {
+        var that = this;           // 唯一的区别
+        this.data.forEach(function (person) {
+            console.log("What is THIS referring to? " + that);
+            console.log(person.name + " is playing at " + that.tournament);
+        });
+    }
+};
+user2.clickHandler();
+</code></pre>
+
+<p>上面的代码会输出：</p>
+
+<pre><code class="javascript">What is THIS referring to? [object Object]
+Kevin is playing at The Masters
+What is THIS referring to? [object Object]
+Rashmi is playing at The Masters
+</code></pre>
+
+<h3>3. 包含this的函数被直接执行,而不是被对象调用</h3>
+
+<pre><code class="javascript">var data = [
+    {name: "Sam", age: 28},
+    {name: "Kurly", age: 21}
+];
+var user3 = {
+    data: [
+        {name: "Roy", age: 26},
+        {name: "Sean", age: 27}
+    ],
+    showData: function () {
+        var rand = ((Math.random() * 2 | 0) + 1) - 1;
+        console.log(this.data[rand].name + ": " + this.data[rand].age);
+    }
+};
+var showUserData = user3.showData;
+showUserData();  // 会输出sam或者kurly
+</code></pre>
+
+<p>因为此时虽然调用的user3内部的方法,但是因为这个方法没有被某个对象调用,所以this会指向全局对象,所以this.data会是全局对象的变量,即最上面定义的data.</p>
+
+<h4>解决方案</h4>
+
+<p>使用bind,apply等方法强行绑定this的指向,然后执行即可.</p>
+
+<pre><code class="javascript">var showUserData = user3.showData.bind(user3);
+showUserData(); // Sean: 27
+</code></pre>
+
+<p>第一句话的意思是无论在什么情况下,user3对象的showData方法里的this都指向user3对象,所以下面即使直接调用该方法,this也会始终指向user3对象.</p>
+
+<h3>4. this被定义在从其他地方借来的方法中</h3>
+
+<p>有时候,我们在定义函数或对象时使用其他地方已经定义过的方法,例如:</p>
+
+<pre><code class="javascript">var gameController = {
+    scores: [20, 34, 55, 46, 77],
+    avgScore: null,
+    players: [
+        {name: "Ruth", playerId: 100, age: 22},
+        {name: "Shawnee", playerId: 101, age: 21}
+    ]
+};
+var appController = {
+    scores: [900, 845, 809, 950],
+    avgScore: null,
+    avg: function () {
+        var sumOfScores = this.scores.reduce(function (prev, cur, index, array) {
+            return prev + cur;
+        });
+
+        this.avgScore = sumOfScores / this.scores.length;
+    }
+};
+gameController.avgScore = appController.avg(); // undefined
+</code></pre>
+
+<p>这里gameController你的avgScore预留为null,目的是借用appController里定义的方法来使用自己的数据去计算结果.但是avg方法里的this仍然指向appController对象,因为avg方法是被其调用的,然后更新的this.avgScore也只是appController里的那个property,所以gameController里的acgScore仍然是null.</p>
+
+<h4>解决方案</h4>
+
+<p>把avg里的this强行绑定为指向gameController.</p>
+
+<pre><code class="javascript">appController.avg.apply(gameController, gameController.avgScore);
+console.log(gameController.avgScore);  // 46.4
+console.log(appController.avgScore);   // null
+</code></pre>
+
+<p>因为此时avg里的this指向了gameController,即使再次使用appController去调用它,其this也不会改变,所以不会更新appController里的avgScore这个property,输出仍然为null.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[JavaScript中的闭包]]></title>
@@ -645,180 +830,6 @@ console.log("is frozen " + Object.isFrozen(company)); // is frozen true
 company.name = "thoughtworks";
 console.log(company.name);                            // Goldman Sachs
 </code></pre>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[JavaScript中的函数]]></title>
-    <link href="http://qiusli.github.io/blog/2015/10/22/js-functions/"/>
-    <updated>2015-10-22T19:21:12-06:00</updated>
-    <id>http://qiusli.github.io/blog/2015/10/22/js-functions</id>
-    <content type="html"><![CDATA[<p>JavaScript中的函数即对象,它也是以键值对的形式存在,但是它内部有一个internal
-property叫做[[call]],它区分了其和对象的唯一不同,定义了自身的类型是函数,可以被执行调用,而对象只能被创建使用.同时如果使用typeof来查看类型,会返回function,internal
-property从外部不可达.</p>
-
-<!-- more -->
-
-
-<h4>两种定义方法</h4>
-
-<pre><code class="Javascript">// function declaration
-function add(a, b) {
-    return a + b;
-}
-
-// function expression
-var k = function(a, b) {
-    return a + b;
-};
-</code></pre>
-
-<p>这两种定义方法基本类似,唯一的区别就是使用前者定义的方法可以在任何地方调用,因为系统总会把定义自动放到最前面(function
-hoist),后者不会.</p>
-
-<p>方法在Javascript中是一等公民,意味着你可以把它赋值给变量,把它加到方法里,作为参数传递,作为返回值等等.</p>
-
-<pre><code class="Javascript">// pass function as parameter
-var numbers = [3, 6, 2, 8, 4, 1, 7, 6, 8];
-numbers.sort(function(first, second) {
-    return first - second;
-});
-console.log(numbers);  // [ 1, 2, 3, 4, 6, 6, 7, 8, 8 ]
-</code></pre>
-
-<h4>参数</h4>
-
-<p>函数可以接受零个或多个参数,函数接受的所有参数都被存在一个叫做arguments的变量中,可以在方法内部用其取出传递进来的参数.</p>
-
-<pre><code class="Javascript">function sum() {
-    var i = 0, sum = 0;
-    for(; i &lt; arguments.length; i++) {
-        sum += arguments[i];
-    }
-    return sum;
-}
-console.log(sum(1, 2, 3));     // 6
-console.log(sum(1, 2, 3, 4));  // 10
-</code></pre>
-
-<p>上面的例子sum函数没有定义接受的参数个数,因为无论多少个,最终都是被存放在arguments变量里.如果定义了有限个的参数,多余的参数会被忽略.</p>
-
-<pre><code class="Javascript">function refect(value) {
-    return value;
-}
-console.log(refect("hi"));           // hi
-console.log(refect("hi", 25));       // 25
-console.log(refect("hi", 22, true)); // hi
-</code></pre>
-
-<p>由于函数在JavaScript中等同于对象,所有函数也可以有自己的属性(property).length就是其中的一个属性,它记录了函数接受的参数个数.</p>
-
-<pre><code class="Javascript">function refect(value) {
-    return value;
-}
-console.log(refect.length); // 1
-</code></pre>
-
-<h4>多态</h4>
-
-<p>多态的区分是在函数签名,具体是方法名和参数的组合来区分.但是因为JavaScript函数能接受任意多的参数,所以导致不能够用参数来区分多个多态方法,所以JavaScript中没有多态一说.</p>
-
-<pre><code class="Javascript">function sayMessage(message) {
-    console.log(message);
-}
-
-function sayMessage() {
-    console.log("Default Message");
-}
-sayMessage("Chelse");   // Default Message
-</code></pre>
-
-<p>在JavaScript中,如果你定义了多个同名方法,那么在你调用时,系统会取最后一个方法,前面的同名方法都被shadow掉了.因为函数等同于对象,系统在解析上面的代码时,其实是完成了下面的操作:</p>
-
-<pre><code class="Javascript">var sayMessage = new Function("message", "console.log(message);");
-// 变量指向了另一个对象
-sayMessage = new Function("console.log(\"Default Message chongqing\");")
-sayMessage("chongqing"); 
-</code></pre>
-
-<h4>关键字: this</h4>
-
-<p>JavaScript代码中每一个scope里都有一个this关键字,代表了调用当前函数的那个对象.</p>
-
-<pre><code class="Javascript">var person = {
-    name: "Qiushi",
-    sayName: function() {
-        console.log(this.name);
-    }
-};
-function sayNameForAll() {
-    console.log(this.name);
-}
-var person1 = {
-    name: "chelse",
-    sayName: sayNameForAll
-};
-var person2 = {
-    name: "ruth",
-    sayName: sayNameForAll
-};
-// 这里的this代表person对象.
-person.sayName();
-// 这里的this代表person1对象.
-person1.sayName();
-// 这里的this代表person2对象.
-person2.sayName();
-name = "shawnee";
-// 这里的this代表全局对象,即window,所以window.name只能是shawnee.
-sayNameForAll();
-</code></pre>
-
-<p>上面的this指向都是隐式的,我们可以通过下面三种方法来显式制定this的指向.</p>
-
-<h4>使用call</h4>
-
-<pre><code class="Javascript">function speak(label) {
-    console.log(label + this.language);
-}
-var p1 = {
-    language: "chinese"
-};
-var p2 = {
-    language: "spanish"
-};
-speak.call(p1, "我说 ");     // 我说 chinese
-speak.call(p2, "I speak "); // I speak spanish
-</code></pre>
-
-<p>call方法的第一个参数指定this的指向,后面为参数.</p>
-
-<h4>使用apply</h4>
-
-<pre><code class="Javascript">speak.apply(p1, ["Kevin speaks "]); // Kevin speaks chinese
-</code></pre>
-
-<p>apply和call的唯一区别就是接受的第二个参数的类型,call接受单个参数,而apply接受一个数组,所以如果定义的方法接受多个参数,最好使用apply,反之则使用call.</p>
-
-<h4>使用bind</h4>
-
-<pre><code class="Javascript">function anotherSayName(label) {
-    console.log(label + this.name);
-}
-var n1 = {
-    name: "Ani"
-};
-var n2 = {
-    name: "Rashmi"
-};
-var sayName1 = anotherSayName.bind(n1, "n1");
-sayName1();                                           // n1Ani
-var sayName2 = anotherSayName.bind(n2, "n2");
-sayName2();                                       // n2Rashmi
-n2.sayName = sayName1;
-n2.sayName();                                     // n1Ani
-</code></pre>
-
-<p>值得注意的是最后输出为n1Ani而不是n2Rashmi,因为sayName1在最开始就指向了anotherSayName,this指向了n1,在重新赋值给n2的sayName时,其this指向不会被改变,所以输出n1Ani.</p>
 ]]></content>
   </entry>
   
