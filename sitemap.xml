@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>http://qiusli.github.io/blog/2015/12/09/uitableviewcontroller/</loc>
+    <lastmod>2015-12-09T02:08:29-07:00</lastmod>
+  </url>
+  <url>
     <loc>http://qiusli.github.io/blog/2015/10/31/js-this/</loc>
     <lastmod>2015-10-31T16:44:42-06:00</lastmod>
   </url>
@@ -263,5 +267,8 @@
   </url>
   <url>
     <loc>http://qiusli.github.io/blog/categories/ke-ji/</loc>
+  </url>
+  <url>
+    <loc>http://qiusli.github.io/blog/categories/tech/</loc>
   </url>
 </urlset>

@@ -4,7 +4,7 @@
   <title><![CDATA[逆旅，行人]]></title>
   <link href="http://qiusli.github.io/atom.xml" rel="self"/>
   <link href="http://qiusli.github.io/"/>
-  <updated>2015-10-31T18:12:34-06:00</updated>
+  <updated>2015-12-09T03:13:19-07:00</updated>
   <id>http://qiusli.github.io/</id>
   <author>
     <name><![CDATA[李秋实]]></name>
@@ -12,6 +12,105 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[浅析UITableViewController]]></title>
+    <link href="http://qiusli.github.io/blog/2015/12/09/uitableviewcontroller/"/>
+    <updated>2015-12-09T02:08:29-07:00</updated>
+    <id>http://qiusli.github.io/blog/2015/12/09/uitableviewcontroller</id>
+    <content type="html"><![CDATA[<p>UITableViewController是iOS开发中最常用到的viewController类,它可以一行行地显示数据.首先介绍一些重要概念.</p>
+
+<h2>cell</h2>
+
+<p>cell用来显示在每一行上的数据,它不是table中的行,而是一个view.可以把它想象成覆盖在每一行上的一个画板,如果我们想要在每一行上显示数据,首先应该得到这一行的cell,然后设置cell中的一些属性.在Xcode中可以选择cell的种类,不同的种类有不同的格局,例如一些cell类型有title,另一些还支持image等.</p>
+
+<p>除了系统自带的cell的属性,我们还能往这些cell上添加自己的一些属性,例如Text Field等.为了能通过cell得到这些属性,我们可以给它们设置一个数字tag,然后在得到cell后通过下面的代码来得到我们新添加的属性:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='swift'><span class='line'><span class="k">let</span> <span class="n">label</span> <span class="o">=</span> <span class="n">cell</span><span class="p">.</span><span class="n">viewWithTag</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span> <span class="kt">as</span><span class="o">!</span> <span class="bp">UILabel</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>我们不会为每一行创建一个cell,相反一般只会创建一个prototype cell,然后再反复重用这个cell(需要给这个cell一个identifier,让系统能通过其找到它).如果当前手机屏幕只能显示10行,那么系统最多会创建11个cell,多出来的那个cell用于当用户上下滑动时,新的行进入了当前显示屏幕,但是某个旧的行没有完全退出屏幕,所以此时需要额外的一个cell.用户在滑动时退出屏幕的cell被回收,然后等待被新进入屏幕的行使用.</p>
+
+<h2>delegate</h2>
+
+<p>(viewController指代在storyboard上显示的scene,viewController<strong>类</strong>指代其对应的swift文件)</p>
+
+<p>为了避免让viewController的逻辑太过复杂,iOS开发中使用了delegate来把viewController中的一些职责分离出去,让其他一些viewController类(通常是当前viewController对应的类)来帮助当前viewController做一些事情,这个辅助类叫做当前viewController的delegate.在UITableViewController中,为了给tableView提供数据,我们需要让其对应的viewController类实现data source的delagate,这样这个viewController类就拥有了提供数据的能力,然后通过实现一些预订的方法就能提供数据了. 在iOS开发中,我们无需另去实现data source的delegate,因为如果某个viewController类继承自UITableViewController,它自动被赋予了提供数据的能力,同时也被赋予了响应用户操作的能力.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='swift'><span class='line'><span class="k">class</span> <span class="nl">ChecklistViewController</span><span class="p">:</span> <span class="bp">UITableViewController</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>viewController类给viewController提供数据是一个被动的过程,只在viewController想要取得数据的时候才会去联系其delegate(对应的viewController类),通常是调用这个delegate里预订的方法,然后delegate返回数据给viewController,一次调用就结束了.</p>
+
+<h4><em>作为数据源</em></h4>
+
+<p>最常用的两个方法是<code>tableView(numberOfRowsInSection)</code>和<code>tableView(cellForRowAtIndexPath)</code>, viewController通过前者得知有多少行需要显示,通过后者得到每一行的cell,然后我们可以在这个cell上做文章.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='swift'><span class='line'><span class="kr">override</span> <span class="k">func</span> <span class="n">tableView</span><span class="p">(</span><span class="nl">tableView</span><span class="p">:</span> <span class="bp">UITableView</span><span class="p">,</span> <span class="n">numberOfRowsInSection</span> <span class="nl">section</span><span class="p">:</span> <span class="n">Int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Int</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="mi">5</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kr">override</span> <span class="k">func</span> <span class="n">tableView</span><span class="p">(</span><span class="nl">tableView</span><span class="p">:</span> <span class="bp">UITableView</span><span class="p">,</span> <span class="n">cellForRowAtIndexPath</span> <span class="nl">indexPath</span><span class="p">:</span> <span class="bp">NSIndexPath</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="bp">UITableViewCell</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">let</span> <span class="n">cell</span> <span class="o">=</span> <span class="n">tableView</span><span class="p">.</span><span class="n">dequeueReusableCellWithIdentifier</span><span class="p">(</span><span class="s">&quot;ChecklistItem&quot;</span><span class="p">,</span> <span class="nl">forIndexPath</span><span class="p">:</span> <span class="n">indexPath</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">let</span> <span class="n">item</span> <span class="o">=</span> <span class="n">checklist</span><span class="p">.</span><span class="n">items</span><span class="p">[</span><span class="n">indexPath</span><span class="p">.</span><span class="n">row</span><span class="p">]</span>
+</span><span class='line'>    <span class="n">configureTextForCell</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="nl">withChecklistItem</span><span class="p">:</span> <span class="n">item</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">configureCheckmarkForCell</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="nl">withChecklistItem</span><span class="p">:</span> <span class="n">item</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">return</span> <span class="n">cell</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>(上面第一行通过<code>tableView.dequeueReusableCellWithIdentifier("ChecklistItem", forIndexPath: indexPath)</code>来为某一个indexPath上行得到/创建cell.有3点值得注意,其一是tableView对象,它是内置对象,只要一个viewController类继承自UITableViewController他就会获得这个对象.其二是indexPath,它是一个对象,封装了section和row.其三是tableView.dequeueReusableCellWithIdentifier方法,它通过一个identifier试图去寻找空余的cell来给当前行使用,如果没有找到就创建一个新的cell)</p>
+
+<h4><em>作为某些行为的响应</em></h4>
+
+<p>用户可以在tableViewController上做一些操作,例如点击某一行,类似行为的响应方法通常都定义在delegate中.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='swift'><span class='line'><span class="kr">override</span> <span class="k">func</span> <span class="nf">tableView</span><span class="p">(</span><span class="nl">tableView</span><span class="p">:</span> <span class="bp">UITableView</span><span class="p">,</span> <span class="n">didSelectRowAtIndexPath</span> <span class="nl">indexPath</span><span class="p">:</span> <span class="bp">NSIndexPath</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="k">let</span> <span class="n">cell</span> <span class="o">=</span> <span class="n">tableView</span><span class="p">.</span><span class="n">cellForRowAtIndexPath</span><span class="p">(</span><span class="n">indexPath</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">let</span> <span class="n">item</span> <span class="o">=</span> <span class="n">checklist</span><span class="p">.</span><span class="n">items</span><span class="p">[</span><span class="n">indexPath</span><span class="p">.</span><span class="n">row</span><span class="p">]</span>
+</span><span class='line'>        <span class="n">item</span><span class="p">.</span><span class="n">toggle</span><span class="p">()</span>
+</span><span class='line'>        <span class="n">configureCheckmarkForCell</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="nl">withChecklistItem</span><span class="p">:</span> <span class="n">item</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="n">tableView</span><span class="p">.</span><span class="n">deselectRowAtIndexPath</span><span class="p">(</span><span class="n">indexPath</span><span class="p">,</span> <span class="nl">animated</span><span class="p">:</span> <span class="nb">true</span><span class="p">)</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>(上面通过<code>tableView.cellForRowAtIndexPath</code>得到某个indexPath上的cell)
+这样viewController在接受到这些用户行为后会向其delegate发出请求,然后delegate来具体实现某些功能,然后把结果返回给viewController.</p>
+
+<p>总而言之,为了实现代理模式,我们需要做以下操作:
+1. 让某个viewController<strong>类</strong>实现代理(接口)
+2. 实现接口中定义的方法
+3. 告诉viewController哪个类是其代理</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[javaScript中的This关键字]]></title>
@@ -3413,11 +3512,11 @@ hoist),后者不会.</p>
 
 <p>#</p>
 
-<p><code>文本</code>: Hello, my name is Ben Forta, my email address is <a href="&#x6d;&#97;&#105;&#108;&#116;&#x6f;&#x3a;&#98;&#101;&#x6e;&#x40;&#x66;&#x6f;&#114;&#x74;&#97;&#46;&#99;&#111;&#109;">&#98;&#101;&#x6e;&#x40;&#x66;&#111;&#114;&#116;&#x61;&#46;&#x63;&#111;&#109;</a></p>
+<p><code>文本</code>: Hello, my name is Ben Forta, my email address is <a href="&#109;&#97;&#105;&#x6c;&#116;&#x6f;&#58;&#98;&#101;&#x6e;&#64;&#102;&#x6f;&#114;&#116;&#x61;&#46;&#99;&#x6f;&#x6d;">&#98;&#101;&#110;&#x40;&#x66;&#x6f;&#x72;&#116;&#x61;&#46;&#99;&#x6f;&#109;</a></p>
 
 <p><code>正则表达式</code>: \w[\w.]*@[\w.]+.\w+</p>
 
-<p><code>结果</code>: <a href="&#x6d;&#x61;&#105;&#108;&#116;&#111;&#58;&#98;&#x65;&#x6e;&#x40;&#102;&#x6f;&#x72;&#116;&#x61;&#x2e;&#x63;&#x6f;&#x6d;">&#98;&#101;&#110;&#x40;&#x66;&#x6f;&#114;&#x74;&#97;&#46;&#x63;&#x6f;&#x6d;</a></p>
+<p><code>结果</code>: <a href="&#109;&#x61;&#105;&#x6c;&#x74;&#x6f;&#x3a;&#98;&#x65;&#110;&#x40;&#x66;&#111;&#x72;&#x74;&#97;&#46;&#x63;&#x6f;&#109;">&#x62;&#101;&#x6e;&#64;&#x66;&#111;&#x72;&#x74;&#97;&#46;&#99;&#111;&#x6d;</a></p>
 
 <p>这里的正则表达式匹配了一个邮件地址.</p>
 
@@ -3427,7 +3526,7 @@ hoist),后者不会.</p>
 
 <p>#</p>
 
-<p><code>文本</code>: Hello, my name is Ben Forta, my email address is <a href="&#x6d;&#x61;&#105;&#108;&#116;&#111;&#x3a;&#x62;&#x65;&#x6e;&#64;&#x66;&#111;&#x72;&#116;&#x61;&#x2e;&#99;&#x6f;&#x6d;">&#98;&#101;&#110;&#x40;&#102;&#x6f;&#x72;&#x74;&#97;&#46;&#99;&#111;&#109;</a></p>
+<p><code>文本</code>: Hello, my name is Ben Forta, my email address is <a href="&#109;&#x61;&#105;&#x6c;&#116;&#111;&#58;&#98;&#101;&#110;&#x40;&#x66;&#x6f;&#x72;&#x74;&#97;&#46;&#x63;&#x6f;&#109;">&#x62;&#x65;&#x6e;&#x40;&#102;&#x6f;&#x72;&#x74;&#x61;&#x2e;&#99;&#x6f;&#109;</a></p>
 
 <p><code>正则表达式</code>:  (\w[\w.]*@[\w.]+.\w+)</p>
 
@@ -3497,324 +3596,6 @@ hoist),后者不会.</p>
 <p><code>结果</code>:</p>
 
 <p>\<H1>WELCOME TO MY HOMEPAGE \</H1></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[正则表达式必知必会 2]]></title>
-    <link href="http://qiusli.github.io/blog/2014/05/16/regex2/"/>
-    <updated>2014-05-16T21:28:00-06:00</updated>
-    <id>http://qiusli.github.io/blog/2014/05/16/regex2</id>
-    <content type="html"><![CDATA[<h2>重复匹配</h2>
-
-<h3>匹配一个或多个字符</h3>
-
-<p><code>+</code>: 匹配一个或多个字符(不匹配零个字符的情况).</p>
-
-<p>#</p>
-
-<p><code>文本</code>: Send personal email to <a href="&#x6d;&#97;&#105;&#x6c;&#116;&#111;&#x3a;&#98;&#x65;&#x6e;&#x40;&#x66;&#111;&#x72;&#x74;&#97;&#46;&#x63;&#x6f;&#x6d;&#46;">&#98;&#101;&#110;&#64;&#102;&#x6f;&#x72;&#x74;&#97;&#x2e;&#99;&#x6f;&#x6d;&#x2e;</a> For questions about the book use <a href="&#x6d;&#x61;&#105;&#x6c;&#116;&#x6f;&#58;&#115;&#117;&#112;&#x70;&#111;&#114;&#x74;&#x40;&#x66;&#x6f;&#114;&#x74;&#x61;&#46;&#99;&#111;&#x6d;&#x2e;">&#x73;&#117;&#112;&#112;&#111;&#x72;&#x74;&#x40;&#102;&#111;&#114;&#x74;&#x61;&#46;&#x63;&#x6f;&#x6d;&#46;</a> Feel free to send unsolicited email to <a href="&#x6d;&#97;&#x69;&#x6c;&#x74;&#x6f;&#58;&#115;&#112;&#97;&#x6d;&#x40;&#102;&#111;&#114;&#116;&#97;&#46;&#x63;&#x6f;&#x6d;&#x2e;">&#x73;&#x70;&#x61;&#109;&#x40;&#102;&#x6f;&#x72;&#116;&#x61;&#x2e;&#99;&#111;&#x6d;&#x2e;</a></p>
-
-<p><code>正则表达式</code>: \w+@\w+.\w+</p>
-
-<p><code>结果</code>: <a href="&#109;&#x61;&#x69;&#x6c;&#116;&#x6f;&#x3a;&#98;&#x65;&#x6e;&#64;&#x66;&#111;&#x72;&#116;&#97;&#x2e;&#99;&#x6f;&#x6d;">&#x62;&#x65;&#x6e;&#64;&#102;&#111;&#114;&#116;&#97;&#x2e;&#x63;&#111;&#109;</a>  <a href="&#x6d;&#x61;&#x69;&#108;&#116;&#x6f;&#x3a;&#x73;&#117;&#112;&#112;&#x6f;&#114;&#116;&#64;&#102;&#x6f;&#114;&#116;&#97;&#x2e;&#99;&#111;&#x6d;">&#115;&#117;&#x70;&#x70;&#111;&#x72;&#116;&#x40;&#x66;&#x6f;&#x72;&#x74;&#97;&#46;&#x63;&#111;&#109;</a>  <a href="&#x6d;&#97;&#105;&#x6c;&#116;&#x6f;&#58;&#115;&#x70;&#97;&#x6d;&#x40;&#x66;&#111;&#114;&#x74;&#x61;&#x2e;&#x63;&#x6f;&#x6d;">&#115;&#112;&#97;&#x6d;&#x40;&#x66;&#x6f;&#114;&#x74;&#x61;&#x2e;&#x63;&#111;&#109;</a></p>
-
-<!-- more -->
-
-
-<p><code>*</code>: 匹配零个或多个字符.</p>
-
-<p><code>?</code>: 匹配零个或一个字符.</p>
-
-<p>#</p>
-
-<p><code>文本</code>: The URL is <a href="http://www.forta.com,">http://www.forta.com,</a> to connect securely use <a href="https://www.forta.com.">https://www.forta.com.</a></p>
-
-<p><code>正则表达式</code>: https?://[\w./]+</p>
-
-<p><code>结果</code>:  <a href="http://www.forta.com">http://www.forta.com</a>   <a href="https://www.forta.com">https://www.forta.com</a></p>
-
-<p>这里在s后面加了<code>?</code>,表示s既可以出现一次也可以不出现.</p>
-
-<h2>匹配的重复次数</h2>
-
-<p><code>重复次数 (interval)</code>: 精确定义<code>+</code>,<code>*</code>等元字符代表的字符的重复个数.这个个数定义在{}之间.</p>
-
-<p>#</p>
-
-<p>匹配RGB值(RGB值是由6个连续的任意字符或者0-9间的数字构成)</p>
-
-<p><code>文本</code>: \<body bgcolor="#336655" text="#FFFFFF" height=10 width=20></p>
-
-<p><code>正则表达式</code>: #[a-zA-Z0-9][a-zA-Z0-9][a-zA-Z0-9][a-zA-Z0-9][a-zA-Z0-9][a-zA-Z0-9]</p>
-
-<p><code>结果</code>: #336655, #FFFFFF</p>
-
-<p>修改后:</p>
-
-<p>#</p>
-
-<p>匹配RGB值(RGB值是由6个连续的任意字符或者0-9间的数字构成)</p>
-
-<p><code>文本</code>: \<body bgcolor="#336655" text="#FFFFFF" height=10 width=20></p>
-
-<p><code>正则表达式</code>: #[a-zA-Z0-9]{6}</p>
-
-<p><code>结果</code>: #336655, #FFFFFF</p>
-
-<p>上面的正则表达式规定{6}之前的字符连续出现6次.###为重复次数设定一个区间###</p>
-
-<p>#</p>
-
-<p><code>文本</code>: 4/8/03  10-6-2004  2/2/2  01-01-01</p>
-
-<p><code>正则表达式</code>: \d{1,2}/[-\/]d{1,2}[-\/]\d{2,4}</p>
-
-<p><code>结果</code>: 3/8/03 10-6-2004 01-01-01</p>
-
-<p>上面在\d后面跟上了这个字符具体出现的次数区间,两边都是inclusive.###匹配"至少重复多少次"###</p>
-
-<p>#</p>
-
-<p><code>文本</code>:</p>
-
-<p>1001: $489.02</p>
-
-<p>1002: $42.33</p>
-
-<p>1003: $1003.21</p>
-
-<p>1004: $104.55</p>
-
-<p>1005: $21.21</p>
-
-<p><code>正则表达式</code>: \d+: \$\d{3,}.\d{2}</p>
-
-<p><code>结果</code>: 1001: $489.02    1003: $1003.21    1004: $104.55</p>
-
-<p>上面的正则表达式中\d{3,}表示至少出现3次数字,换句话说就是找金额大于100美元的匹配.</p>
-
-<h2>防止过度匹配</h2>
-
-<p>#</p>
-
-<p><code>文本</code>: This offer is not available for customers living in <B>DC</B> and <B>MO</B></p>
-
-<p><code>正则表达式</code>: &lt;[Bb]>.*&lt;[Bb]></p>
-
-<p><code>结果</code>: <B>DC</B> and <B>MO</B></p>
-
-<p>这样的结果显然不是我们预期的,这时因为<code>.*</code>属于贪婪型匹配,它们进行匹配的模式是多多益善而不是适可而止.它们会尽可能从一段文本的开头一直匹配到这段文本的结尾,而不是从这段文本的开头碰到第一个匹配为止.</p>
-
-<p>为了达到我们想要的效果,我们需要使用元字符的<code>懒惰型</code>版本,这个版本与<code>贪婪型</code>正好相反.<code>懒惰型</code>版本的写法很简单,只需要在后面加上<code>?</code>后缀即可.</p>
-
-<p> <img src="http://qiusli.github.io/images/regex-2_1.png"></p>
-
-<p>所以,我们可以使用<code>懒惰型</code>字符匹配来解决上面的问题.</p>
-
-<p>#</p>
-
-<p><code>文本</code>: This offer is not available for customers living in <B>DC</B> and <B>MO</B></p>
-
-<p><code>正则表达式</code>: &lt;[Bb]>.*?&lt;[Bb]></p>
-
-<p><code>结果</code>: <B>DC</B>     <B>MO</B></p>
-
-<h2>位置匹配</h2>
-
-<p>位置匹配用来解决在什么地方进行字符串匹配操作的问题.</p>
-
-<p>#</p>
-
-<p><code>文本</code>: The cat scattered his food all over the room.</p>
-
-<p><code>正则表达式</code>: cat</p>
-
-<p><code>结果</code>: The <code>cat</code> s<code>cat</code>tered his food all over the room.</p>
-
-<p>这里的cat把一句话中的所有cat都找了出来,无论匹配的字符是单独的还是单词的一部分.</p>
-
-<p>解决这个问题的办法只有一个:使用边界限定符,也就是在正则表达式里用一些特殊的元字符来表明我们想要匹配操作在什么位置发生.</p>
-
-<h3>单词边界</h3>
-
-<p><code>\b</code>: 匹配单词的开始或结尾.</p>
-
-<p>#</p>
-
-<p><code>文本</code>: The cat scattered his food all over the room.</p>
-
-<p><code>正则表达式</code>: \bcat\b</p>
-
-<p><code>结果</code>: The <code>cat</code> scattered his food all over the room.</p>
-
-<p>单词cat的前后都有一个空格,空格是用来分割单词的字符之一.而单词scattered中的cat不能与之匹配,因为scattered中的cat前一个字符是s后一个字符是t,都不能与<code>\b</code>匹配.</p>
-
-<p><code>\b</code>中的b是boundary的意思,它匹配这样一个位置,这个位置位于一个能用来构成单词的字符(字母数字和下划线, 即\w)和不能构成单词的字符(即\W)之间.
-值得注意的是如果想要匹配一个完整的单词,就需要在前后都加上<code>\b</code>.</p>
-
-<p>#</p>
-
-<p><code>文本</code>: The captain wear his cap and cape proudly as he sat and listening to the recap of how his crew saved a men from a capsized vessel.</p>
-
-<p><code>正则表达式</code>: \bcap</p>
-
-<p><code>结果</code>: The <code>cap</code>tain wear his <code>cap</code> and <code>cap</code>e proudly as he sat and listening to the recap of how his crew saved a men from a <code>cap</code>sized vessel.</p>
-
-<p>这里的正则表达式匹配以cap开头的任意单词.</p>
-
-<p>#</p>
-
-<p><code>文本</code>: The captain wear his cap and cape proudly as he sat and listening to the recap of how his crew saved a men from a capsized vessel.</p>
-
-<p><code>正则表达式</code>: cap\b</p>
-
-<p><code>结果</code>: The captain wear his <code>cap</code> and cape proudly as he sat and listening to the re<code>cap</code> of how his crew saved a men from a capsized vessel.</p>
-
-<p>这里的正则表达式匹配以cap结尾的任意单词.</p>
-
-<p>如果想要表面不匹配单词边界,可以使用<code>\B</code>.</p>
-
-<p>#</p>
-
-<p><code>文本</code>: Please enter the nine-digit id as it appeared on your color - coded pass-key.</p>
-
-<p><code>正则表达式</code>: \B-\B</p>
-
-<p><code>结果</code>: color - coded</p>
-
-<p>\B-\B匹配前后都不是单词边界的连字符.</p>
-
-<h3>字符串边界</h3>
-
-<p><code>^</code>: 匹配字符串开头.
-<code>$</code>: 匹配字符串结尾.</p>
-
-<p><code>note</code>: <code>^</code>是一个多用途的元字符.当它在[]之间并且紧跟在[之后的时候,它表示取非.如果在字符集合的外面并在一个模式开头的时候,它将匹配字符串的开头.</p>
-
-<p>#</p>
-
-<p><code>文本</code>:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;</span>
-</span><span class='line'><span class="nt">&lt;person&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;name&gt;</span>Qiushi\<span class="nt">&lt;/name&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;age&gt;</span>25\<span class="nt">&lt;/age&gt;</span>
-</span><span class='line'><span class="nt">&lt;/person&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p><code>正则表达式</code>: \&lt;\?xml .* \?></p>
-
-<p><code>结果</code>: \&lt;?xml version=&ldquo;1.0&rdquo; encoding=&ldquo;UTF-8&rdquo; ?></p>
-
-<p>一个合法的XML文档都需要以文本的第一行作为开始,这里我想用这个正则表达式来匹配这个XML的头行,这里似乎奏效,但是其实不然.因为即使我在第一行前面加上一些支付,这个匹配也能成功.</p>
-
-<p>#</p>
-
-<p><code>文本</code>:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'>some text before
-</span><span class='line'><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;</span>
-</span><span class='line'><span class="nt">&lt;person&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;name&gt;</span>Qiushi<span class="nt">&lt;/name&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;age&gt;</span>25<span class="nt">&lt;/age&gt;</span>
-</span><span class='line'><span class="nt">&lt;/person&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p><code>正则表达式</code>: \&lt;\?xml .* \?></p>
-
-<p><code>结果</code>: \&lt;?xml version=&ldquo;1.0&rdquo; encoding=&ldquo;UTF-8&rdquo; ?></p>
-
-<p>但显然这不是我想要的结果,因为头文件不在第一行,表示这不是一个合法的XML文件.</p>
-
-<p>#</p>
-
-<p><code>文本</code>:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;</span>
-</span><span class='line'><span class="nt">&lt;person&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;name&gt;</span>Qiushi<span class="nt">&lt;/name&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;age&gt;</span>25<span class="nt">&lt;/age&gt;</span>
-</span><span class='line'><span class="nt">&lt;/person&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p><code>正则表达式</code>: ^\s<em> \&lt;\?xml .</em> \?></p>
-
-<p><code>结果</code>: \&lt;?xml version=&ldquo;1.0&rdquo; encoding=&ldquo;UTF-8&rdquo; ?></p>
-
-<p>这一次对了,^\s*表示在文本的开头能有空格(包括回车,换行等), 但不能以其他的字符开头.</p>
-
-<p>#</p>
-
-<p><code>文本</code>: \<html>haha\</html></p>
-
-<p><code>正则表达式</code>: \&lt;/[Hh][Tt][Mm][Ll]>\s$</p>
-
-<p><code>匹配</code>: \</html></p>
-
-<p>这里的正则表达式以\s$结尾,表示能有空格,但不能有其他字符.</p>
-
-<h3>分行匹配模式</h3>
-
-<p><code>?m</code>: 分行匹配模式将把行分割符当作一个字符串分隔符来对待.在分行匹配模式下,<code>^</code>不仅匹配字符串的开头,还匹配分隔符(换行符)后面开始的位置.<code>$</code>不仅匹配字符串的结束,还匹配分隔符(换行符)后面的结束位置.在使用分行匹配模式的时候,<code>?m</code>必须出现在正则表达式的最前面.</p>
-
-<p>#</p>
-
-<p><code>文本</code>:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">function</span> <span class="nx">doSpellCheck</span><span class="p">(</span><span class="nx">form</span><span class="p">,</span> <span class="nx">field</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>  <span class="c1">// make sure not empty</span>
-</span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="nx">field</span><span class="p">.</span><span class="nx">value</span> <span class="o">==</span> <span class="s2">&quot; &quot;</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>      <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="c1">// init</span>
-</span><span class='line'>  <span class="kd">var</span> <span class="nx">windowName</span> <span class="o">=</span> <span class="s2">&quot;spellWindow&quot;</span><span class="p">;</span>
-</span><span class='line'>  <span class="p">...</span>
-</span><span class='line'>  
-</span><span class='line'>  <span class="c1">// Done</span>
-</span><span class='line'>  <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p><code>正则表达式</code>: ?m^\s<em>//.</em>$</p>
-
-<p><code>结果</code>: // make sure not empty        // init       // Done</p>
-
-<p><code>^\s*//.*$</code>匹配一个字符串的开始,然后是任意多的空白字符,然后是//.再往后是任意文本,最后是字符串的结束.不过因为<code>*</code>是贪婪型字符,它将匹配第一条注释开始直到文本的结尾.加上<code>?m</code>之后,<code>?m^\s*//.*$</code>将把换行符作为一个字符串分隔符,这样就可以把每一行注释匹配出来了.</p>
 ]]></content>
   </entry>
   
