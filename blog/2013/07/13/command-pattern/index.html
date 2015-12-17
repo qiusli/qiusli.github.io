@@ -1,0 +1,275 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>深入浅出设计模式之命令模式(Command Pattern) | 逆旅，行人</title>
+
+	<meta name="author" content="李秋实"> 
+	
+	<meta name="description" content="命令模式，顾名思义，一定是有大哥发命令，一定有小弟在执行这个命令，理解了这个，命令模式就不难了。命令模式里面分为三种角色，发送者、命令对象和接受执行者。比如说有一个遥控板，它可以控制室内的灯光，那么遥控板在这里就是一个发送者，它发送命令给命令对象，命令对象接到命令后就只管执行。 &hellip;"> <meta name="keywords" content="">
+
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="逆旅，行人" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href="/stylesheets/font-awesome.min.css" rel="stylesheet" type="text/css">
+	
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	
+</head>
+
+
+
+<body>
+	<header id="header">
+<div class="inner">
+  <ul class="navigation">
+    <li><a href="/"><h1>逆旅，行人</h1></a></li>
+    <li><a href="/" class="is-selected">Blog</a></li>
+    <li><a href="http://github.com/" target="blank">Github</a></li>
+  </ul>
+</div></header>
+
+	<div id="content" class="inner"><article class="post">
+	<h2 class="title">深入浅出设计模式之命令模式(Command Pattern)</h2>
+	<div class="meta">
+		<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+
+<time datetime="2013-07-13T19:12:00-06:00" pubdate data-updated="true">Jul 13th, 2013</time></div>
+	</div>
+	<div class="entry-content"><p>命令模式，顾名思义，一定是有大哥发命令，一定有小弟在执行这个命令，理解了这个，命令模式就不难了。命令模式里面分为三种角色，发送者、命令对象和接受执行者。比如说有一个遥控板，它可以控制室内的灯光，那么遥控板在这里就是一个发送者，它发送命令给命令对象，命令对象接到命令后就只管执行。下面来看这个命令模式的实现吧：</p>
+
+<!-- more -->
+
+
+<p>1、首先是命令对象，它是一个接口，由子类具体实现</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">interface</span> <span class="nc">Command</span> <span class="o">{</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">execute</span><span class="o">();</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">undo</span><span class="o">();</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>2、具体的命令，接收真实的接受者并运行接受者的方法来达到执行</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">LightOffCommand</span> <span class="kd">implements</span> <span class="n">Command</span> <span class="o">{</span>
+</span><span class='line'>    <span class="kd">private</span> <span class="n">Light</span> <span class="n">light</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">public</span> <span class="nf">LightOffCommand</span><span class="o">(</span><span class="n">Light</span> <span class="n">light</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">this</span><span class="o">.</span><span class="na">light</span> <span class="o">=</span> <span class="n">light</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nd">@Override</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">execute</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">light</span><span class="o">.</span><span class="na">off</span><span class="o">();</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nd">@Override</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">undo</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">light</span><span class="o">.</span><span class="na">on</span><span class="o">();</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">LightOnCommand</span> <span class="kd">implements</span> <span class="n">Command</span> <span class="o">{</span>
+</span><span class='line'>    <span class="kd">private</span> <span class="n">Light</span> <span class="n">light</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">public</span> <span class="nf">LightOnCommand</span><span class="o">(</span><span class="n">Light</span> <span class="n">light</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">this</span><span class="o">.</span><span class="na">light</span> <span class="o">=</span> <span class="n">light</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nd">@Override</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">execute</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">light</span><span class="o">.</span><span class="na">on</span><span class="o">();</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nd">@Override</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">undo</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">light</span><span class="o">.</span><span class="na">off</span><span class="o">();</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>他们都实现了Command，并且实现了execute方法和undo方法，并且封装了命令的接收者。这两个方法是命令模式里命令对象的标配，前者负责执行命令，后者负责撤销命令。其实它们都不直接完成命令，而是委托给通过构造函数传进来的真正的执行者去完成(这里是Light对象)。这个Command对象暴露给命令发送者就是2个接口，一个execute一个undo。命令发送者只管通过对命令对象的引用来执行这两个方法就是了，具体的都封装在命令对象中(例如LightOnCommand中)。
+3、命令的真正接收和执行者</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Light</span> <span class="o">{</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">on</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;light&#39;s on&quot;</span><span class="o">);</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">off</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;light&#39;s off&quot;</span><span class="o">);</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>4、命令发送者</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">SimpleRemoteControl</span> <span class="o">{</span>
+</span><span class='line'>    <span class="kd">private</span> <span class="n">Command</span> <span class="n">slot</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setCommand</span><span class="o">(</span><span class="n">Command</span> <span class="n">command</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">this</span><span class="o">.</span><span class="na">slot</span> <span class="o">=</span> <span class="n">command</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">buttonWasPressed</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">slot</span><span class="o">.</span><span class="na">execute</span><span class="o">();</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>发送命令</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">SimpleController</span> <span class="o">{</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">SimpleRemoteControl</span> <span class="n">simpleRemoteControl</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">SimpleRemoteControl</span><span class="o">();</span>
+</span><span class='line'>        <span class="n">simpleRemoteControl</span><span class="o">.</span><span class="na">setCommand</span><span class="o">(</span><span class="k">new</span> <span class="nf">LightOnCommand</span><span class="o">(</span><span class="k">new</span> <span class="nf">Light</span><span class="o">()));</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">simpleRemoteControl</span><span class="o">.</span><span class="na">buttonWasPressed</span><span class="o">();</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>创建一个命令发送者对象，然后设置一个要发送的命令，而这个命令里面又包含了具体的命令接受执行者。当发送者调用buttonWasPressed时，就调用命令对象的execute方法。相当于对命令对象发出了命令，具体的执行就看命令对象自己调用哪个接受者来执行了。所以对于命令发送者来说，根本不在乎所拥有的是什么命令对象，只要该对象实现了Command接口就行。具体是什么Command类型都是调用者决定的(例如这里的SimpleController)。</p>
+
+<p>命令模式把“发出请求的对象”和“接受和执行请求的对象”分隔开来</p>
+</div>
+
+
+<div class="sharing">
+  
+  
+  
+</div>
+</article>
+</div>
+	<footer id="footer" class="inner"><div class="aboutme">
+<hr>
+  <div class="profile">
+    <a href="http://twitter.com/"><img class="icon" src=""></a>
+
+    <h3>李秋实</h3>
+    <p><a href="https://www.facebook.com/photosynthesiis">Facebook</a>
+    &nbsp;|&nbsp; <a href="http://weibo.com/eminemlqs">Weibo</a>
+    &nbsp;|&nbsp; <a href="https://www.linkedin.com/in/qiushili">LinkedIn</a></p>
+
+    <div class="codes">
+      <h4>Codes</h4>
+      <div class="github"><a href="https://github.com/">github.com/</a></div>
+    </div>
+  </div>
+
+  <div class="float_clear"></div>
+
+</div>
+
+Copyright &copy; 2015
+ 李秋实 
+<br>
+Powered by Octopress.
+
+
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-51075907-5']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
+</footer>
+	
+
+</body>
+</html>

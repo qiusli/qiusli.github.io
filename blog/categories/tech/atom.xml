@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: tech | 逆旅，行人]]></title>
+  <link href="http://qiusli.github.io/blog/categories/tech/atom.xml" rel="self"/>
+  <link href="http://qiusli.github.io/"/>
+  <updated>2015-12-16T21:29:25-07:00</updated>
+  <id>http://qiusli.github.io/</id>
+  <author>
+    <name><![CDATA[李秋实]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[浅析UINavigationController]]></title>
+    <link href="http://qiusli.github.io/blog/2015/12/16/uinavigationcontroller/"/>
+    <updated>2015-12-16T20:27:15-07:00</updated>
+    <id>http://qiusli.github.io/blog/2015/12/16/uinavigationcontroller</id>
+    <content type="html"><![CDATA[<h2>基本原理</h2>
+
+<p>UINavigationController是一个容器，它提供基本的视图之间跳转的功能。viewcontroller被它包装起来，每一个viewController有自己的navigation item，当用户在左右滑动的时候，其实就是UINavigationController在起作用，它把另一个viewController放进屏幕替代当前屏幕上的viewController，同时这个viewController有自己的Navigation Item，这个item有回退键和title。UINavigationController提供一个UINavigation bar，这个bar用来显示当前屏幕上的viewController的Navigation Item。</p>
+
+<h2>如何把当前viewController放进UINavigationController</h2>
+
+<p>进入storyboard，选中当前viewController，然后在状态栏上选择editor -> embed in -> Navigation Controller。之后，所有指向这个viewController的指针都指向了包装它的Navigation Controller。</p>
+
+<h2>如何在不同的viewController之间跳转</h2>
+
+<p>在上一步完成之后，这个viewController就有了一个Navigation Controller提供的Navigation bar，我们可以在这个Navigation Bar上添加一些Bar Button，然后ctrl＋drag这个按钮到其他viewController上，松开手时系统会提示你一些segue的选择。iOS 9提供了4种跳转方式:show, show detail, present modally, present as popover。如果选择show，当点击按钮跳转到另一个viewController时，它会有Navigation bar，并且还有一个back按钮，点击后回到之前的页面。如果选在present modally，点击按钮跳转后，页面上没有navigation bar，自然也没有回退按钮，通常我们为了让这个viewController有Navigation Bar，我们需要把它再次包装到另一个Navigation Controller里，最后的效果如下:</p>
+
+<p><img src="/images/navigationcontroller-1.png"></p>
+
+<h2>如何在不同viewController之间传递数据</h2>
+
+<p>例如A，B之间跳转，我们可以在B中定义delegate和方法，然后让A实现delegate和方法，同时B中保存一个变量，它指向A。viewController有一个方法叫做<code>prepareForSegue</code>，它在两个controller跳转之前被调用，我们可以在里面放上准备数据，例如:</p>
+
+<pre><code class="swift">override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    if segue.identifier == "AddItem" {
+        let navContr = segue.destinationViewController as? UINavigationController
+        let contr = navContr?.topViewController as? AddItemViewController
+        contr?.delegate = self
+    } else if segue.identifier == "EditItem" {
+        let navContr = segue.destinationViewController as? UINavigationController
+        let contr = navContr?.topViewController as? AddItemViewController
+        contr?.delegate = self
+
+        if let indexPath = tableView.indexPathForCell(sender as! UITableViewCell) {
+            contr?.itemToEdit = items[indexPath.row]
+        }
+    }
+}
+</code></pre>
+
+<p>因为一个controller可以有很多种方法跳到另一个controller(tap button, tap row&hellip;)，所以可以有很多segue在两个controller之间，我们需要给每一个segue一个别名来区别它们，上面的代码的意思是，如果segue是AddItem，然后就找到这个segue的目标controller，因为下一个controller被Navigation Controller包装，所以不是直接跳转而是通过包装Navigation Controller中转，得到Navigation Controller后找到它的topViewController，即最终目标，然后设置它的delegate变量为当前controller，这样就能在B中通过delegate变量调用A中实现的delegate方法，达到操作A中数据的目的。</p>
+
+<p>B中定义的delegate和变量:</p>
+
+<pre><code class="swift">protocol AddItemViewControllerDelegate: class {
+    func addItemViewControllerDidCancel(controller: AddItemViewController)
+    func addItemViewController(controller: AddItemViewController, didFinishAddingItem item: ChecklistItem)
+    func addItemViewController(controller: AddItemViewController, didFinishEditingItem item: ChecklistItem)
+}
+
+class AddItemViewController {
+    ...
+    var itemToEdit: ChecklistItem?
+    ...
+}
+</code></pre>
+
+<p>A中实现delegate和其方法:</p>
+
+<pre><code class="swift">class ChecklistViewController: AddItemViewControllerDelegate {
+    ...
+    func addItemViewController(controller: AddItemViewController, didFinishAddingItem item: ChecklistItem) {
+    let indexRow = items.count
+    items.append(item)
+    let indexPath = NSIndexPath(forRow: indexRow, inSection: 0)
+    tableView.insertRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
+    dismissViewControllerAnimated(true, completion: nil)
+}
+func addItemViewController(controller: AddItemViewController, didFinishEditingItem item: ChecklistItem) {
+    if let indexRow = items.indexOf(item) {
+        let indexPath = NSIndexPath(forRow: indexRow, inSection: 0)
+        if let cell = tableView.cellForRowAtIndexPath(indexPath) {
+            configureTextForCell(cell, item: item)
+        }
+    }
+    dismissViewControllerAnimated(true, completion: nil)
+}
+    ...
+}
+</code></pre>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[浅析UITableViewController]]></title>
+    <link href="http://qiusli.github.io/blog/2015/12/09/uitableviewcontroller/"/>
+    <updated>2015-12-09T02:08:29-07:00</updated>
+    <id>http://qiusli.github.io/blog/2015/12/09/uitableviewcontroller</id>
+    <content type="html"><![CDATA[<p>UITableViewController是iOS开发中最常用到的viewController类,它可以一行行地显示数据.首先介绍一些重要概念.</p>
+
+<h2>cell</h2>
+
+<p>cell用来显示在每一行上的数据,它不是table中的行,而是一个view.可以把它想象成覆盖在每一行上的一个画板,如果我们想要在每一行上显示数据,首先应该得到这一行的cell,然后设置cell中的一些属性.在Xcode中可以选择cell的种类,不同的种类有不同的格局,例如一些cell类型有title,另一些还支持image等.</p>
+
+<p>除了系统自带的cell的属性,我们还能往这些cell上添加自己的一些属性,例如Text Field等.为了能通过cell得到这些属性,我们可以给它们设置一个数字tag,然后在得到cell后通过下面的代码来得到我们新添加的属性:</p>
+
+<pre><code class="swift">let label = cell.viewWithTag(1000) as! UILabel
+</code></pre>
+
+<p>我们不会为每一行创建一个cell,相反一般只会创建一个prototype cell,然后再反复重用这个cell(需要给这个cell一个identifier,让系统能通过其找到它).如果当前手机屏幕只能显示10行,那么系统最多会创建11个cell,多出来的那个cell用于当用户上下滑动时,新的行进入了当前显示屏幕,但是某个旧的行没有完全退出屏幕,所以此时需要额外的一个cell.用户在滑动时退出屏幕的cell被回收,然后等待被新进入屏幕的行使用.</p>
+
+<h2>delegate</h2>
+
+<p>(viewController指代在storyboard上显示的scene,viewController<strong>类</strong>指代其对应的swift文件)</p>
+
+<p>为了避免让viewController的逻辑太过复杂,iOS开发中使用了delegate来把viewController中的一些职责分离出去,让其他一些viewController类(通常是当前viewController对应的类)来帮助当前viewController做一些事情,这个辅助类叫做当前viewController的delegate.在UITableViewController中,为了给tableView提供数据,我们需要让其对应的viewController类实现data source的delagate,这样这个viewController类就拥有了提供数据的能力,然后通过实现一些预订的方法就能提供数据了. 在iOS开发中,我们无需另去实现data source的delegate,因为如果某个viewController类继承自UITableViewController,它自动被赋予了提供数据的能力,同时也被赋予了响应用户操作的能力.</p>
+
+<pre><code class="swift">class ChecklistViewController: UITableViewController
+</code></pre>
+
+<p>viewController类给viewController提供数据是一个被动的过程,只在viewController想要取得数据的时候才会去联系其delegate(对应的viewController类),通常是调用这个delegate里预订的方法,然后delegate返回数据给viewController,一次调用就结束了.</p>
+
+<h4><em>作为数据源</em></h4>
+
+<p>最常用的两个方法是<code>tableView(numberOfRowsInSection)</code>和<code>tableView(cellForRowAtIndexPath)</code>, viewController通过前者得知有多少行需要显示,通过后者得到每一行的cell,然后我们可以在这个cell上做文章.</p>
+
+<pre><code class="swift">override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -&gt; Int {
+    return 5
+}
+
+override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -&gt; UITableViewCell {
+    let cell = tableView.dequeueReusableCellWithIdentifier("ChecklistItem", forIndexPath: indexPath)
+    let item = checklist.items[indexPath.row]
+    configureTextForCell(cell, withChecklistItem: item)
+    configureCheckmarkForCell(cell, withChecklistItem: item)
+
+    return cell
+}
+</code></pre>
+
+<p>(上面第一行通过<code>tableView.dequeueReusableCellWithIdentifier("ChecklistItem", forIndexPath: indexPath)</code>来为某一个indexPath上行得到/创建cell.有3点值得注意,其一是tableView对象,它是内置对象,只要一个viewController类继承自UITableViewController他就会获得这个对象.其二是indexPath,它是一个对象,封装了section和row.其三是tableView.dequeueReusableCellWithIdentifier方法,它通过一个identifier试图去寻找空余的cell来给当前行使用,如果没有找到就创建一个新的cell)</p>
+
+<h4><em>作为某些行为的响应</em></h4>
+
+<p>用户可以在tableViewController上做一些操作,例如点击某一行,类似行为的响应方法通常都定义在delegate中.</p>
+
+<pre><code class="swift">override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    if let cell = tableView.cellForRowAtIndexPath(indexPath) {
+        let item = checklist.items[indexPath.row]
+        item.toggle()
+        configureCheckmarkForCell(cell, withChecklistItem: item)
+    }
+    tableView.deselectRowAtIndexPath(indexPath, animated: true)
+}
+</code></pre>
+
+<p>(上面通过<code>tableView.cellForRowAtIndexPath</code>得到某个indexPath上的cell)
+这样viewController在接受到这些用户行为后会向其delegate发出请求,然后delegate来具体实现某些功能,然后把结果返回给viewController.</p>
+
+<p>总而言之,为了实现代理模式,我们需要做以下操作:
+1. 让某个viewController<strong>类</strong>实现代理(接口)
+2. 实现接口中定义的方法
+3. 告诉viewController哪个类是其代理</p>
+]]></content>
+  </entry>
+  
+</feed>

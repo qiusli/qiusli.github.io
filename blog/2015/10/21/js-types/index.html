@@ -1,0 +1,293 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>JavaScript中的类型 | 逆旅，行人</title>
+
+	<meta name="author" content="李秋实"> 
+	
+	<meta name="description" content="JavaScript一共有两种类型,非别为原始类型和引用类型.JavaScript使用一个叫做variable object的东西来记录创建的数据类型,如果新建数据为原始类型,则直接存储在variable object中,如果为引用类型,则用variable object来存放指向引用类型的指针 &hellip;"> <meta name="keywords" content="">
+
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="逆旅，行人" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href="/stylesheets/font-awesome.min.css" rel="stylesheet" type="text/css">
+	
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	
+</head>
+
+
+
+<body>
+	<header id="header">
+<div class="inner">
+  <ul class="navigation">
+    <li><a href="/"><h1>逆旅，行人</h1></a></li>
+    <li><a href="/" class="is-selected">Blog</a></li>
+    <li><a href="http://github.com/" target="blank">Github</a></li>
+  </ul>
+</div></header>
+
+	<div id="content" class="inner"><article class="post">
+	<h2 class="title">JavaScript中的类型</h2>
+	<div class="meta">
+		<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+
+<time datetime="2015-10-21T20:34:58-06:00" pubdate data-updated="true">Oct 21st, 2015</time></div>
+	</div>
+	<div class="entry-content"><p>JavaScript一共有两种类型,非别为原始类型和引用类型.JavaScript使用一个叫做variable object的东西来记录创建的数据类型,如果新建数据为原始类型,则直接存储在variable object中,如果为引用类型,则用variable object来存放指向引用类型的指针.</p>
+
+<!-- more -->
+
+
+<h2>原始类型</h2>
+
+<p>JavaScript一共有5种原始类型:
+1. Boolean
+2. Number
+3. String
+4. Null
+5. Undefined
+当把一个存储原始类型数据的变量赋值给另一个变量时,两个变量存储的值一样,但分别拥有的是各自的拷贝.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='JavaScript'><span class='line'><span class="kd">var</span> <span class="nx">color1</span> <span class="o">=</span>  <span class="s2">&quot;red&quot;</span><span class="p">;</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">color2</span> <span class="o">=</span> <span class="nx">color1</span><span class="p">;</span>
+</span><span class='line'><span class="nx">color1</span> <span class="o">=</span> <span class="s2">&quot;green&quot;</span><span class="p">;</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">color1</span><span class="p">);</span> <span class="c1">// green</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">color2</span><span class="p">);</span> <span class="c1">// red</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>typeof 关键字</h4>
+
+<p>用来判断当前原始类型的具体类型:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='JavaScript'><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="k">typeof</span> <span class="mi">10</span><span class="p">);</span>        <span class="c1">// number</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="k">typeof</span> <span class="s2">&quot;hello&quot;</span><span class="p">);</span>   <span class="c1">// string</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="k">typeof</span> <span class="kc">true</span><span class="p">);</span>      <span class="c1">// boolean</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="k">typeof</span> <span class="kc">null</span><span class="p">);</span>      <span class="c1">// object</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="k">typeof</span> <span class="kc">undefined</span><span class="p">);</span> <span class="c1">// undefined</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>== 与 ===</h4>
+
+<p>两者的作用基本一样,唯一的不同就是<code>==</code>在比较的时候会进行类型转换,而<code>===</code>则按原值比较.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='JavaScript'><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;5&quot;</span> <span class="o">==</span> <span class="mi">5</span><span class="p">);</span>           <span class="c1">// true</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;5&quot;</span> <span class="o">===</span> <span class="mi">5</span><span class="p">);</span>          <span class="c1">// false</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="kc">true</span> <span class="o">==</span> <span class="s2">&quot;true&quot;</span><span class="p">);</span>     <span class="c1">// false</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="kc">true</span> <span class="o">===</span> <span class="s2">&quot;true&quot;</span><span class="p">);</span>    <span class="c1">// false</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="kc">null</span> <span class="o">==</span> <span class="kc">null</span><span class="p">);</span>       <span class="c1">// true</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="kc">null</span> <span class="o">===</span> <span class="kc">null</span><span class="p">);</span>      <span class="c1">// true</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="kc">null</span> <span class="o">==</span> <span class="kc">undefined</span><span class="p">);</span>  <span class="c1">// true</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="kc">null</span> <span class="o">===</span> <span class="kc">undefined</span><span class="p">);</span> <span class="c1">// false</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>引用类型</h2>
+
+<p>引用类型即对象,它是由一组键值对组成,很像其他语言中的hash.键可以为string或者一般的literal,值为原始类型或者方法.创建对象一般有两种方法: 使用new和使用object literal.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='JavaScript'><span class='line'><span class="mi">1</span><span class="p">.</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">book</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Object</span><span class="p">();</span>
+</span><span class='line'><span class="nx">book</span><span class="p">.</span><span class="nx">name</span> <span class="o">=</span> <span class="s2">&quot;Head first Java&quot;</span>
+</span><span class='line'><span class="nx">book</span><span class="p">.</span><span class="nx">year</span> <span class="o">=</span> <span class="mi">2014</span>
+</span><span class='line'>
+</span><span class='line'><span class="mi">2</span><span class="p">.</span>
+</span><span class='line'><span class="c1">// literal</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">book</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">name</span><span class="o">:</span> <span class="s2">&quot;javascript oo design&quot;</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">year</span><span class="o">:</span> <span class="mi">2014</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>与原始类型的赋值不同的是,引用类型在赋值过程中不会在内存中再次拷贝指向数据,而是仅仅创建一个新的指针指向原来的引用.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='JavaScript'><span class='line'><span class="kd">var</span> <span class="nx">obj1</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Object</span><span class="p">();</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">obj2</span> <span class="o">=</span> <span class="nx">obj1</span><span class="p">;</span>
+</span><span class='line'><span class="nx">obj1</span><span class="p">.</span><span class="nx">myCustomProperty</span> <span class="o">=</span> <span class="s2">&quot;Qiushi&quot;</span><span class="p">;</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">obj2</span><span class="p">.</span><span class="nx">myCustomProperty</span><span class="p">);</span> <span class="c1">// &quot;Qiushi&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>和Java类似,JavaScript也有垃圾回收机制,也即没有指针指向对象时,其被回收.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='JavaScript'><span class='line'><span class="kd">var</span> <span class="nx">obj</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Object</span><span class="p">();</span>
+</span><span class='line'><span class="nx">obj</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>原始类型的包装</h3>
+
+<p>原始类型中的String,Number和Boolean分别有其对应的包装类型,当系统检测到原始类型被读取并被当做对象使用时,系统会创建一个零时的原始类型的包装类,当包装类不再被使用的时候立即被系统回收.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='JavaScript'><span class='line'><span class="kd">var</span> <span class="nx">name</span> <span class="o">=</span> <span class="s2">&quot;Qiushi&quot;</span><span class="p">;</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">firstChar</span> <span class="o">=</span> <span class="nx">name</span><span class="p">.</span><span class="nx">charAt</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">firstChar</span><span class="p">);</span>         <span class="c1">// &quot;Q&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="err">在系统中被解释为</span><span class="o">:</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">name</span> <span class="o">=</span> <span class="s2">&quot;Qiushi&quot;</span><span class="p">;</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">tmp</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">String</span><span class="p">(</span><span class="nx">name</span><span class="p">);</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">firstChar</span> <span class="o">=</span> <span class="nx">tmp</span><span class="p">.</span><span class="nx">charAt</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+</span><span class='line'><span class="nx">tmp</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">firstChar</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>例如如果我们按照下面这么做:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='JavaScript'><span class='line'><span class="kd">var</span> <span class="nx">name</span> <span class="o">=</span> <span class="s2">&quot;Nicholas&quot;</span><span class="p">;</span>
+</span><span class='line'><span class="nx">name</span><span class="p">.</span><span class="nx">last</span> <span class="o">=</span> <span class="s2">&quot;Zakas&quot;</span><span class="p">;</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">name</span><span class="p">.</span><span class="nx">last</span><span class="p">);</span>    <span class="c1">// undefined</span>
+</span><span class='line'>
+</span><span class='line'><span class="err">在系统中被解释为</span><span class="o">:</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">name</span> <span class="o">=</span> <span class="s2">&quot;Nicholas&quot;</span><span class="p">;</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">tmp</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Sring</span><span class="p">(</span><span class="nx">name</span><span class="p">)</span>
+</span><span class='line'><span class="nx">tmp</span><span class="p">.</span><span class="nx">last</span> <span class="o">=</span> <span class="s2">&quot;Zakas&quot;</span><span class="p">;</span>
+</span><span class='line'><span class="nx">tmp</span> <span class="o">=</span> <span class="kc">null</span>                 <span class="c1">// 零时变量被摧毁</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">var</span> <span class="nx">tmp</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">String</span><span class="p">(</span><span class="nx">name</span><span class="p">)</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">name</span><span class="p">.</span><span class="nx">last</span><span class="p">);</span>
+</span><span class='line'><span class="nx">tmp</span> <span class="o">=</span> <span class="kc">null</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>再看下面这个例子:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='JavaScript'><span class='line'><span class="kd">var</span> <span class="nx">name</span> <span class="o">=</span> <span class="s2">&quot;Qiushi&quot;</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">name</span> <span class="k">instanceof</span> <span class="nb">String</span><span class="p">)</span> <span class="c1">// false</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>name在这里没有被当做对象使用(obj.xxx),所以没有零时对象创立,而原始类型不是其包装类的引用,所以会返回false.</p>
+</div>
+
+
+<div class="sharing">
+  
+  
+  
+</div>
+</article>
+</div>
+	<footer id="footer" class="inner"><div class="aboutme">
+<hr>
+  <div class="profile">
+    <a href="http://twitter.com/"><img class="icon" src=""></a>
+
+    <h3>李秋实</h3>
+    <p><a href="https://www.facebook.com/photosynthesiis">Facebook</a>
+    &nbsp;|&nbsp; <a href="http://weibo.com/eminemlqs">Weibo</a>
+    &nbsp;|&nbsp; <a href="https://www.linkedin.com/in/qiushili">LinkedIn</a></p>
+
+    <div class="codes">
+      <h4>Codes</h4>
+      <div class="github"><a href="https://github.com/">github.com/</a></div>
+    </div>
+  </div>
+
+  <div class="float_clear"></div>
+
+</div>
+
+Copyright &copy; 2015
+ 李秋实 
+<br>
+Powered by Octopress.
+
+
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-51075907-5']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
+</footer>
+	
+
+</body>
+</html>

@@ -1,0 +1,836 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: 科技 | 逆旅，行人]]></title>
+  <link href="http://qiusli.github.io/blog/categories/ke-ji/atom.xml" rel="self"/>
+  <link href="http://qiusli.github.io/"/>
+  <updated>2015-12-16T21:29:25-07:00</updated>
+  <id>http://qiusli.github.io/</id>
+  <author>
+    <name><![CDATA[李秋实]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[javaScript中的This关键字]]></title>
+    <link href="http://qiusli.github.io/blog/2015/10/31/js-this/"/>
+    <updated>2015-10-31T16:44:42-06:00</updated>
+    <id>http://qiusli.github.io/blog/2015/10/31/js-this</id>
+    <content type="html"><![CDATA[<h2>一言以蔽之</h2>
+
+<p>JavaScript中this关键字的应用一直是个难点，但是只需要记住一点：this始终定义在函数中，当这个函数被调用的时候，this会执行调用该函数的那个对象。</p>
+
+<pre><code class="javascript">var person = {
+    firstName: "Qiushi",
+    lastName: "Li",
+    fullName: function () {
+        console.log(this.firstName + " " + this.lastName);
+        console.log(person.firstName + " " + person.lastName);
+    }
+};
+person.fullName(); // 会输出两行 "Qiushi Li"
+</code></pre>
+
+<p>上面的代码定义了一个person对象，fullName方法是其中一个property，this定义在呢fullName方法中。在这个方法没有被person对象调用之前，this不指向任何对象，当执行<code>person.fullName()</code>后，this指向person对象，所以会输出person对象的firstName和lastName。下面再看一个类似的例子，在浏览器中执行jQuery代码：</p>
+
+<pre><code class="javascript">$("button").click(function (event) {
+        console.log($(this).prop("name"));
+    }
+);
+</code></pre>
+
+<p>这里的this定义定义在一个匿名函数里，这个匿名函数又作为click的参数传递。在jQuery里，系统默认把this和调用click的对象绑定在一起，所以这里的this指向的是button对象，这和JavaScript稍微有点不同。</p>
+
+<h2>this在不同情况下的指向问题</h2>
+
+<h3>1. 在全局范围内使用this</h3>
+
+<pre><code class="javascript">var firstName = "Qiushi", lastName = "Li";
+function showFullName() {
+    console.log(firstName + " " + lastName);
+}
+
+var person2 = {
+    firstName: "Eric",
+    lastName: "Chho",
+    showFullName: function () {
+        console.log(this.firstName + " " + this.lastName);
+    }
+};
+showFullName();         // Qiushi Li
+window.showFullName();  // Qiushi Li
+person2.showFullName(); // Eric Chho
+</code></pre>
+
+<p>如果直接调用showFullName，系统会调用全局showFullName函数，在那个函数里的firstName和lastName亦是全局变量firstName和lastName。如果食用window调用，和直接调用一样，都是被全局对象，即window对象调用。最后我们食用person2对象对用其内部定义的showFullName方法，this会指向person2对象，所以this.firstName和this.lastName会是person2里的属性。</p>
+
+<h3>2. 在闭包里使用this</h3>
+
+<p>闭包，即定义在一个函数内部的函数，通常情况下，闭包能使用其外部函数里定义的属性，但是闭包不能使用外部函数的this。具体看下面这个例子：</p>
+
+<pre><code class="javascript">var user = {
+    tournament: "The Masters",
+    data: [
+        {name: "Kevin", age: 27},
+        {name: "Rashmi", age: 26}
+    ],
+    clickHandler: function () {
+        this.data.forEach(function (person) {
+            console.log("What is THIS referring to? " + this);
+            console.log(person.name + " is playing at " + this.tournament);
+        });
+    }
+};
+user.clickHandler();
+</code></pre>
+
+<p>上面的代码会输出：</p>
+
+<pre><code class="javascript">What is THIS referring to? [object global]
+Kevin is playing at undefined
+What is THIS referring to? [object global]
+Rashmi is playing at undefined
+</code></pre>
+
+<p>clickHander作为user对象里的一个属性，其指向一个方法，在这个方法内部，我们首先遍历user对象的data property，这里的this指向的是调用clickHandler方法的对象，即user对象。在forEach里，我们声明了一个匿名函数，在这个匿名函数里也使用了this。第一行说明闭包里的this指向的不是user，而是global，如果在浏览器里运行，会是window对象。第二行的person.name会正确输出名字，因为这个person，即匿名函数里的参数是遍历数组里在某一时刻的某个值，但是this.tournament会输出undefined，因为这个this此时不是指向user对象，而是指向了全局对象，即global或window，但是它们均没有tournament这个property，所以会输出undefined。</p>
+
+<h4>解决方案</h4>
+
+<p>既然我们想使用外部的this,我们可以把外部的this保存在一个变量里,然后在闭包里使用这个变量就是了.虽然闭包不能使用外部函数的this,但它能使用外部函数的变量啊.</p>
+
+<pre><code class="javascript">var user2 = {
+    tournament: "The Masters",
+    data: [
+        {name: "Kevin", age: 27},
+        {name: "Rashmi", age: 26}
+    ],
+    clickHandler: function () {
+        var that = this;           // 唯一的区别
+        this.data.forEach(function (person) {
+            console.log("What is THIS referring to? " + that);
+            console.log(person.name + " is playing at " + that.tournament);
+        });
+    }
+};
+user2.clickHandler();
+</code></pre>
+
+<p>上面的代码会输出：</p>
+
+<pre><code class="javascript">What is THIS referring to? [object Object]
+Kevin is playing at The Masters
+What is THIS referring to? [object Object]
+Rashmi is playing at The Masters
+</code></pre>
+
+<h3>3. 包含this的函数被直接执行,而不是被对象调用</h3>
+
+<pre><code class="javascript">var data = [
+    {name: "Sam", age: 28},
+    {name: "Kurly", age: 21}
+];
+var user3 = {
+    data: [
+        {name: "Roy", age: 26},
+        {name: "Sean", age: 27}
+    ],
+    showData: function () {
+        var rand = ((Math.random() * 2 | 0) + 1) - 1;
+        console.log(this.data[rand].name + ": " + this.data[rand].age);
+    }
+};
+var showUserData = user3.showData;
+showUserData();  // 会输出sam或者kurly
+</code></pre>
+
+<p>因为此时虽然调用的user3内部的方法,但是因为这个方法没有被某个对象调用,所以this会指向全局对象,所以this.data会是全局对象的变量,即最上面定义的data.</p>
+
+<h4>解决方案</h4>
+
+<p>使用bind,apply等方法强行绑定this的指向,然后执行即可.</p>
+
+<pre><code class="javascript">var showUserData = user3.showData.bind(user3);
+showUserData(); // Sean: 27
+</code></pre>
+
+<p>第一句话的意思是无论在什么情况下,user3对象的showData方法里的this都指向user3对象,所以下面即使直接调用该方法,this也会始终指向user3对象.</p>
+
+<h3>4. this被定义在从其他地方借来的方法中</h3>
+
+<p>有时候,我们在定义函数或对象时使用其他地方已经定义过的方法,例如:</p>
+
+<pre><code class="javascript">var gameController = {
+    scores: [20, 34, 55, 46, 77],
+    avgScore: null,
+    players: [
+        {name: "Ruth", playerId: 100, age: 22},
+        {name: "Shawnee", playerId: 101, age: 21}
+    ]
+};
+var appController = {
+    scores: [900, 845, 809, 950],
+    avgScore: null,
+    avg: function () {
+        var sumOfScores = this.scores.reduce(function (prev, cur, index, array) {
+            return prev + cur;
+        });
+
+        this.avgScore = sumOfScores / this.scores.length;
+    }
+};
+gameController.avgScore = appController.avg(); // undefined
+</code></pre>
+
+<p>这里gameController你的avgScore预留为null,目的是借用appController里定义的方法来使用自己的数据去计算结果.但是avg方法里的this仍然指向appController对象,因为avg方法是被其调用的,然后更新的this.avgScore也只是appController里的那个property,所以gameController里的acgScore仍然是null.</p>
+
+<h4>解决方案</h4>
+
+<p>把avg里的this强行绑定为指向gameController.</p>
+
+<pre><code class="javascript">appController.avg.apply(gameController, gameController.avgScore);
+console.log(gameController.avgScore);  // 46.4
+console.log(appController.avgScore);   // null
+</code></pre>
+
+<p>因为此时avg里的this指向了gameController,即使再次使用appController去调用它,其this也不会改变,所以不会更新appController里的avgScore这个property,输出仍然为null.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[JavaScript中的闭包]]></title>
+    <link href="http://qiusli.github.io/blog/2015/10/27/js-closure/"/>
+    <updated>2015-10-27T19:02:20-06:00</updated>
+    <id>http://qiusli.github.io/blog/2015/10/27/js-closure</id>
+    <content type="html"><![CDATA[<h2>为什么要用闭包</h2>
+
+<p>在JavaScript中没有私有变量的概念，即使一个变量定义在方法或者对象内部，在外面也仍然能够直接访问，闭包的出现解决了这个问题。</p>
+
+<h2>什么是闭包</h2>
+
+<p>简单地说，闭包就是定义在一个函数内部的函数，它能访问其父级函数里定义的变量。比如下面这个例子</p>
+
+<pre><code class="JavaScript">function outer() {
+    var i = 1;
+
+    function inner() {
+        i++;
+        return i;
+    }
+
+    return inner;
+}
+var k = outer();       
+k();
+console.log(k()); // 3
+</code></pre>
+
+<p>inner定义在outer内部，它能访问定义在outer中的变量i，outer返回inner函数的引用。变量k接受outer函数执行后的返回值（即inner），然后执行一次，i增加了1，最后再执行了一次，最后被打印出来。我们看到在outer执行完并返回之后，定义在outer内部的变量i并没有随之消逝，而是一直存在于内存中直到整个程序结束。</p>
+
+<pre><code class="Javascript">function sayName(firstname) {
+    var x = "Full name: ";
+
+    function inner(lastName) {
+        return x + firstname + " " + lastName;
+    }
+
+    return inner;
+}
+var a = sayName("Qiushi");
+console.log(a("Li"));      // Full name: Qiushi Li
+</code></pre>
+
+<p>上面的程序第一次调用sayName的时候传入了firstname，然后x和firstname都被记录在内存中，然后inner函数被返回并被a引用。下一次执行a的时候，其实是执行了inner函数，这时lastname被传入，结合之前记录的结合起来形成了最终的结果。</p>
+
+<p>使用闭包实现getter和setter并隐藏被操作的变量：</p>
+
+<pre><code class="Javascript">function modify() {
+    var i = 100;
+    return {
+        set: function (k) {
+            i = k;
+        },
+        get: function () {
+            return i;
+        }
+    };
+}
+var m = modify();
+console.log(m.get()); // 100
+m.set(103); 
+console.log(m.get()); // 103
+</code></pre>
+
+<h2>闭包的原理</h2>
+
+<p>我们都知道一个变量或者函数都有其作用域和定义域，它们不能脱离定义其的环境。例如一个定义在函数中的变量，当这个函数执行完毕并返回结果之后，定义在其中的变量也会被系统回收。类似于Java，Javavascript也有垃圾回收机制，可以概括为:
+1. 如果一个对象没有被其他对象指向，它会被GC回收
+2. 如果两个对象互相指向，同时不再被其他对象指向，那么这2个对象都会被回收</p>
+
+<p>回到闭包的原理上来，当我们把内部函数返回时，它通常会被外部的一个变量引用，这时系统不能回收内部函数，同时因为这个内部函数依赖于定义其的外部函数而存在，所以这个内部函数的外部环境也不能被回收，所以定义在其中的变量也一直常驻于内存。虽然这个变量在内存中，但是我们不能通过除了内部函数访问之外的方式去访问它，因为外部函数已经执行完毕了。</p>
+
+<pre><code class="Javascript">var obj = (function(){
+    var a = 1;
+    function increase1(){
+        a++;
+        console.log(a);
+    }
+    function increase2(){
+        a++;
+        console.log(a);
+    }
+    return {
+        b:increase1,            
+        c:increase2
+    }
+})();
+obj.b();      //2
+obj.c();      //3
+</code></pre>
+
+<p>上面的例子的意思是，首先定义一个外部函数，它里面有两个内部函数，返回一个有两个property的对象，这两个property分别是对两个内部函数的引用。这个外部函数在定义完成之后被立即执行，所以obj指向的是包含两个property的对象。然后obj调用那个对象的property，访问property指向的内部函数。</p>
+
+<h2>写闭包常犯的错</h2>
+
+<p>我们来看下面这段代码：</p>
+
+<pre><code class="Javascript">function addId(dogArray) {
+    var i;
+    var commonPre = 100;
+    for (i = 0; i &lt; dogArray.length; i++) {
+        dogArray[i]["id"] = function () {
+            return commonPre + i;
+        }
+    }
+}
+var dogArray = [
+    {name: "Ted", id: new Function()},
+    {name: "Snoop", id: new Function()},
+    {name: "Husky", id: new Function()}
+];
+addId(dogArray);
+var ted = dogArray[0];
+console.log(ted["id"]()); // 103
+</code></pre>
+
+<p>预计输出的结果应该是100，为什么是103呢？原因久在于在for循环时，每个dogArray元素的id property被赋值了一个方法，即指向了那个方法，但是那个方法并没有立即执行，而是在试图打印的时候才开始执行。同时那个方法中存放的是对i的引用，即for循环中的i，而不是i的值，所以在for循环执行完成之后i的值是3，所以该内部函数在执行的时候i等于3，得到最终结果为103.</p>
+
+<p>怎么修改呢？其实很简单，就是在定义该内部函数的地方立即执行它，此时i的引用的值就是当前i的值。</p>
+
+<pre><code class="Javascript">// modified
+function addIdBetter(dogArray) {
+    var i;
+    var commonPre = 100;
+    for (i = 0; i &lt; dogArray.length; i++) {
+        dogArray[i]["id"] = (function () {
+            return commonPre + i;
+        })();
+    }
+}
+addIdBetter(dogArray);
+var snoop = dogArray[1];
+console.log(snoop["id"]); // 101
+</code></pre>
+
+<h2>闭包的潜在危害</h2>
+
+<p>因为外部函数在其内部函数被引用时不能被释放，所以会增加内存的消耗。</p>
+
+<p>简而言之，闭包的出现使Javascript隐藏内部变量成为可能，他是Javascript中的难点，也是其特色之一。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[JavaScript中的继承]]></title>
+    <link href="http://qiusli.github.io/blog/2015/10/25/js-inheritance/"/>
+    <updated>2015-10-25T16:30:11-06:00</updated>
+    <id>http://qiusli.github.io/blog/2015/10/25/js-inheritance</id>
+    <content type="html"><![CDATA[<p>由于Javascript中的每个对象都有一个prototye,它也是对象的一个property.这个prototype也有自己的prototype,它能继承自那个prototype,而当前对象也能从自己的prototype那里继承property,这样就形成了一个prototype chain,这就是Javascript中继承的实现方式.简单来说,我们可以把当前对象的prototype(原型)看成是一个模板,当前对象继承自那个模板,然后扩充自己的方法.当前对象从其prototype那里获得一些property,而当前对象的prototype从其自身的prototype(prototype&rsquo;s prototype)那里也获得一些property.每一个通过Object literal或者new Object这种方式创建出的对象,其prototype指向object.prototype,意味着当前对象能获得object.prototype里的property.</p>
+
+<pre><code class="Javascript">var book = {
+    title: "red and black"
+};
+var p = Object.getPrototypeOf(book);
+console.log(p == Object.prototype);   // true
+</code></pre>
+
+<p>所有对象都从Object.prototype那里继承了一些方法,最常见的有5个:<code>hasOwnProperty</code>, <code>propertyIsEnumerable</code>,<code>isPrototypeOf</code>,<code>valueOf</code>,<code>toString</code>.</p>
+
+<p>实现继承最简单的方式就是显式指定当前对象的prototype(原型),这样它就能从其原型那里获得方法.我们可以使用Object.create()方法来实现这个目的,它会新创建一个对象,然后这个对象可以被赋值给一个变量.create第一个参数指定了谁是当前对象的原型,第二个参数是可选的,意味着一些自定义的property和其属性.</p>
+
+<pre><code class="Javascript">// specify reference of prototypr of current object
+var person1 = {name: "Qiushi"};
+// is same as
+var person2 = Object.create(Object.prototype, {
+    name: {
+        enumerable: true,
+        configurable: true,
+        writable: true,
+        value: "Qiushi"
+    }
+});
+</code></pre>
+
+<pre><code class="Javascript">// inherit from other objects
+var company = {
+    name: "Goldman Sachs",
+    sayName: function () {
+        console.log("Company name is " + this.name)
+    }
+};
+// anotherCompany自己定义了name property,它覆盖了从company那里继承来的name property.
+var anotherCompany = Object.create(company, {
+    name: {
+        enumerable: true,
+        configurable: true,
+        writable: true,
+        value: "ThoughtWorks"
+    }
+});
+company.sayName();    // Company name is Goldman Sachs
+anotherCompany.sayName();  // Company name is ThoughtWorks
+console.log(company.hasOwnProperty("sayName")); // true
+console.log(anotherCompany.hasOwnProperty("sayName")); // false
+console.log(company.isPrototypeOf(anotherCompany)); // true
+console.log(Object.getPrototypeOf(anotherCompany) == company); // true
+var thirdCompany = Object.create(anotherCompany, {
+    name: {
+        configurable: true,
+        writable: true,
+        enumerable: true,
+        value: "ThinkGeek"
+    }
+});
+console.log(Object.getPrototypeOf(thirdCompany)); // { name: 'ThoughtWorks' }
+</code></pre>
+
+<p>下面这张图解释了原型链:</p>
+
+<p><img src="/images/JS_inheritance/1.png"></p>
+
+<p>当一个方法被调用时,系统会首先去当前对象的own property里寻找,如果找到了就返回,否则回去当前对象的prototype里寻找,如果找到就返回,否则继续去当前对象的prototype的prototype里继续寻找,这个寻找链的终结是Obejct.prototype.</p>
+
+<p>有时候我们会想创建一个不继承自任何原型的对象,它在一些场景下很实用,例如被当做hash来用.</p>
+
+<pre><code class="Javascript">var nakedObject = Object.create(null);console.log("toString" in nakedObject);     // falseconsole.log("valueOf" in nakedObject);      // false
+</code></pre>
+
+<p>结合上面的create方法,同时我们知道每个方法都有自己的prototype,当我们在定义一个方法时,系统为我们指定了当前方法的prototype,同时指定了prototype里constructor的指向,具体如下:</p>
+
+<pre><code class="Javascript">function YourConstructor() {
+    // initialization
+}
+// JavaScript engine does this for you behind the scenes
+YourConstructor.prototype = Object.create(Object.prototype, {
+    constructor: {
+        configurable: true,
+        enumerable: true,
+        value: YourConstructor,
+        writable: true
+    }
+});
+</code></pre>
+
+<p>这其实是系统创建了一个Obejct.prototype的对象,然后让当前方法的prototype指向它.
+下面我们来看一个复杂一些的例子:</p>
+
+<pre><code class="Javascript">// overwrite prototype property
+function Rectangle(length, width) {
+    this.length = length;
+    this.width = width
+}
+Rectangle.prototype.getArea = function() {
+    return this.length * this.width;
+};
+Rectangle.prototype.toString = function() {
+    return "[Rectangle " + this.length + "x" + this.width + "]";
+};
+
+function Square(size) {
+    // constructor stealing, 调用父类的构造器
+    Rectangle.call(this, size, size);
+}
+Square.prototype = new Rectangle();
+Square.prototype.constructor = Square;
+Square.prototype.toString = function() {
+    return "[Square " + this.length + "x" + this.width + "]";
+};
+var rect = new Rectangle(5, 10);
+var square = new Square(6);
+console.log(rect.getArea());               // 50
+console.log(square.getArea());             // 36
+
+console.log(rect.toString());              // [Rectangle 5x10]
+console.log(square.toString());            // [Square 6x6]
+
+console.log(rect instanceof Rectangle);    // true
+console.log(rect instanceof Object);       // true
+console.log(square instanceof Square);     // true
+console.log(square instanceof Rectangle);  // true
+console.log(square instanceof Object);     // true
+</code></pre>
+
+<p>Square的对象同时是Square, Rectangle和Object的对像,下面这张图解释了原因:
+<img src="/images/JS_inheritance/2.png"></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[JavaScript中的构造器(constructor)和原型(prototype)]]></title>
+    <link href="http://qiusli.github.io/blog/2015/10/24/js-prototype/"/>
+    <updated>2015-10-24T22:22:16-06:00</updated>
+    <id>http://qiusli.github.io/blog/2015/10/24/js-prototype</id>
+    <content type="html"><![CDATA[<h2>构造器</h2>
+
+<p>JavaScript中的构造器其实就是方法/函数,我们新建一个方法,然后使用new去创建对象,可以说这个方法就是被创建的对象的原型.如果一个方法被作为对象的原型,约定俗成它应该大写字母开头.</p>
+
+<pre><code class="Javascript">function Person(name) {
+    this.name = name;
+    this.sayName = function() {
+        console.log(this.name);
+    };
+}
+var person1 = new Person("Nick");
+var person2 = new Person("Craig");
+console.log(person1 instanceof  Person);    // true
+console.log(person2 instanceof  Person);    // true
+</code></pre>
+
+<p>如果方法不接受参数,在使用new创建的时候可以省去括号</p>
+
+<pre><code class="Javascript">function Person(){...}
+var person1 = new Person;
+</code></pre>
+
+<p>每个新建的对象都有一个constructor property,它指向创建这个对象的方法.如果这个对象是使用Obejct literal或者new Object方法创建的,那么该对象的constructor指向object.</p>
+
+<pre><code class="JavaScript">console.log(person1.constructor == Person); // true
+console.log(person2.constructor == Person); // true
+</code></pre>
+
+<p>在使用构造器的时候前面要加上new关键字,表示被赋值的是一个对象,否则只是简单的方法调用.</p>
+
+<pre><code class="Javascript">var person1 = Person("Nicholas");         // note: missing "new"console.log(person1 instanceof Person);   // falseconsole.log(typeof person1);              // "undefined"console.log(name);                        // "Nicholas"
+</code></pre>
+
+<h2>原型</h2>
+
+<p>在创建对象时,我们有时会有这样一个疑虑:既然一些方法处理的事情是一样的,不过接受的参数不一样,我们为什么不能让许多对象共用这些方法呢?这就是prototype的由来.</p>
+
+<p>每个对象都有一个prototype,prototype自身也是一个对象,它也有自己的property.几乎每一个方法都有自己的prototype property,所有通过该方法创建的对象都能访问该方法的propotype.我们可以把一个对象的原型想象成它的一个模板,这个对象从它的模板原型中得到一些property,然后基于这个继续扩展.</p>
+
+<pre><code class="Javascript">
+var book = {
+    title: "the principle of object oriented javascript"
+};
+console.log("hasOwnProperty" in book);                            // true
+console.log(book.hasOwnProperty("hasOwnProperty"));               // false
+console.log(Object.prototype.hasOwnProperty("hasOwnProperty"));   // true
+</code></pre>
+
+<p>每一个对象在被创建后都有自己的[[Prototype]]property,它指向创建它的方法的prototype.</p>
+
+<p> <img src="/images/JS_prototype/1.png"></p>
+
+<p>当在试图访问一个对象上得某个property时,系统会先查看当前对象是否有这个own property,如果有则返回,否则继续查找它的[[Prototype]]指向的对象(即这个对象的原型)是否有这个property,有则返回否则返回undefined.prototype property不能被复写或者删除:</p>
+
+<pre><code class="Javascript">var object = {};
+console.log(object.toString());  // [object Object]
+object.toString = function() {
+    return "[object Custom]";
+};
+console.log(object.toString());  // [object Custom]
+delete object.toString;
+console.log(object.toString());  // [object Object]
+delete object.toString;
+console.log(object.toString());  // [object Object]
+</code></pre>
+
+<p>上面的代码首先打印原型的toString方法,然后试图修改这个prototype的方法,第二次成功打印出修改后的值.其实它并不是修改了prototype,而是创建了自己的一个own property,这个own property和prototype中的toString有相同的函数签名.然后我们试图删除prototype里的toString方法,这只是删除了自己定义的own property,最后一次是真正尝试删除prototype里的toString方法,但是并不成功,因为它不能在对象上删除.</p>
+
+<p> <img src="/images/JS_prototype/2.png"></p>
+
+<h3>创建prototype</h3>
+
+<pre><code class="Javascript">function Car(brand) {
+    this.brand = brand;
+}
+Car.prototype.sayBrand = function() {
+    console.log(this.brand);
+};
+var car1 = new Car("BMW");
+var car2 = new Car("Benz");
+car1.sayBrand();                       // BMW
+car2.sayBrand();                       // Benz
+</code></pre>
+
+<p>因为prototype里地property是所有对象共用的,这也许会产生一些潜在问题,即一个对象对prototype做出的改变会影响到另一个对象.</p>
+
+<pre><code class="Javascript">console.log("5. ------");
+Car.prototype.manufacureLocation = [];
+car1.manufacureLocation.push("Chongqing");
+car2.manufacureLocation.push("Beijing");
+console.log(car1.manufacureLocation);      // [ 'Chongqing', 'Beijing' ]
+console.log(car2.manufacureLocation);      // [ 'Chongqing', 'Beijing' ]
+</code></pre>
+
+<h3>同时创建多个prototype的property</h3>
+
+<pre><code class="Javascript">function University(name) {
+    this.name = name
+}
+University.prototype = {
+    sayName: function() {
+        console.log(this.name)
+    },
+    toString: function() {
+        console.log("WUSTL")
+    }
+};
+</code></pre>
+
+<p>这样做很方便,但是它也有一个潜在的问题,即复写了方法自身的prototype.之前,在方法被创建时,它在prototype里有自己的constructor,它指向方法自身.但是在上面的University.prototype = {&hellip;}语句其实是使用Object literal方法对University方法的prototype重新赋值了,所以它的prototype里的constructor指向了新的对象的prototype,即object得prototype.</p>
+
+<pre><code class="Javascript">var univ = new University("Washington University");
+console.log(univ instanceof University);     // true
+console.log(univ.constructor == University); // false
+console.log(univ.constructor == Object);     // true
+</code></pre>
+
+<p>为了避免这种情况的出现,我们可以显式制定方法的constructor的指向:</p>
+
+<pre><code class="Javascript">// solution to the above issue
+function Computer(brand) {
+    this.brand = brand
+}
+Computer.prototype = {
+    constructor: Computer,
+    sayBrand: function() {
+        console.log("brand is " + this.brand)
+    },
+    statePrice: function() {
+        console.log("price is quite high")
+    }
+};
+var computer = new Computer("Lenovo");
+console.log(computer instanceof Computer);     // true
+console.log(computer.constructor == Computer); // true
+</code></pre>
+
+<pre><code class="Javascript">var computer1 = new Computer("Apple");
+var computer2 = new Computer("Dell");
+Computer.prototype.quote = function(quote) {
+    console.log("quote of " + this.brand + " is " + quote)
+};
+computer1.quote("Think Different"); // quote of Apple is Think Different
+computer2.quote("Whatever");        // quote of Dell is Whatever
+</code></pre>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[JavaScript中的对象]]></title>
+    <link href="http://qiusli.github.io/blog/2015/10/24/js-object/"/>
+    <updated>2015-10-24T13:32:50-06:00</updated>
+    <id>http://qiusli.github.io/blog/2015/10/24/js-object</id>
+    <content type="html"><![CDATA[<p>JavaScript中的对象较之于其他非动态语言的对象,最大的优势在于它能随时被改变.其他语言(例如Java)中一旦创建了class就不能再修改,而JavaScript创建对象只相当于创建了一个框架,后面随时可以往这个框架里添加东西.</p>
+
+<!-- more -->
+
+
+<h2>添加和设置property的原理:Put与Set</h2>
+
+<p>当向对象中添加property时,其实是调用了对象的一个[[Put]]方法,这个方法存在于每个JavaScript对象中.当[[put]]被调用的时候,它创建的proterty是own property,即在当前环境下创建的property,不是从其他对象继承而来.对象中还有另一个[[Set]]方法,它在对象里property被重写的时候被系统调用.</p>
+
+<h2>删除property</h2>
+
+<p>对象在Javascript中存在的方式类似于键值对,增加property相当于add一个键值对,删除property相当于delete一个键值对.不能简单地通过把property设置为null来删除它,这样做的道理就是调用对象的[[Set]]方法来把键值对的值设置为null,但是键还在.正确的方法是使用delete方法.</p>
+
+<pre><code class="Javascript">person.age = 27;
+console.log("age" in person);  // true
+delete  person.age;
+console.log("age" in person);  // false
+</code></pre>
+
+<h2>检测property是否属于当前对象</h2>
+
+<p>新手容易犯的一个错误是使用下面这种方法来检测property是否存在于一个对象:</p>
+
+<pre><code class="JavaScript">var person = new Object();
+person.name = "Kevin";
+person.isCitizen = true;
+if(person.name) {
+    console.log(person.name); // kevin
+}
+</code></pre>
+
+<p>Javascript中的if语句判断为真的条件是value为truthy即可,truthy的范围包括对象,非空字符串,非0,true等等.所以上面的if语句会被判断为真.if语句判断为假的条件是value为falsy,falsy的范围包括null,undefined,0,false,NaN或空字符串等.</p>
+
+<p>正确的检测方法有2种,分别是in关键字和hasOwnproperty方法.前者覆盖的范围更广,所有从Object继承下来的方法都会被用来判断为当前对象的property,而后者更严格,只在当前环境下定义的对象property才被判断为真.</p>
+
+<pre><code class="Javascript">person.sayName = function() {
+    console.log("my name is " + this.name);
+};
+if("sayName" in person) {
+    console.log("sayName is in person");       // sayName is in person
+}
+if("toString" in person) {
+    console.log("toString is in person");      // toString is in person
+}
+if(person.hasOwnProperty("isCitizen")) {
+    console.log("has own property isCitizen"); // has own property isCitizen
+}
+if(person.hasOwnProperty("toString")) {        // false
+    console.log("has own property toString");
+}
+</code></pre>
+
+<h2>property的类型</h2>
+
+<p>Javascript对象property可以分为两种,分别是Data properties和Accessor properties,前者包括简单的数据条目键值对(name: &ldquo;Qiushi&rdquo;)和值为方法的键值对(sayName: function(){&hellip;}),无论是向对象中天剑简单数据条目或者值为方法的键值对,都调用的是对象的[[Put]]方法.Accessor properties是用来读取或者写入键值对的(类似于getter和setter).</p>
+
+<pre><code class="Javascript">var qiushi = {
+    // Javascript中的一种convention,以下划线开始的property被当做private的,但其实还是public的
+    _age: 27,
+    get age() {
+        console.log("read age");
+        return this._age;
+    },
+    set age(value) {
+        console.log("set age");
+        this._age = value;
+    }
+};
+console.log(qiushi.age);  // read age 27
+qiushi.age = 28;          // set age
+</code></pre>
+
+<h2>property的属性</h2>
+
+<h3>遍历property(enumerable)</h3>
+
+<p>可以使用for-in循环来遍历每个property:</p>
+
+<pre><code class="Javascript">var usa = {
+    state: 55,
+    population: 320000000
+};
+for(var prop in usa) {
+     // key
+    console.log("property : " + prop);
+    // value
+    console.log("property value : " + usa[prop]);
+}
+</code></pre>
+
+<p>对象中的每一个property默认都是能被遍历的,因为每个对象中的property有一个自己内部的叫做[[enumerable]]的属性,它定义当前property是否能被遍历.</p>
+
+<pre><code class="Javascript">// state is enumerable : true
+console.log("state is enumerable : " + usa.propertyIsEnumerable("state"));  
+var keys = Object.keys(usa);
+console.log("length" in keys); // true
+// length is enumerable : false
+console.log("length is enumerable : " + usa.propertyIsEnumerable("length"));
+</code></pre>
+
+<p>在使用literal或者constructor创建对象的时候,每一个property的[[enumerable]]属性默认为true,如果想创建不能被遍历的property,应该使用defineProperty方法:</p>
+
+<pre><code class="Javascript">var person1 = {
+    name: "Qiushi"
+};
+console.log(person1.propertyIsEnumerable("name"));  // true
+Object.defineProperty(person1, "name", {
+    enumerable: false
+});
+console.log(person1.propertyIsEnumerable("name"));  // false
+</code></pre>
+
+<h3>删除property(configurable)</h3>
+
+<pre><code class="Javascript">delete person1.name;
+console.log("name" in person1);  // true (意味着没被删除)
+person1.name = "shawnee";
+console.log(person1.name);       // shawnee (不能被删除但能被修改)
+</code></pre>
+
+<h3>修改property(writable)</h3>
+
+<pre><code class="Javascript">Object.defineProperty(person1, "age", {
+    value: 27,
+    enumerable: true,
+    configurable: true,
+    writable: false
+});
+console.log(person1.age); // 27
+person1.age = 99;
+console.log(person1.age); // 27 (值没有被修改)
+</code></pre>
+
+<p>Accessor properties有[[Get]]和[[Set]]两种属性,所以在定义它时可以指定其属性的行为:</p>
+
+<pre><code class="Javascript">var person1 = {    _name: "Nicholas"};Object.defineProperty(person1, "name", {    get: function() {        console.log("Reading name");        return this._name;    },    set: function(value) {        console.log("Setting name to %s", value);        this._name = value;    },    enumerable: true,    configurable: true});
+</code></pre>
+
+<h2>读取property的属性</h2>
+
+<pre><code class="Javascript">Object.defineProperty(person1, "age", {
+    value: 27,
+    enumerable: true,
+    configurable: true,
+    writable: false
+});
+
+// retrieve property attributes
+var descriptor = Object.getOwnPropertyDescriptor(person1, "age");
+console.log(descriptor.enumerable);                               // true
+console.log(descriptor.configurable);                             // true
+console.log(descriptor.writable);                                 // false
+</code></pre>
+
+<h2>防止对象被修改的方法</h2>
+
+<p>我们在一开始就提到Javascript中的对象可以在创建后被修改,但是在一些情况下我们想防止这种情况的发生,系统提供了3中方法.</p>
+
+<h3>extensible</h3>
+
+<p>顾名思义,它防止对象被extend,即不能添加新property到对象,但是能修改和删除已有property的内容.</p>
+
+<pre><code class="Javascript">// prevent modification
+console.log("is extensible : " + Object.isExtensible(person1)); // true
+Object.preventExtensions(person1);
+console.log("is extensible : " + Object.isExtensible(person1)); // false
+</code></pre>
+
+<h3>seal</h3>
+
+<p>和extensible,但是不能删除已有的property.</p>
+
+<pre><code class="Javascript">Object.seal(person1);
+console.log("is sealed : " + Object.isSealed(person1));         // true
+console.log("is extensible : " + Object.isExtensible(person1)); // false
+person1.name = "Rashmi";
+console.log(person1.name);                                      // Rashmi
+delete person1.name;
+console.log(person1.name);                                      // Rashmi (没有被删除)
+</code></pre>
+
+<h3>freeze</h3>
+
+<p>和seal类似但更严厉,只能读取property</p>
+
+<pre><code class="Javascript">var company = {
+    name: "Goldman Sachs",
+    size: "big",
+    salary: "low"
+};
+console.log("is frozen " + Object.isFrozen(company)); // is frozen false
+Object.freeze(company);
+console.log("is frozen " + Object.isFrozen(company)); // is frozen true
+company.name = "thoughtworks";
+console.log(company.name);                            // Goldman Sachs
+</code></pre>
+]]></content>
+  </entry>
+  
+</feed>

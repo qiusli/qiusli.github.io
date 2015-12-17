@@ -1,0 +1,310 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>iOS Programming 1(A simple iOS application) | 逆旅，行人</title>
+
+	<meta name="author" content="李秋实"> 
+	
+	<meta name="description" content="最近在学习iOS开发，虽然课上也有讲，但是还是不如自己看书学得更实在，今天就从最基础的iOS开发说起。值得注意的是，我在这类博客里所讲到的内容，完全是按照iOS Programming: The Big Nerd Ranch Guide第四版里面来的。 项目最后出来的效果类似于下面这张图： &hellip;"> <meta name="keywords" content="">
+
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="逆旅，行人" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href="/stylesheets/font-awesome.min.css" rel="stylesheet" type="text/css">
+	
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	
+</head>
+
+
+
+<body>
+	<header id="header">
+<div class="inner">
+  <ul class="navigation">
+    <li><a href="/"><h1>逆旅，行人</h1></a></li>
+    <li><a href="/" class="is-selected">Blog</a></li>
+    <li><a href="http://github.com/" target="blank">Github</a></li>
+  </ul>
+</div></header>
+
+	<div id="content" class="inner"><article class="post">
+	<h2 class="title">iOS Programming 1(A Simple iOS Application)</h2>
+	<div class="meta">
+		<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+
+<time datetime="2014-03-06T14:07:00-07:00" pubdate data-updated="true">Mar 6th, 2014</time></div>
+	</div>
+	<div class="entry-content"><p>最近在学习iOS开发，虽然课上也有讲，但是还是不如自己看书学得更实在，今天就从最基础的iOS开发说起。值得注意的是，我在这类博客里所讲到的内容，完全是按照iOS Programming: The Big Nerd Ranch Guide第四版里面来的。</p>
+
+<!-- more -->
+
+
+<p>项目最后出来的效果类似于下面这张图：</p>
+
+<p><img src="/images/ios1.png" width="300" height="600"></p>
+
+<p>首先新建一个empty application，此时的项目里面只有WUSTLAppDelegate文件。今天我们的目的是根据MVC模式建立一个简单的项目，所以，第一步我们从controller出发，建立一个名为WUSTLQuizViewController的类，需要注意的是，在建立的时候一定要勾上'with XIB for user interface'这个选项，这样系统会给你建一个后缀名为xib的文件。其实我们常常把xib文件和Interface Builder搞混，以为他俩是一回事，其实不然。Interface Builder其实是一个对象的编辑器，你可以在里面创建和修改对象(例如button和label)，然后把他们保存到一个文件中，这个保存下来的文件就是xib文件，这就不难理解为什么xib文件的全称是XML Interface Builder了。</p>
+
+<p>接下来我们应该创建MVC中的View部分了，我们分别拖动两个label和两个button到interface builder里面，然后调整他们的大小等，以达到上图的效果，这样就算完成了View部分。但是现在的View只是一个独立的东西，它不能传递信息给controller，也不能从controller得到显示的指令，所以下一个我们需要做的就是把controller和view连接起来。连接使两个在内存中的对象互相知道了对方，这样他们就能互相交流了。在Interface Builder中有两种连接可以使用：Outlet和Action。Outlet指向一个对象，Action是用来响应view中事件的具体方法。</p>
+
+<p>View里面有四个对象，所以我们也需要在相应的controller里面建立四个对象，在WUSTLQuizViewController.m里将@implementation和@end之间系统自动填充的代码全部删除，然后再在WUSTLQuizViewController.m的@interface和@end之间(category)加上如下代码(首先我们只加label部分)：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">weak</span><span class="p">)</span> <span class="kt">IBOutlet</span> <span class="bp">UILabel</span> <span class="o">*</span><span class="n">questionLabel</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">weak</span><span class="p">)</span> <span class="kt">IBOutlet</span> <span class="bp">UILabel</span> <span class="o">*</span><span class="n">answerLabel</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这两行代码的意思是，在每个WUSTLQuizViewController.m的对象中建立两个IBOutlet对象，分别叫做questionLabel和answerLabel，他们都指向UILabel，关键字IBOutlet的作用是告诉Interface Builder我们将用这个被Iboutlet修饰的对象连接Interface Builder中的一个对象。</p>
+
+<p>既然Controller和View两边都声明了对象，剩下就工作就是把他们连接起来了。我们找到xib文件，然后找到左边Placeholders，右键点击后会出现下面这样的弹框让你选择：</p>
+
+<p><img src="/images/ios2.png" width="400" height="400"></p>
+
+<p>我们可以看到在小黑框里面有我们刚刚在controller里面生命的Outlet对象，左键点击小黑框中变量右边的加号，然后连出一条线指向Label，如果Label高亮了就松开，这就创建了一个controller中的Outlet对象和View中的label对象的连接。</p>
+
+<p><img src="/images/ios3.png" width="600" height="600"></p>
+
+<p>同样的事再做一遍，连接另一个label。值得注意的是，刚才我们连线的时候是从小黑框到Interface Builder，这个顺序是有讲究的，因为我们想把在controller中的Outlet在View中显示，所以就是从小黑框到Interface Builder这个指向。</p>
+
+<p>UILabel已经连接了，那么接下来应该连接button了。因为我们想要的效果是在用户点击button的时候View给controller发送消息，这个时候在controller中应该有处理这个消息的方法，所以我们到WUSTLQuizViewController.m中建立两个对应的方法:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">IBAction</span><span class="p">)</span><span class="nf">showQuestion:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">sender</span> <span class="p">{</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">IBAction</span><span class="p">)</span><span class="nf">showAnswer:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">sender</span> <span class="p">{</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>上面代码中IBAction是告诉Xcode，这个方法是用来响应Interface Builder中的事件的。说到这里，不得不提一下Target\Action模式，他是objective-c中的一种消息机制，当用户在view中做出一些动作后，view会发送消息到controller，Target指的就是响应这个事件的对象(在这里就是WUSTLQuizViewController.m)，Action指的是Target中的哪个方法具体用来处理这个事件的(在这里Action分别是showQuestion和showAnswer方法)。这时我们再回到xib文件中，点击Interface Builder中的button，然后按住不放拉出一条线并在Placeholder中的file‘s owner松开(control-drag)：</p>
+
+<p><img src="/images/ios4.png" width="600" height="600"></p>
+
+<p>对两个button分别做同样的动作，我们就完成了button到controller的连接，也就是两次Target/Action操作。上面的file’s owner对于与xib文件来说就是controller，所以下面在做连接操作的时候，实际上就是View中的对象和Controller里面的对象做连接。接下来我们就需要回到controller中去实现具体的响应操作了。我们在WUSTLQuizViewController.m中刚才加label的地方加上两个NSArray和一个index，NSArray用来装question和answer，index用来存当前NSArray的下标。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="cp">#import &quot;WUSTLQuizViewController.h&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@interface</span> <span class="nc">WUSTLQuizViewController</span> <span class="p">()</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">)</span> <span class="kt">int</span> <span class="n">currentQuestionIndex</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">copy</span><span class="p">)</span> <span class="bp">NSArray</span> <span class="o">*</span><span class="n">questions</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">copy</span><span class="p">)</span> <span class="bp">NSArray</span> <span class="o">*</span><span class="n">answers</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">weak</span><span class="p">)</span> <span class="kt">IBOutlet</span> <span class="bp">UILabel</span> <span class="o">*</span><span class="n">questionLabel</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">weak</span><span class="p">)</span> <span class="kt">IBOutlet</span> <span class="bp">UILabel</span> <span class="o">*</span><span class="n">answerLabel</span><span class="p">;</span>
+</span><span class='line'><span class="k">@end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@implementation</span>
+</span><span class='line'><span class="err">...</span>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这里需要提到另一个方法:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="nl">initWithNibName</span><span class="p">:</span><span class="nl">bundle</span><span class="p">:</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这个方法是在包含他的controller被创建的时候调用的，我们可以在里面做一些初始化，例如在这里我们可以在里面初始化两个NSArray，如下：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">instancetype</span><span class="p">)</span> <span class="nf">initWithNibName:</span><span class="p">(</span><span class="bp">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">nibNameOrNil</span> <span class="nf">bundle:</span><span class="p">(</span><span class="bp">NSBundle</span>           <span class="o">*</span><span class="p">)</span><span class="nv">nibBundleOrNil</span> <span class="p">{</span>
+</span><span class='line'>  <span class="c1">// call the init method implemented by the superclass</span>
+</span><span class='line'>    <span class="nb">self</span> <span class="o">=</span> <span class="p">[</span><span class="nb">super</span> <span class="nl">initWithNibName</span><span class="p">:</span><span class="n">nibNameOrNil</span> <span class="nl">bundle</span><span class="p">:</span><span class="n">nibBundleOrNil</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="nb">self</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="c1">// create two arrays filled with questions and answers</span>
+</span><span class='line'>        <span class="c1">// and make the pointers point to them</span>
+</span><span class='line'>      <span class="nb">self</span><span class="p">.</span><span class="n">questions</span> <span class="o">=</span> <span class="l">@[</span><span class="s">@&quot;From what is cognac made?&quot;</span><span class="p">,</span>
+</span><span class='line'>       <span class="s">@&quot;What is 7 + 7?&quot;</span><span class="p">,</span>
+</span><span class='line'>       <span class="s">@&quot;What is the captal of Vermont?&quot;</span><span class="l">]</span><span class="p">;</span>
+</span><span class='line'>      <span class="nb">self</span><span class="p">.</span><span class="n">answers</span> <span class="o">=</span> <span class="l">@[</span><span class="s">@&quot;Grapes&quot;</span><span class="p">,</span> <span class="s">@&quot;14&quot;</span><span class="p">,</span> <span class="s">@&quot;Montpelier&quot;</span><span class="l">]</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// return the address of the new object</span>
+</span><span class='line'>  <span class="k">return</span> <span class="nb">self</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>那么这里的nib又是什么呢？注意到之前我们用到了xib文件，其实nib文件就是xib文件编译后产生的，他比xib文件更小，并且对于应用来说更容易解析。每一个应用都有一个叫做application bundle的文件夹，这里面专门存放这个有用会使用到的可执行文件和一些其他的资源，nib文件也会在编译完成后被拷贝到这里面。在运行时，系统会载入application bundle里面的资源并在需要的时候使用。</p>
+
+<p>我们接下来实现showQuestion和showAnswer方法了。由于在之前已经把他俩和Interface Builder中的button关联起来了，所以button在被点之后，这两个方法会相应地被调用。我们想要在show question点击的时候在label中显示问题，所以可以这么实现：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">IBAction</span><span class="p">)</span><span class="nf">showQuestion:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">sender</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nb">self</span><span class="p">.</span><span class="n">currentQuestionIndex</span><span class="o">++</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="nb">self</span><span class="p">.</span><span class="n">currentQuestionIndex</span> <span class="o">==</span> <span class="p">[</span><span class="nb">self</span><span class="p">.</span><span class="n">questions</span> <span class="n">count</span><span class="p">])</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nb">self</span><span class="p">.</span><span class="n">currentQuestionIndex</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="bp">NSString</span> <span class="o">*</span><span class="n">question</span> <span class="o">=</span> <span class="nb">self</span><span class="p">.</span><span class="n">questions</span><span class="p">[</span><span class="nb">self</span><span class="p">.</span><span class="n">currentQuestionIndex</span><span class="p">];</span>
+</span><span class='line'>    <span class="nb">self</span><span class="p">.</span><span class="n">questionLabel</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">question</span><span class="p">;</span>
+</span><span class='line'>    <span class="nb">self</span><span class="p">.</span><span class="n">answerLabel</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="s">@&quot;???&quot;</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>同理，现实答案的button可以这么实现：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">IBAction</span><span class="p">)</span><span class="nf">showAnswer:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">sender</span> <span class="p">{</span>
+</span><span class='line'>    <span class="bp">NSString</span> <span class="o">*</span><span class="n">answer</span> <span class="o">=</span> <span class="nb">self</span><span class="p">.</span><span class="n">answers</span><span class="p">[</span><span class="nb">self</span><span class="p">.</span><span class="n">currentQuestionIndex</span><span class="p">];</span>
+</span><span class='line'>    <span class="nb">self</span><span class="p">.</span><span class="n">answerLabel</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">answer</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>controller和view已经连接完毕了，但是还没有完，如果这个时候启动项目会发现屏幕上什么都没有，因为没有把view加入到显示中去。我们需要做的就是在AppDelegate的application方法中把当前的controller作为整个应用的root view：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nf">application:</span><span class="p">(</span><span class="bp">UIApplication</span> <span class="o">*</span><span class="p">)</span><span class="nv">application</span> <span class="nf">didFinishLaunchingWithOptions:</span><span class="p">(</span><span class="bp">NSDictionary</span>     <span class="o">*</span><span class="p">)</span><span class="nv">launchOptions</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nb">self</span><span class="p">.</span><span class="n">window</span> <span class="o">=</span> <span class="p">[[</span><span class="bp">UIWindow</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithFrame</span><span class="p">:[[</span><span class="bp">UIScreen</span> <span class="n">mainScreen</span><span class="p">]</span> <span class="n">bounds</span><span class="p">]];</span>
+</span><span class='line'>  <span class="c1">// Override point for customization after application launch.</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">WUSTLQuizViewController</span> <span class="o">*</span><span class="n">quizVC</span> <span class="o">=</span> <span class="p">[[</span><span class="n">WUSTLQuizViewController</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>    <span class="nb">self</span><span class="p">.</span><span class="n">window</span><span class="p">.</span><span class="n">rootViewController</span> <span class="o">=</span> <span class="n">quizVC</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nb">self</span><span class="p">.</span><span class="n">window</span><span class="p">.</span><span class="n">backgroundColor</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIColor</span> <span class="n">whiteColor</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="nb">self</span><span class="p">.</span><span class="n">window</span> <span class="n">makeKeyAndVisible</span><span class="p">];</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nb">YES</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>每个iOS应用都有一个AppDelegate，他是应用的入口，当应用启动和关闭的时候，可以在AppDelegate里面相应的方法中做初始化和收尾的工作。</p>
+
+<p>到这个时候，每次启动应用的时候，一个controller对象会被创建，然后initWithNibName方法会被调用，所有准备工作结束，可以启动项目了。</p>
+</div>
+
+
+<div class="sharing">
+  
+  
+  
+</div>
+</article>
+</div>
+	<footer id="footer" class="inner"><div class="aboutme">
+<hr>
+  <div class="profile">
+    <a href="http://twitter.com/"><img class="icon" src=""></a>
+
+    <h3>李秋实</h3>
+    <p><a href="https://www.facebook.com/photosynthesiis">Facebook</a>
+    &nbsp;|&nbsp; <a href="http://weibo.com/eminemlqs">Weibo</a>
+    &nbsp;|&nbsp; <a href="https://www.linkedin.com/in/qiushili">LinkedIn</a></p>
+
+    <div class="codes">
+      <h4>Codes</h4>
+      <div class="github"><a href="https://github.com/">github.com/</a></div>
+    </div>
+  </div>
+
+  <div class="float_clear"></div>
+
+</div>
+
+Copyright &copy; 2015
+ 李秋实 
+<br>
+Powered by Octopress.
+
+
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-51075907-5']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
+</footer>
+	
+
+</body>
+</html>

@@ -1,0 +1,365 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>JavaScript中的构造器(constructor)和原型(prototype) | 逆旅，行人</title>
+
+	<meta name="author" content="李秋实"> 
+	
+	<meta name="description" content="构造器 JavaScript中的构造器其实就是方法/函数,我们新建一个方法,然后使用new去创建对象,可以说这个方法就是被创建的对象的原型.如果一个方法被作为对象的原型,约定俗成它应该大写字母开头. 1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+function Person(name) { this &hellip;"> <meta name="keywords" content="">
+
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="逆旅，行人" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href="/stylesheets/font-awesome.min.css" rel="stylesheet" type="text/css">
+	
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	
+</head>
+
+
+
+<body>
+	<header id="header">
+<div class="inner">
+  <ul class="navigation">
+    <li><a href="/"><h1>逆旅，行人</h1></a></li>
+    <li><a href="/" class="is-selected">Blog</a></li>
+    <li><a href="http://github.com/" target="blank">Github</a></li>
+  </ul>
+</div></header>
+
+	<div id="content" class="inner"><article class="post">
+	<h2 class="title">JavaScript中的构造器(constructor)和原型(prototype)</h2>
+	<div class="meta">
+		<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+
+<time datetime="2015-10-24T22:22:16-06:00" pubdate data-updated="true">Oct 24th, 2015</time></div>
+	</div>
+	<div class="entry-content"><h2>构造器</h2>
+
+<p>JavaScript中的构造器其实就是方法/函数,我们新建一个方法,然后使用new去创建对象,可以说这个方法就是被创建的对象的原型.如果一个方法被作为对象的原型,约定俗成它应该大写字母开头.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='Javascript'><span class='line'><span class="kd">function</span> <span class="nx">Person</span><span class="p">(</span><span class="nx">name</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">this</span><span class="p">.</span><span class="nx">name</span> <span class="o">=</span> <span class="nx">name</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">this</span><span class="p">.</span><span class="nx">sayName</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">name</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">};</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">person1</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Person</span><span class="p">(</span><span class="s2">&quot;Nick&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">person2</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Person</span><span class="p">(</span><span class="s2">&quot;Craig&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">person1</span> <span class="k">instanceof</span>  <span class="nx">Person</span><span class="p">);</span>    <span class="c1">// true</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">person2</span> <span class="k">instanceof</span>  <span class="nx">Person</span><span class="p">);</span>    <span class="c1">// true</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>如果方法不接受参数,在使用new创建的时候可以省去括号</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='Javascript'><span class='line'><span class="kd">function</span> <span class="nx">Person</span><span class="p">(){...}</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">person1</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Person</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>每个新建的对象都有一个constructor property,它指向创建这个对象的方法.如果这个对象是使用Obejct literal或者new Object方法创建的,那么该对象的constructor指向object.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='JavaScript'><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">person1</span><span class="p">.</span><span class="nx">constructor</span> <span class="o">==</span> <span class="nx">Person</span><span class="p">);</span> <span class="c1">// true</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">person2</span><span class="p">.</span><span class="nx">constructor</span> <span class="o">==</span> <span class="nx">Person</span><span class="p">);</span> <span class="c1">// true</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在使用构造器的时候前面要加上new关键字,表示被赋值的是一个对象,否则只是简单的方法调用.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='Javascript'><span class='line'><span class="kd">var</span> <span class="nx">person1</span> <span class="o">=</span> <span class="nx">Person</span><span class="p">(</span><span class="s2">&quot;Nicholas&quot;</span><span class="p">);</span>         <span class="c1">// note: missing &quot;new&quot;</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">person1</span> <span class="k">instanceof</span> <span class="nx">Person</span><span class="p">);</span>   <span class="c1">// false</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="k">typeof</span> <span class="nx">person1</span><span class="p">);</span>              <span class="c1">// &quot;undefined&quot;</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">name</span><span class="p">);</span>                        <span class="c1">// &quot;Nicholas&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>原型</h2>
+
+<p>在创建对象时,我们有时会有这样一个疑虑:既然一些方法处理的事情是一样的,不过接受的参数不一样,我们为什么不能让许多对象共用这些方法呢?这就是prototype的由来.</p>
+
+<p>每个对象都有一个prototype,prototype自身也是一个对象,它也有自己的property.几乎每一个方法都有自己的prototype property,所有通过该方法创建的对象都能访问该方法的propotype.我们可以把一个对象的原型想象成它的一个模板,这个对象从它的模板原型中得到一些property,然后基于这个继续扩展.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='Javascript'><span class='line'><span class="kd">var</span> <span class="nx">book</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">title</span><span class="o">:</span> <span class="s2">&quot;the principle of object oriented javascript&quot;</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;hasOwnProperty&quot;</span> <span class="k">in</span> <span class="nx">book</span><span class="p">);</span>                            <span class="c1">// true</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">book</span><span class="p">.</span><span class="nx">hasOwnProperty</span><span class="p">(</span><span class="s2">&quot;hasOwnProperty&quot;</span><span class="p">));</span>               <span class="c1">// false</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nb">Object</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">hasOwnProperty</span><span class="p">(</span><span class="s2">&quot;hasOwnProperty&quot;</span><span class="p">));</span>   <span class="c1">// true</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>每一个对象在被创建后都有自己的[[Prototype]]property,它指向创建它的方法的prototype.</p>
+
+<p> <img src="/images/JS_prototype/1.png"></p>
+
+<p>当在试图访问一个对象上得某个property时,系统会先查看当前对象是否有这个own property,如果有则返回,否则继续查找它的[[Prototype]]指向的对象(即这个对象的原型)是否有这个property,有则返回否则返回undefined.prototype property不能被复写或者删除:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='Javascript'><span class='line'><span class="kd">var</span> <span class="nx">object</span> <span class="o">=</span> <span class="p">{};</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">object</span><span class="p">.</span><span class="nx">toString</span><span class="p">());</span>  <span class="c1">// [object Object]</span>
+</span><span class='line'><span class="nx">object</span><span class="p">.</span><span class="nx">toString</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="s2">&quot;[object Custom]&quot;</span><span class="p">;</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">object</span><span class="p">.</span><span class="nx">toString</span><span class="p">());</span>  <span class="c1">// [object Custom]</span>
+</span><span class='line'><span class="k">delete</span> <span class="nx">object</span><span class="p">.</span><span class="nx">toString</span><span class="p">;</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">object</span><span class="p">.</span><span class="nx">toString</span><span class="p">());</span>  <span class="c1">// [object Object]</span>
+</span><span class='line'><span class="k">delete</span> <span class="nx">object</span><span class="p">.</span><span class="nx">toString</span><span class="p">;</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">object</span><span class="p">.</span><span class="nx">toString</span><span class="p">());</span>  <span class="c1">// [object Object]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>上面的代码首先打印原型的toString方法,然后试图修改这个prototype的方法,第二次成功打印出修改后的值.其实它并不是修改了prototype,而是创建了自己的一个own property,这个own property和prototype中的toString有相同的函数签名.然后我们试图删除prototype里的toString方法,这只是删除了自己定义的own property,最后一次是真正尝试删除prototype里的toString方法,但是并不成功,因为它不能在对象上删除.</p>
+
+<p> <img src="/images/JS_prototype/2.png"></p>
+
+<h3>创建prototype</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='Javascript'><span class='line'><span class="kd">function</span> <span class="nx">Car</span><span class="p">(</span><span class="nx">brand</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">this</span><span class="p">.</span><span class="nx">brand</span> <span class="o">=</span> <span class="nx">brand</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="nx">Car</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">sayBrand</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">brand</span><span class="p">);</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">car1</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Car</span><span class="p">(</span><span class="s2">&quot;BMW&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">car2</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Car</span><span class="p">(</span><span class="s2">&quot;Benz&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="nx">car1</span><span class="p">.</span><span class="nx">sayBrand</span><span class="p">();</span>                       <span class="c1">// BMW</span>
+</span><span class='line'><span class="nx">car2</span><span class="p">.</span><span class="nx">sayBrand</span><span class="p">();</span>                       <span class="c1">// Benz</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>因为prototype里地property是所有对象共用的,这也许会产生一些潜在问题,即一个对象对prototype做出的改变会影响到另一个对象.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='Javascript'><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;5. ------&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="nx">Car</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">manufacureLocation</span> <span class="o">=</span> <span class="p">[];</span>
+</span><span class='line'><span class="nx">car1</span><span class="p">.</span><span class="nx">manufacureLocation</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="s2">&quot;Chongqing&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="nx">car2</span><span class="p">.</span><span class="nx">manufacureLocation</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="s2">&quot;Beijing&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">car1</span><span class="p">.</span><span class="nx">manufacureLocation</span><span class="p">);</span>      <span class="c1">// [ &#39;Chongqing&#39;, &#39;Beijing&#39; ]</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">car2</span><span class="p">.</span><span class="nx">manufacureLocation</span><span class="p">);</span>      <span class="c1">// [ &#39;Chongqing&#39;, &#39;Beijing&#39; ]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>同时创建多个prototype的property</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='Javascript'><span class='line'><span class="kd">function</span> <span class="nx">University</span><span class="p">(</span><span class="nx">name</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">this</span><span class="p">.</span><span class="nx">name</span> <span class="o">=</span> <span class="nx">name</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="nx">University</span><span class="p">.</span><span class="nx">prototype</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">sayName</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">name</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">},</span>
+</span><span class='line'>    <span class="nx">toString</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;WUSTL&quot;</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">};</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这样做很方便,但是它也有一个潜在的问题,即复写了方法自身的prototype.之前,在方法被创建时,它在prototype里有自己的constructor,它指向方法自身.但是在上面的University.prototype = {&hellip;}语句其实是使用Object literal方法对University方法的prototype重新赋值了,所以它的prototype里的constructor指向了新的对象的prototype,即object得prototype.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='Javascript'><span class='line'><span class="kd">var</span> <span class="nx">univ</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">University</span><span class="p">(</span><span class="s2">&quot;Washington University&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">univ</span> <span class="k">instanceof</span> <span class="nx">University</span><span class="p">);</span>     <span class="c1">// true</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">univ</span><span class="p">.</span><span class="nx">constructor</span> <span class="o">==</span> <span class="nx">University</span><span class="p">);</span> <span class="c1">// false</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">univ</span><span class="p">.</span><span class="nx">constructor</span> <span class="o">==</span> <span class="nb">Object</span><span class="p">);</span>     <span class="c1">// true</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>为了避免这种情况的出现,我们可以显式制定方法的constructor的指向:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='Javascript'><span class='line'><span class="c1">// solution to the above issue</span>
+</span><span class='line'><span class="kd">function</span> <span class="nx">Computer</span><span class="p">(</span><span class="nx">brand</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">this</span><span class="p">.</span><span class="nx">brand</span> <span class="o">=</span> <span class="nx">brand</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="nx">Computer</span><span class="p">.</span><span class="nx">prototype</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">constructor</span><span class="o">:</span> <span class="nx">Computer</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">sayBrand</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;brand is &quot;</span> <span class="o">+</span> <span class="k">this</span><span class="p">.</span><span class="nx">brand</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">},</span>
+</span><span class='line'>    <span class="nx">statePrice</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;price is quite high&quot;</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">computer</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Computer</span><span class="p">(</span><span class="s2">&quot;Lenovo&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">computer</span> <span class="k">instanceof</span> <span class="nx">Computer</span><span class="p">);</span>     <span class="c1">// true</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">computer</span><span class="p">.</span><span class="nx">constructor</span> <span class="o">==</span> <span class="nx">Computer</span><span class="p">);</span> <span class="c1">// true</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='Javascript'><span class='line'><span class="kd">var</span> <span class="nx">computer1</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Computer</span><span class="p">(</span><span class="s2">&quot;Apple&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">computer2</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Computer</span><span class="p">(</span><span class="s2">&quot;Dell&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="nx">Computer</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">quote</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">quote</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;quote of &quot;</span> <span class="o">+</span> <span class="k">this</span><span class="p">.</span><span class="nx">brand</span> <span class="o">+</span> <span class="s2">&quot; is &quot;</span> <span class="o">+</span> <span class="nx">quote</span><span class="p">)</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'><span class="nx">computer1</span><span class="p">.</span><span class="nx">quote</span><span class="p">(</span><span class="s2">&quot;Think Different&quot;</span><span class="p">);</span> <span class="c1">// quote of Apple is Think Different</span>
+</span><span class='line'><span class="nx">computer2</span><span class="p">.</span><span class="nx">quote</span><span class="p">(</span><span class="s2">&quot;Whatever&quot;</span><span class="p">);</span>        <span class="c1">// quote of Dell is Whatever</span>
+</span></code></pre></td></tr></table></div></figure>
+
+</div>
+
+
+<div class="sharing">
+  
+  
+  
+</div>
+</article>
+</div>
+	<footer id="footer" class="inner"><div class="aboutme">
+<hr>
+  <div class="profile">
+    <a href="http://twitter.com/"><img class="icon" src=""></a>
+
+    <h3>李秋实</h3>
+    <p><a href="https://www.facebook.com/photosynthesiis">Facebook</a>
+    &nbsp;|&nbsp; <a href="http://weibo.com/eminemlqs">Weibo</a>
+    &nbsp;|&nbsp; <a href="https://www.linkedin.com/in/qiushili">LinkedIn</a></p>
+
+    <div class="codes">
+      <h4>Codes</h4>
+      <div class="github"><a href="https://github.com/">github.com/</a></div>
+    </div>
+  </div>
+
+  <div class="float_clear"></div>
+
+</div>
+
+Copyright &copy; 2015
+ 李秋实 
+<br>
+Powered by Octopress.
+
+
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-51075907-5']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
+</footer>
+	
+
+</body>
+</html>

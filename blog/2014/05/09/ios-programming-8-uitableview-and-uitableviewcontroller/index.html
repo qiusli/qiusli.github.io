@@ -1,0 +1,271 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>iOS Programming 8 (UITableView &amp; UITableViewController) | 逆旅，行人</title>
+
+	<meta name="author" content="李秋实"> 
+	
+	<meta name="description" content="UITableView在iOS中是一个很重要的概念,它会把数据像列表一样显示在屏幕上.首先需要介绍几个概念: UITableView: 它是一个view,用于在屏幕上显示数据.它会向其对应的dataSource询问应该显示什么数据,然后再显示. &hellip;"> <meta name="keywords" content="">
+
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="逆旅，行人" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href="/stylesheets/font-awesome.min.css" rel="stylesheet" type="text/css">
+	
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	
+</head>
+
+
+
+<body>
+	<header id="header">
+<div class="inner">
+  <ul class="navigation">
+    <li><a href="/"><h1>逆旅，行人</h1></a></li>
+    <li><a href="/" class="is-selected">Blog</a></li>
+    <li><a href="http://github.com/" target="blank">Github</a></li>
+  </ul>
+</div></header>
+
+	<div id="content" class="inner"><article class="post">
+	<h2 class="title">iOS Programming 8 (UITableView &amp; UITableViewController)</h2>
+	<div class="meta">
+		<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+
+<time datetime="2014-05-09T12:20:00-06:00" pubdate data-updated="true">May 9th, 2014</time></div>
+	</div>
+	<div class="entry-content"><p><code>UITableView</code>在iOS中是一个很重要的概念,它会把数据像列表一样显示在屏幕上.首先需要介绍几个概念:</p>
+
+<ul>
+<li><code>UITableView</code>: 它是一个view,用于在屏幕上显示数据.它会向其对应的<code>dataSource</code>询问应该显示什么数据,然后再显示.对应的<code>dataShource</code>需要遵循<code>UITableViewDataSource</code>Protocol.</li>
+<li><code>UITableView</code>同时需要一个delegate,用来处理在<code>UITableView</code>上传出来的事件.这个delegate需要遵循<code>UITableViewDelegate</code> Protocol.</li>
+<li><code>UITableView</code>需要一个view controller来与之协作.</li>
+</ul>
+
+
+<!-- more -->
+
+
+<p><code>UITableViewController</code>同时兼顾了view controller, delegate和data source这三个角色.<code>UITableViewController</code>继承自<code>UIViewController</code>,所以它有自己的view,这个view就是<code>UITableView</code>.<code>UITableViewController</code>负责<code>UITableView</code>的准备和显示.同时<code>UITableViewController</code>遵循了<code>UITableViewDataSource</code>和<code>UITableViewDelegate</code>Protocol,所以它既是data source又是delegate.</p>
+
+<p><code>UITableView</code> <code>UITableViewController</code>对应的关系如下:</p>
+
+<p> <img src="/images/ios-8_1.png"></p>
+
+<p>首先创建一个<code>UITableViewController</code>的子类.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="k">@interface</span> <span class="nc">BNRItemsViewController</span> : <span class="bp">UITableViewController</span>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>UITableViewController</code>默认的初始化方法是<code>initWithStyle:</code>,这里的style可以是<code>UITableViewStylePlain</code>或者<code>UITableViewStyleGrouped</code>,不过在iOS7里面,两者的差别并不大.为了传给它一个style,我们可以让这个默认初始化方法调用另一个init方法,然后再到里面去调用默认的初始化方法:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">instancetype</span><span class="p">)</span> <span class="nf">init</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nb">self</span> <span class="o">=</span> <span class="p">[</span><span class="nb">super</span> <span class="nl">initWithStyle</span><span class="p">:</span><span class="n">UITableViewStylePlain</span><span class="p">];</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nb">self</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">instancetype</span><span class="p">)</span> <span class="nf">initWithStyle:</span><span class="p">(</span><span class="n">UITableViewStyle</span><span class="p">)</span><span class="nv">style</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="p">[</span><span class="nb">self</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这个时候我们只是建立了一个<code>UITableViewController</code>,但是并没有把它加到view hierachy里面去,所以我们来到AppDelegate的<code>application:didFinishLaunchingWithOptions</code>方法,在里面初始化这个<code>BNRItemsViewController</code>并把它作为window的root controller.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="n">BNRItemsViewController</span> <span class="o">*</span><span class="n">itemsViewController</span> <span class="o">=</span> <span class="p">[[</span><span class="n">BNRItemsViewController</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'><span class="nb">self</span><span class="p">.</span><span class="n">window</span><span class="p">.</span><span class="n">rootViewController</span> <span class="o">=</span> <span class="n">itemsViewController</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>现在运行,可以看到已经有table view的效果了,但是里面没有数据</p>
+
+<p> <img src="/images/ios-8_2.png" width="300" height="600"></p>
+
+<p>接下来我们就应该往里面加数据.需要复用在前几章建立的BNRItem类,这个类代表了具体的商品.接下来还需要建立一个BNRItemStore类,我们的tableview controller会从这个store里面获取数据.具体怎么建立的这里就不阐述了,总之这个store有<code>createItem</code>和<code>allItems</code>两个方法,前者用来创建item后者用来获取所有的item用来显示.现在我们可以创建50个item用于显示:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">instancetype</span><span class="p">)</span> <span class="nf">init</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nb">self</span> <span class="o">=</span> <span class="p">[</span><span class="nb">super</span> <span class="nl">initWithStyle</span><span class="p">:</span><span class="n">UITableViewStylePlain</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">BNRItemStore</span> <span class="o">*</span><span class="n">store</span> <span class="o">=</span> <span class="p">[</span><span class="n">BNRItemStore</span> <span class="n">sharedStore</span><span class="p">];</span>
+</span><span class='line'>    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">50</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="p">[</span><span class="n">store</span> <span class="n">createItem</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nb">self</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>当<code>UITableView</code>需要显示的时候,它会向data source发送一些消息,然后通过这些回馈判断应该显示多少行数据,每行都显示什么等等.<code>UITableViewController</code>有两个必须实现的方法,这两个方法被定义在了Protocol中,它们分别是<code>tableView:numberOfRowsInSection</code>和<code>tableView:cellForRowAtIndexPath</code>,前者是用来得到需要显示多少行,后者是用来告诉每行显示的数据的具体内容.因为我们一共建立了50条数据,所以可以用前面的方法来得到行数:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="bp">NSInteger</span><span class="p">)</span> <span class="nf">tableView:</span><span class="p">(</span><span class="bp">UITableView</span> <span class="o">*</span><span class="p">)</span><span class="nv">tableView</span> <span class="nf">numberOfRowsInSection:</span><span class="p">(</span><span class="bp">NSInteger</span><span class="p">)</span><span class="nv">section</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="p">[[[</span><span class="n">BNRItemStore</span> <span class="n">sharedStore</span><span class="p">]</span> <span class="n">allItems</span><span class="p">]</span> <span class="n">count</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在介绍后者之前,需要插入解释一个概念 &ndash; <code>UITableViewCell</code>,这个对象对应于table中每一行的数据,即table中的每一行都由一个<code>UITableViewCell</code>填充.这个对象有一个subview名叫<code>contentView</code>,它是用来具体显示数据的,以文本或图片的形式.这个<code>contentView</code>里有三个property:<code>detailTextLabel</code> <code>textLabel</code> <code>imageView</code>,今天我们将会用到第二个.</p>
+
+<p>下面是方法的实现:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="bp">UITableViewCell</span> <span class="o">*</span><span class="p">)</span> <span class="nf">tableView:</span><span class="p">(</span><span class="bp">UITableView</span> <span class="o">*</span><span class="p">)</span><span class="nv">tableView</span> <span class="nf">cellForRowAtIndexPath:</span><span class="p">(</span><span class="bp">NSIndexPath</span> <span class="o">*</span><span class="p">)</span><span class="nv">indexPath</span> <span class="p">{</span>
+</span><span class='line'>    <span class="bp">UITableViewCell</span> <span class="o">*</span><span class="n">tableViewCell</span> <span class="o">=</span> <span class="p">[[</span><span class="bp">UITableViewCell</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithStyle</span><span class="p">:</span><span class="n">UITableViewCellStyleDefault</span> <span class="nl">reuseIdentifier</span><span class="p">:</span><span class="s">@&quot;UITableViewCell&quot;</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="bp">NSArray</span> <span class="o">*</span><span class="n">items</span> <span class="o">=</span> <span class="p">[[</span><span class="n">BNRItemStore</span> <span class="n">sharedStore</span><span class="p">]</span> <span class="n">allItems</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">tableViewCell</span><span class="p">.</span><span class="n">textLabel</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="p">[[</span><span class="n">items</span> <span class="nl">objectAtIndex</span><span class="p">:</span><span class="n">indexPath</span><span class="p">.</span><span class="n">row</span><span class="p">]</span> <span class="n">description</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">return</span> <span class="n">tableViewCell</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>首先建立一个cell,然后得到所有items,并根据传进来的indexPath获取到特定的item,然后把item的description赋给cell的textLabel.这个方法是在每一行需要显示的时候被调用,所以indexPath对应于table view中对应的行数.</p>
+
+<p>再次运行,发现tableview被填充了数据:</p>
+
+<p> <img src="/images/ios-8_3.png" width="300" height="600"></p>
+
+<p>有时候,由于需要显示的内容非常多,如果使用上面的方法需要每次都建立tableviewcell,这样非常耗时耗内存,一个解决方法是建立特定数量的cell把它们放到一个cell pool里,然后当下滑tableview的时候,从pool里面提取cell来显示数据,把刚刚消失的cell放回到pool里去.为了达到上面的效果,我们只需要做两处改变:</p>
+
+<ul>
+<li>注册cell类</li>
+<li>在<code>tableView:cellForRowAtIndexPath</code>方法里面提取</li>
+</ul>
+
+
+<p>我们可以在<code>BNRTableViewController</code>的<code>viewDidLoad</code>方法里注册:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="nf">viewDidLoad</span> <span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="nb">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="nb">self</span><span class="p">.</span><span class="n">tableView</span> <span class="nl">registerClass</span><span class="p">:[</span><span class="bp">UITableViewCell</span> <span class="k">class</span><span class="p">]</span> <span class="nl">forCellReuseIdentifier</span><span class="p">:</span><span class="s">@&quot;UITableViewCell&quot;</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>然后修改<code>tableView:cellForRowAtIndexPath</code>方法:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="bp">UITableViewCell</span> <span class="o">*</span><span class="p">)</span> <span class="nf">tableView:</span><span class="p">(</span><span class="bp">UITableView</span> <span class="o">*</span><span class="p">)</span><span class="nv">tableView</span> <span class="nf">cellForRowAtIndexPath:</span><span class="p">(</span><span class="bp">NSIndexPath</span> <span class="o">*</span><span class="p">)</span><span class="nv">indexPath</span> <span class="p">{</span>
+</span><span class='line'>    <span class="bp">UITableViewCell</span> <span class="o">*</span><span class="n">tableViewCell</span> <span class="o">=</span> <span class="p">[</span><span class="n">tableView</span> <span class="nl">dequeueReusableCellWithIdentifier</span><span class="p">:</span><span class="s">@&quot;UITableViewCell&quot;</span> <span class="nl">forIndexPath</span><span class="p">:</span><span class="n">indexPath</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="bp">NSArray</span> <span class="o">*</span><span class="n">items</span> <span class="o">=</span> <span class="p">[[</span><span class="n">BNRItemStore</span> <span class="n">sharedStore</span><span class="p">]</span> <span class="n">allItems</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">tableViewCell</span><span class="p">.</span><span class="n">textLabel</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="p">[[</span><span class="n">items</span> <span class="nl">objectAtIndex</span><span class="p">:</span><span class="n">indexPath</span><span class="p">.</span><span class="n">row</span><span class="p">]</span> <span class="n">description</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">return</span> <span class="n">tableViewCell</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这里有一个identifier参数叫做UITableViewCell,这是因为我们通常在pool里面会放着各种不同类型的cell,在注册和提取的时候都给identifier标上名相当于给它们贴了标签,想要什么类型的cell只需要在提取的时候带上同样的标签就可以了.</p>
+</div>
+
+
+<div class="sharing">
+  
+  
+  
+</div>
+</article>
+</div>
+	<footer id="footer" class="inner"><div class="aboutme">
+<hr>
+  <div class="profile">
+    <a href="http://twitter.com/"><img class="icon" src=""></a>
+
+    <h3>李秋实</h3>
+    <p><a href="https://www.facebook.com/photosynthesiis">Facebook</a>
+    &nbsp;|&nbsp; <a href="http://weibo.com/eminemlqs">Weibo</a>
+    &nbsp;|&nbsp; <a href="https://www.linkedin.com/in/qiushili">LinkedIn</a></p>
+
+    <div class="codes">
+      <h4>Codes</h4>
+      <div class="github"><a href="https://github.com/">github.com/</a></div>
+    </div>
+  </div>
+
+  <div class="float_clear"></div>
+
+</div>
+
+Copyright &copy; 2015
+ 李秋实 
+<br>
+Powered by Octopress.
+
+
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-51075907-5']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
+</footer>
+	
+
+</body>
+</html>

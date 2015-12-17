@@ -1,0 +1,295 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>如何在Java中创建Immutable的类 | 逆旅，行人</title>
+
+	<meta name="author" content="李秋实"> 
+	
+	<meta name="description" content="首先，我们需要明白什么是Immutable的类。顾名思义，就是在对象创建后，它的状态不能改变。你首先也许会想到final这个关键字，因为它会使被修饰者要么不能被继承(修饰类)，要么不能被重新赋值(修饰字段)。下面我们来看一个简单的例子： 1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12 &hellip;"> <meta name="keywords" content="">
+
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="逆旅，行人" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href="/stylesheets/font-awesome.min.css" rel="stylesheet" type="text/css">
+	
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	
+</head>
+
+
+
+<body>
+	<header id="header">
+<div class="inner">
+  <ul class="navigation">
+    <li><a href="/"><h1>逆旅，行人</h1></a></li>
+    <li><a href="/" class="is-selected">Blog</a></li>
+    <li><a href="http://github.com/" target="blank">Github</a></li>
+  </ul>
+</div></header>
+
+	<div id="content" class="inner"><article class="post">
+	<h2 class="title">如何在Java中创建Immutable的类</h2>
+	<div class="meta">
+		<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+
+<time datetime="2013-08-08T21:30:00-06:00" pubdate data-updated="true">Aug 8th, 2013</time></div>
+	</div>
+	<div class="entry-content"><p>首先，我们需要明白什么是Immutable的类。顾名思义，就是在对象创建后，它的状态不能改变。你首先也许会想到final这个关键字，因为它会使被修饰者要么不能被继承(修饰类)，要么不能被重新赋值(修饰字段)。下面我们来看一个简单的例子：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">final</span> <span class="kd">class</span> <span class="nc">ImmutableClass_1</span> <span class="o">{</span>
+</span><span class='line'>    <span class="kd">private</span> <span class="kd">final</span> <span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+</span><span class='line'>    <span class="kd">private</span> <span class="kd">final</span> <span class="kt">double</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">1</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kt">int</span> <span class="nf">getI</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">i</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kt">double</span> <span class="nf">getJ</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">j</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<!-- more -->
+
+
+<p>这个类被final修饰，意味着它不能被继承，去除了子类修改状态的可能。字段i和j都被什么味final因为这它不能被重新赋值，所以它们都是不能改变的。最后这个类中没有任何的构造函数或者setter方法能对其中的字段做出改变。综上所述，这个类是一个不可变类。</p>
+
+<p>下面让我们来看一个稍微复杂一些的例子:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">final</span> <span class="kd">class</span> <span class="nc">MutableClass_1</span> <span class="o">{</span>
+</span><span class='line'>    <span class="kd">private</span> <span class="kd">final</span> <span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+</span><span class='line'>    <span class="kd">private</span> <span class="kd">final</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">stringList</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;();</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kt">int</span> <span class="nf">getI</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">i</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="nf">getStringList</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">stringList</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这个类和上面那个类很相似，类被final修饰，字段也被final修饰，但是它却并非immutable，问题出在stringList上。我们都知道在创建对象的时候，对象名只是一个指向真正对象的引用，我们可以通过这个引用去修改被指向的对象。这里的getStringList方法返回了这个对象的引用，于是这个对象就会有2个引用指向它，所以客户端可以通过下面这段代码来改变对象：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">test</span> <span class="o">{</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">MutableClass_1</span> <span class="n">mutableClass_1</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">MutableClass_1</span><span class="o">();</span>
+</span><span class='line'>        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">mutableClass_1</span><span class="o">.</span><span class="na">getStringList</span><span class="o">());</span>  <span class="c1">// print &#39;[]&#39;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">mutableClass_1</span><span class="o">.</span><span class="na">getStringList</span><span class="o">().</span><span class="na">add</span><span class="o">(</span><span class="s">&quot;a new string&quot;</span><span class="o">);</span>
+</span><span class='line'>        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">mutableClass_1</span><span class="o">.</span><span class="na">getStringList</span><span class="o">());</span>  <span class="c1">// print &#39;a new string&#39;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>我们看到mutableClass_1这个对象中的字段被改变了，所以它不是immutable的。如果想要让上面这个MutableClass_1变成不可变的，就需要用到Java中的深拷贝和浅拷贝了。代码如下:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">final</span> <span class="kd">class</span> <span class="nc">ImmutableClass_2</span> <span class="o">{</span>
+</span><span class='line'>    <span class="kd">private</span> <span class="kd">final</span> <span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+</span><span class='line'>    <span class="kd">private</span> <span class="kd">final</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">original</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;();</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kt">int</span> <span class="nf">getI</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">i</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="nf">getStringList</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">copy</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;();</span>
+</span><span class='line'>        <span class="k">for</span> <span class="o">(</span><span class="n">String</span> <span class="n">s</span> <span class="o">:</span> <span class="n">original</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>            <span class="n">copy</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">s</span><span class="o">);</span>
+</span><span class='line'>        <span class="o">}</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">copy</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>我在返回这个list的时候使用了深拷贝，返回了一个与老的list值完全一样的一个新的list。这样，在客户端调用的时候，指向的是另一个list了。所以下面这段代码就不能修改这个类了。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">test</span> <span class="o">{</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">ImmutableClass_2</span> <span class="n">mutableClass_2</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">ImmutableClass_2</span><span class="o">();</span>
+</span><span class='line'>        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">mutableClass_2</span><span class="o">.</span><span class="na">getStringList</span><span class="o">());</span>   <span class="c1">// print &#39;[]&#39;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">mutableClass_2</span><span class="o">.</span><span class="na">getStringList</span><span class="o">().</span><span class="na">add</span><span class="o">(</span><span class="s">&quot;a new string&quot;</span><span class="o">);</span>
+</span><span class='line'>        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">mutableClass_2</span><span class="o">.</span><span class="na">getStringList</span><span class="o">());</span>   <span class="c1">// print &#39;[]&#39;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>其实在Java中有很多默认的类都是immutable的，例如String，Integer等。这就意味着，当你在使用String的一些方法的时候，其实它返回的是另一个对象，原对象并没有改变。比如：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">test</span> <span class="o">{</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">String</span> <span class="n">a</span> <span class="o">=</span> <span class="s">&quot;AbC&quot;</span><span class="o">;</span>
+</span><span class='line'>        <span class="n">String</span> <span class="n">b</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="na">toLowerCase</span><span class="o">();</span>
+</span><span class='line'>        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">a</span><span class="o">);</span>  <span class="c1">// print &#39;AbC&#39;</span>
+</span><span class='line'>        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">b</span><span class="o">);</span>  <span class="c1">// print &#39;abc&#39;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>总结起来，如果要创建一个‘不可变’类，需要遵守下面几条：</p>
+
+<p>1、Class应该定义成final，避免被继承</p>
+
+<p>2、所有的成员变量应该被定义成final</p>
+
+<p>3、尽量不要暴露mutable的字段(例如list)，如果要暴露，使用深拷贝或浅拷贝</p>
+
+<p>4、不要提供可以改变类状态(成员变量)的方法(get 方法不要把类里的成员变量让外部客服端引用,当需要访问成员变量时，返回成员变量的copy)</p>
+
+<p>5、构造函数不要引用外部可变对象。如果需要引用外部可以变量，应该在构造函数里进行defensive copy</p>
+</div>
+
+
+<div class="sharing">
+  
+  
+  
+</div>
+</article>
+</div>
+	<footer id="footer" class="inner"><div class="aboutme">
+<hr>
+  <div class="profile">
+    <a href="http://twitter.com/"><img class="icon" src=""></a>
+
+    <h3>李秋实</h3>
+    <p><a href="https://www.facebook.com/photosynthesiis">Facebook</a>
+    &nbsp;|&nbsp; <a href="http://weibo.com/eminemlqs">Weibo</a>
+    &nbsp;|&nbsp; <a href="https://www.linkedin.com/in/qiushili">LinkedIn</a></p>
+
+    <div class="codes">
+      <h4>Codes</h4>
+      <div class="github"><a href="https://github.com/">github.com/</a></div>
+    </div>
+  </div>
+
+  <div class="float_clear"></div>
+
+</div>
+
+Copyright &copy; 2015
+ 李秋实 
+<br>
+Powered by Octopress.
+
+
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-51075907-5']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
+</footer>
+	
+
+</body>
+</html>

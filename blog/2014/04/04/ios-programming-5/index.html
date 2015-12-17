@@ -1,0 +1,300 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>iOS Programming 5(Redrawing and UIScrollView) | 逆旅，行人</title>
+
+	<meta name="author" content="李秋实"> 
+	
+	<meta name="description" content="在上一篇博客中,我们创建了一个画同心圆的app,这篇博客将继续在那上面扩展,当用户在屏幕上点击的时候同心圆会改变颜色.此外,还将在app里面加上UIScrollView,让用户通过scroll的方式浏览比屏幕本身大的view. 改变同心圆颜色 既然是通过点击来改变同心圆的颜色, &hellip;"> <meta name="keywords" content="">
+
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="逆旅，行人" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href="/stylesheets/font-awesome.min.css" rel="stylesheet" type="text/css">
+	
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	
+</head>
+
+
+
+<body>
+	<header id="header">
+<div class="inner">
+  <ul class="navigation">
+    <li><a href="/"><h1>逆旅，行人</h1></a></li>
+    <li><a href="/" class="is-selected">Blog</a></li>
+    <li><a href="http://github.com/" target="blank">Github</a></li>
+  </ul>
+</div></header>
+
+	<div id="content" class="inner"><article class="post">
+	<h2 class="title">iOS Programming 5(Redrawing and UIScrollView)</h2>
+	<div class="meta">
+		<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+
+<time datetime="2014-04-04T13:08:00-06:00" pubdate data-updated="true">Apr 4th, 2014</time></div>
+	</div>
+	<div class="entry-content"><p>在上一篇博客中,我们创建了一个画同心圆的app,这篇博客将继续在那上面扩展,当用户在屏幕上点击的时候同心圆会改变颜色.此外,还将在app里面加上UIScrollView,让用户通过scroll的方式浏览比屏幕本身大的view.</p>
+
+<h2>改变同心圆颜色</h2>
+
+<p>既然是通过点击来改变同心圆的颜色,那么我们肯定会想到用touch event来实现,在用户touch之后需要改变颜色,我们可以通过创建一个公有变量,然后在touch方法里改变他的颜色. 我们现在项目的格局如下:</p>
+
+<!--more-->
+
+
+<p> <img src="/images/ios-5_1.png" width="300" height="600"></p>
+
+<p>首先我们在<code>BNRHypnosisterView.m</code>的头部创建一个property文件:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="k">@interface</span> <span class="nc">BNRHypnosisterView</span> <span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">strong</span><span class="p">,</span> <span class="k">nonatomic</span><span class="p">)</span> <span class="bp">UIColor</span> <span class="o">*</span><span class="n">circleColor</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@implementation</span> <span class="nc">BNRHypnosisterView</span>
+</span><span class='line'><span class="p">...</span>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在这里创建property而不是在header文件里面创建的原因是隐藏这个变量.一个类的header文件是对所有类可见,一种默认的做法是如果变量是定义在header文件里面,那么就表示他可以和其他所有的类互动,如果我想要这个变量或者方法只在这个类中使用,那么可以把它定义在.m的category里面.这相当于对其他类隐藏了这个变量或方法,即使其子类都不能看到.</p>
+
+<p>声明完之后就应该开始定义了,我们可以到<code>initWithFrame</code>方法里给它首先赋予一个默认值:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">initWithFrame:</span><span class="p">(</span><span class="bp">CGRect</span><span class="p">)</span><span class="nv">frame</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="nb">self</span> <span class="o">=</span> <span class="p">[</span><span class="nb">super</span> <span class="nl">initWithFrame</span><span class="p">:</span><span class="n">frame</span><span class="p">];</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="nb">self</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="c1">// Initialization code</span>
+</span><span class='line'>        <span class="nb">self</span><span class="p">.</span><span class="n">backgroundColor</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIColor</span> <span class="n">clearColor</span><span class="p">];</span>
+</span><span class='line'>        <span class="nb">self</span><span class="p">.</span><span class="n">circleColor</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIColor</span> <span class="n">lightGrayColor</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nb">self</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这样在程序启动的时候同心圆的颜色是灰色.接下来就应该实现touch even了, 当用户点击后就改变<code>circleColor</code>的颜色我们通过实现默认的<code>touchesBegan</code>方法来实现.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="nf">touchesBegan:</span><span class="p">(</span><span class="bp">NSSet</span> <span class="o">*</span><span class="p">)</span><span class="nv">touches</span> <span class="nf">withEvent:</span><span class="p">(</span><span class="bp">UIEvent</span> <span class="o">*</span><span class="p">)</span><span class="nv">event</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kt">float</span> <span class="n">red</span> <span class="o">=</span> <span class="p">(</span><span class="n">arc4random</span><span class="p">()</span> <span class="o">%</span> <span class="mi">100</span><span class="p">)</span> <span class="o">/</span> <span class="mf">100.0</span><span class="p">;</span>
+</span><span class='line'>    <span class="kt">float</span> <span class="n">green</span> <span class="o">=</span> <span class="p">(</span><span class="n">arc4random</span><span class="p">()</span> <span class="o">%</span> <span class="mi">100</span><span class="p">)</span> <span class="o">/</span> <span class="mf">100.0</span><span class="p">;</span>
+</span><span class='line'>    <span class="kt">float</span> <span class="n">blue</span> <span class="o">=</span> <span class="p">(</span><span class="n">arc4random</span><span class="p">()</span> <span class="o">%</span> <span class="mi">100</span><span class="p">)</span> <span class="o">/</span> <span class="mf">100.0</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="bp">UIColor</span> <span class="o">*</span><span class="n">randomColor</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIColor</span> <span class="nl">colorWithRed</span><span class="p">:</span><span class="n">red</span> <span class="nl">green</span><span class="p">:</span><span class="n">green</span> <span class="nl">blue</span><span class="p">:</span><span class="n">blue</span> <span class="nl">alpha</span><span class="p">:</span><span class="mi">1</span><span class="p">];</span>
+</span><span class='line'>    <span class="nb">self</span><span class="p">.</span><span class="n">circleColor</span> <span class="o">=</span> <span class="n">randomColor</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>上面这个方法就是在每次用户点击的时候都重新开始算rgb在<code>randomColor</code>中的分量,然后得到一个新的<code>randomColor</code>并把它赋值给circleColor.这样<code>circleColor</code>的颜色就变了,现在我们可以运行看看效果:</p>
+
+<p> <img src="/images/ios-5_2.png" width="300" height="600"></p>
+
+<p>我们发现无论怎么点击屏幕,颜色都不会改变,这是为什么呢?这里有两个原因:</p>
+
+<ul>
+<li>UIView的drawRect方法默认情况下只在加载的时候被调用,所以无论我们怎么点击屏幕,这个方法都不会被再次调用,所以所有的view都没有被重新render.</li>
+<li>在drawRect方法里面没有改变同心圆的颜色,改变的代码如下:</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'> <span class="c1">// [[UIColor lightGrayColor] setStroke];</span>
+</span><span class='line'>    <span class="p">[</span><span class="nb">self</span><span class="p">.</span><span class="n">circleColor</span> <span class="n">setStroke</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这里又涉及到iOS的一种机制:<code>run loop</code>. 它指的是当iOS app 在运行的时候,他会开始一个<code>run loop</code>,这个loop是专门用来监听事件的.当一次事件发生时(例如touch),<code>run loop</code>会找到相应的handler来处理这次事件,当这个事件被处理后,<code>run loop</code>继续执行. 在我们这个程序中,当<code>run loop</code>发现touch事件时,会停下来调用<code>touchesBegan</code>方法处理它,在处理完后重新回到<code>tun loop</code>中.在重新回到<code>run loop</code>后,它会检查那些在上次执行handler之后有改变并且需要重新render的view,然后<code>run loop</code>会发送drawRect:方法给这些view,然他们重新去render.但是为什么我们在点击屏幕后view并没有被重新render呢?原来这是因为需要被重新render的view不是系统默认的,如果他们是默认的(例如UIButton, UIText),render会自动执行,否则我们需要调用view的<code>setNeedsDisplay</code>方法来让他重新render.在<code>touchesBegan:</code>方法的最后一句,我们看到<code>circleColor</code>被重新赋值(其实是它的setter方法被调用了),那么我们可以重载它的setter方法,并在里面调用<code>setNeedsDisplay</code>方法.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="nf">setCircleColor:</span><span class="p">(</span><span class="bp">UIColor</span> <span class="o">*</span><span class="p">)</span><span class="nv">circleColor</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">_circleColor</span> <span class="o">=</span> <span class="n">circleColor</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">[</span><span class="nb">self</span> <span class="n">setNeedsDisplay</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>再次运行,一切OK.</p>
+
+<p> <img src="/images/ios-5_3.png" width="250" height="500">
+ <img src="/images/ios-5_4.png" width="250" height="500">
+ <img src="/images/ios-5_5.png" width="250" height="500"></p>
+
+<h2>使用UIScrollView</h2>
+
+<p>Scroll view通常是为比屏幕更大的view准备的,这样就能通过上下左右滚动来查看完整的图片.之前我们是直接把当前的view加到<code>UIWindow</code>中,不过为了实现scroll view,我们需要把当前view加到scroll view中,然后再把这个scroll view加到<code>UIWindow</code>中去.</p>
+
+<p> <img src="/images/ios-5_UIScrollView.png" width="900" height="1200"></p>
+
+<p>然后到app delegate的<code>didFinishLaunchingWithOptions</code>里加上如下代码:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'>    <span class="bp">CGRect</span> <span class="n">screenRect</span> <span class="o">=</span> <span class="nb">self</span><span class="p">.</span><span class="n">window</span><span class="p">.</span><span class="n">bounds</span><span class="p">;</span>
+</span><span class='line'>    <span class="bp">CGRect</span> <span class="n">bigRect</span> <span class="o">=</span> <span class="n">screenRect</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">bigRect</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">width</span> <span class="o">*=</span> <span class="mi">2</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">bigRect</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">height</span> <span class="o">*=</span> <span class="mi">2</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="bp">UIScrollView</span> <span class="o">*</span><span class="n">scrollView</span> <span class="o">=</span> <span class="p">[[</span><span class="bp">UIScrollView</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithFrame</span><span class="p">:</span><span class="n">screenRect</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="nb">self</span><span class="p">.</span><span class="n">window</span> <span class="nl">addSubview</span><span class="p">:</span><span class="n">scrollView</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">BNRHypnosisterView</span> <span class="o">*</span><span class="n">hypnosisView</span> <span class="o">=</span> <span class="p">[[</span><span class="n">BNRHypnosisterView</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithFrame</span><span class="p">:</span><span class="n">bigRect</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">scrollView</span> <span class="nl">addSubview</span><span class="p">:</span><span class="n">hypnosisView</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>首先建立一个屏幕大小的CGRect作为<code>UIScrollView</code>的显示范围,然后建立一个两倍屏幕大小的CGRect作为view的显示范围,最后把view加到UIScrollView中.显示的效果如下:</p>
+
+<p> <img src="/images/ios-5_6.png" width="300" height="600"></p>
+
+<p>最后,我们可以把它做的更好看一些,我们给<code>UIScrollView</code>加两个view,并让他们在不同的屏幕显示:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'>    <span class="bp">CGRect</span> <span class="n">screenRect</span> <span class="o">=</span> <span class="nb">self</span><span class="p">.</span><span class="n">window</span><span class="p">.</span><span class="n">bounds</span><span class="p">;</span>
+</span><span class='line'>    <span class="bp">CGRect</span> <span class="n">bigRect</span> <span class="o">=</span> <span class="n">screenRect</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">bigRect</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">width</span> <span class="o">*=</span> <span class="mi">2</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'> <span class="bp">UIScrollView</span> <span class="o">*</span><span class="n">scrollView</span> <span class="o">=</span> <span class="p">[[</span><span class="bp">UIScrollView</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithFrame</span><span class="p">:</span><span class="n">screenRect</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="nb">self</span><span class="p">.</span><span class="n">window</span> <span class="nl">addSubview</span><span class="p">:</span><span class="n">scrollView</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">BNRHypnosisterView</span> <span class="o">*</span><span class="n">hypnosisView</span> <span class="o">=</span> <span class="p">[[</span><span class="n">BNRHypnosisterView</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithFrame</span><span class="p">:</span><span class="n">screenRect</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">scrollView</span><span class="p">.</span><span class="n">pagingEnabled</span> <span class="o">=</span> <span class="nb">YES</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">scrollView</span> <span class="nl">addSubview</span><span class="p">:</span><span class="n">hypnosisView</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">screenRect</span><span class="p">.</span><span class="n">origin</span><span class="p">.</span><span class="n">x</span> <span class="o">+=</span> <span class="n">screenRect</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">width</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">BNRHypnosisterView</span> <span class="o">*</span><span class="n">hypnosisView2</span> <span class="o">=</span> <span class="p">[[</span><span class="n">BNRHypnosisterView</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithFrame</span><span class="p">:</span><span class="n">screenRect</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">scrollView</span> <span class="nl">addSubview</span><span class="p">:</span><span class="n">hypnosisView2</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">scrollView</span><span class="p">.</span><span class="n">contentSize</span> <span class="o">=</span> <span class="n">bigRect</span><span class="p">.</span><span class="n">size</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>其中<code>scrollView.pagingEnabled = YES</code>的意思是在左右滑动的时候有翻页的效果,屏幕不会停在两个view的中间.
+ <img src="/images/ios-5_7.png" width="300" height="600"></p>
+</div>
+
+
+<div class="sharing">
+  
+  
+  
+</div>
+</article>
+</div>
+	<footer id="footer" class="inner"><div class="aboutme">
+<hr>
+  <div class="profile">
+    <a href="http://twitter.com/"><img class="icon" src=""></a>
+
+    <h3>李秋实</h3>
+    <p><a href="https://www.facebook.com/photosynthesiis">Facebook</a>
+    &nbsp;|&nbsp; <a href="http://weibo.com/eminemlqs">Weibo</a>
+    &nbsp;|&nbsp; <a href="https://www.linkedin.com/in/qiushili">LinkedIn</a></p>
+
+    <div class="codes">
+      <h4>Codes</h4>
+      <div class="github"><a href="https://github.com/">github.com/</a></div>
+    </div>
+  </div>
+
+  <div class="float_clear"></div>
+
+</div>
+
+Copyright &copy; 2015
+ 李秋实 
+<br>
+Powered by Octopress.
+
+
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-51075907-5']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
+</footer>
+	
+
+</body>
+</html>

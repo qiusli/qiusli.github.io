@@ -1,0 +1,328 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>深入浅出设计模式之工厂模式(Factory Method Pattern) | 逆旅，行人</title>
+
+	<meta name="author" content="李秋实"> 
+	
+	<meta name="description" content="工厂模式算是设计模式中用到的最多的一类了，对于它最直观的描述就是：父类定义一个创建对象的接口，由子类决定需要创建什么对象，这样让类把实例化推迟到了子类。下面来举个例子来阐述吧。 有一个披萨店，可以做各种各样的披萨，但位于不同地方的分店里的披萨味道会有些不同。如果利用工厂模式，就是： 1、 &hellip;"> <meta name="keywords" content="">
+
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="逆旅，行人" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href="/stylesheets/font-awesome.min.css" rel="stylesheet" type="text/css">
+	
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	
+</head>
+
+
+
+<body>
+	<header id="header">
+<div class="inner">
+  <ul class="navigation">
+    <li><a href="/"><h1>逆旅，行人</h1></a></li>
+    <li><a href="/" class="is-selected">Blog</a></li>
+    <li><a href="http://github.com/" target="blank">Github</a></li>
+  </ul>
+</div></header>
+
+	<div id="content" class="inner"><article class="post">
+	<h2 class="title">深入浅出设计模式之工厂模式(Factory Method Pattern)</h2>
+	<div class="meta">
+		<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+
+<time datetime="2013-07-13T14:01:00-06:00" pubdate data-updated="true">Jul 13th, 2013</time></div>
+	</div>
+	<div class="entry-content"><p>工厂模式算是设计模式中用到的最多的一类了，对于它最直观的描述就是：父类定义一个创建对象的接口，由子类决定需要创建什么对象，这样让类把实例化推迟到了子类。下面来举个例子来阐述吧。</p>
+
+<p>有一个披萨店，可以做各种各样的披萨，但位于不同地方的分店里的披萨味道会有些不同。如果利用工厂模式，就是：</p>
+
+<!-- more -->
+
+
+<p>1、有一个Pizza连锁店，它负责接收客户的订单(orderPizza)，之后就开始生产披萨</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">abstract</span> <span class="kd">class</span> <span class="nc">PizzaStore</span> <span class="o">{</span>
+</span><span class='line'>    <span class="kd">protected</span> <span class="n">Pizza</span> <span class="nf">orderPizza</span><span class="o">(</span><span class="n">String</span> <span class="n">type</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">Pizza</span> <span class="n">pizza</span> <span class="o">=</span> <span class="n">createPizza</span><span class="o">(</span><span class="n">type</span><span class="o">);</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">pizza</span><span class="o">.</span><span class="na">prepare</span><span class="o">();</span>
+</span><span class='line'>        <span class="n">pizza</span><span class="o">.</span><span class="na">bake</span><span class="o">();</span>
+</span><span class='line'>        <span class="n">pizza</span><span class="o">.</span><span class="na">cut</span><span class="o">();</span>
+</span><span class='line'>        <span class="n">pizza</span><span class="o">.</span><span class="na">box</span><span class="o">();</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">return</span> <span class="n">pizza</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">protected</span> <span class="kd">abstract</span> <span class="n">Pizza</span> <span class="nf">createPizza</span><span class="o">(</span><span class="n">String</span> <span class="n">type</span><span class="o">);</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>上面留了一个createPizza方法，这就是一个工厂方法，它返回一个产品的基类类型，而具体的类型由子类自己决定。父类不管返回的是什么，只管对返回的产品做相应的操作。这样做的好处是隔离了变化与不变的地方，面向接口编程。</p>
+
+<p>2、纽约的这家Pizza连锁店只生产纽约口味的披萨</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">NYPizzaStore</span> <span class="kd">extends</span> <span class="n">PizzaStore</span> <span class="o">{</span>
+</span><span class='line'>    <span class="nd">@Override</span>
+</span><span class='line'>    <span class="kd">protected</span> <span class="n">Pizza</span> <span class="nf">createPizza</span><span class="o">(</span><span class="n">String</span> <span class="n">type</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">if</span> <span class="o">(</span><span class="n">type</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="s">&quot;cheese&quot;</span><span class="o">))</span> <span class="o">{</span>
+</span><span class='line'>            <span class="k">return</span> <span class="k">new</span> <span class="nf">NYStyleCheesePizza</span><span class="o">();</span>
+</span><span class='line'>        <span class="o">}</span> <span class="k">else</span> <span class="nf">if</span> <span class="o">(</span><span class="n">type</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="s">&quot;veggie&quot;</span><span class="o">))</span> <span class="o">{</span>
+</span><span class='line'>            <span class="k">return</span> <span class="k">new</span> <span class="nf">NYStyleVeggiePizza</span><span class="o">();</span>
+</span><span class='line'>        <span class="o">}</span> <span class="k">else</span> <span class="nf">if</span> <span class="o">(</span><span class="n">type</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="s">&quot;clam&quot;</span><span class="o">))</span> <span class="o">{</span>
+</span><span class='line'>            <span class="k">return</span> <span class="k">new</span> <span class="nf">NYStyleClamPizza</span><span class="o">();</span>
+</span><span class='line'>        <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+</span><span class='line'>            <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+</span><span class='line'>        <span class="o">}</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>芝加哥的Pizza连锁店只生产芝加哥口味的披萨</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">ChicagoPizzaStore</span> <span class="kd">extends</span> <span class="n">PizzaStore</span> <span class="o">{</span>
+</span><span class='line'>    <span class="nd">@Override</span>
+</span><span class='line'>    <span class="kd">protected</span> <span class="n">Pizza</span> <span class="nf">createPizza</span><span class="o">(</span><span class="n">String</span> <span class="n">type</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">if</span> <span class="o">(</span><span class="n">type</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="s">&quot;cheese&quot;</span><span class="o">))</span> <span class="o">{</span>
+</span><span class='line'>            <span class="k">return</span> <span class="k">new</span> <span class="nf">ChicagoStyleCheesePizza</span><span class="o">();</span>
+</span><span class='line'>        <span class="o">}</span> <span class="k">else</span> <span class="nf">if</span> <span class="o">(</span><span class="n">type</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="s">&quot;veggie&quot;</span><span class="o">))</span> <span class="o">{</span>
+</span><span class='line'>            <span class="k">return</span> <span class="k">new</span> <span class="nf">ChicagoStyleVeggiePizza</span><span class="o">();</span>
+</span><span class='line'>        <span class="o">}</span> <span class="k">else</span> <span class="nf">if</span> <span class="o">(</span><span class="n">type</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="s">&quot;clam&quot;</span><span class="o">))</span> <span class="o">{</span>
+</span><span class='line'>            <span class="k">return</span> <span class="k">new</span> <span class="nf">ChicagoStyleClamPizza</span><span class="o">();</span>
+</span><span class='line'>        <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+</span><span class='line'>            <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+</span><span class='line'>        <span class="o">}</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>3、同时有一个Pizza的抽象类，各种披萨都继承自他</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">abstract</span> <span class="kd">class</span> <span class="nc">Pizza</span> <span class="o">{</span>
+</span><span class='line'>    <span class="kd">protected</span> <span class="n">String</span> <span class="n">description</span><span class="o">;</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">prepare</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;Preparing &quot;</span> <span class="o">+</span> <span class="n">description</span><span class="o">);</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">bake</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;Baking &quot;</span> <span class="o">+</span> <span class="n">description</span><span class="o">);</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">cut</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;Cutting &quot;</span> <span class="o">+</span> <span class="n">description</span><span class="o">);</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">box</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;Boxing &quot;</span> <span class="o">+</span> <span class="n">description</span><span class="o">);</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">ChicagoStyleCheesePizza</span> <span class="kd">extends</span> <span class="n">Pizza</span> <span class="o">{</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="nf">ChicagoStyleCheesePizza</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">description</span> <span class="o">=</span> <span class="s">&quot;Chicago Style Cheese Pizza&quot;</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">NYStyleCheesePizza</span> <span class="kd">extends</span> <span class="n">Pizza</span> <span class="o">{</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="nf">NYStyleCheesePizza</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">description</span> <span class="o">=</span> <span class="s">&quot;New York Style Cheese Pizza&quot;</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>.
+.
+.
+(这里就不一一列出了)</p>
+
+<p>4、客户开始订披萨</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">StartOrderingPizza</span> <span class="o">{</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">PizzaStore</span> <span class="n">chicagoPizzaStore</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">ChicagoPizzaStore</span><span class="o">();</span>
+</span><span class='line'>        <span class="n">chicagoPizzaStore</span><span class="o">.</span><span class="na">orderPizza</span><span class="o">(</span><span class="s">&quot;cheese&quot;</span><span class="o">);</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">PizzaStore</span> <span class="n">nyPizzaStore</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">NYPizzaStore</span><span class="o">();</span>
+</span><span class='line'>        <span class="n">nyPizzaStore</span><span class="o">.</span><span class="na">orderPizza</span><span class="o">(</span><span class="s">&quot;veggie&quot;</span><span class="o">);</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>上面可以发现，在不同的地方的店里面点相同的披萨得到的是不同的。披萨店的类图如下：
+<img src="/images/factory_pattern-1.png"></p>
+
+<p>另外，出了工厂模式之外，还有一种叫做抽象工厂模式。此工厂模式生成各种不同类型的物品的产品家族。例如我们要生成各种各样的鸭子，这些鸭子来自同一个家族(实现了相同接口)，我们就可以用抽象工厂模式：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">abstract</span> <span class="kd">class</span> <span class="nc">AbstractDuckFactory</span> <span class="o">{</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="kd">abstract</span> <span class="n">Quackable</span> <span class="nf">createMallardDuck</span><span class="o">();</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="kd">abstract</span> <span class="n">Quackable</span> <span class="nf">createRedheadDuck</span><span class="o">();</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="kd">abstract</span> <span class="n">Quackable</span> <span class="nf">createDuckCall</span><span class="o">();</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="kd">abstract</span> <span class="n">Quackable</span> <span class="nf">createRubberDuck</span><span class="o">();</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+</div>
+
+
+<div class="sharing">
+  
+  
+  
+</div>
+</article>
+</div>
+	<footer id="footer" class="inner"><div class="aboutme">
+<hr>
+  <div class="profile">
+    <a href="http://twitter.com/"><img class="icon" src=""></a>
+
+    <h3>李秋实</h3>
+    <p><a href="https://www.facebook.com/photosynthesiis">Facebook</a>
+    &nbsp;|&nbsp; <a href="http://weibo.com/eminemlqs">Weibo</a>
+    &nbsp;|&nbsp; <a href="https://www.linkedin.com/in/qiushili">LinkedIn</a></p>
+
+    <div class="codes">
+      <h4>Codes</h4>
+      <div class="github"><a href="https://github.com/">github.com/</a></div>
+    </div>
+  </div>
+
+  <div class="float_clear"></div>
+
+</div>
+
+Copyright &copy; 2015
+ 李秋实 
+<br>
+Powered by Octopress.
+
+
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-51075907-5']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
+</footer>
+	
+
+</body>
+</html>
