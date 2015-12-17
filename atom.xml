@@ -4,7 +4,7 @@
   <title><![CDATA[逆旅，行人]]></title>
   <link href="http://qiusli.github.io/atom.xml" rel="self"/>
   <link href="http://qiusli.github.io/"/>
-  <updated>2015-12-16T22:09:59-07:00</updated>
+  <updated>2015-12-16T22:16:13-07:00</updated>
   <id>http://qiusli.github.io/</id>
   <author>
     <name><![CDATA[李秋实]]></name>
@@ -129,7 +129,7 @@
 </span><span class='line'>    <span class="n">tableView</span><span class="p">.</span><span class="n">insertRowsAtIndexPaths</span><span class="p">([</span><span class="n">indexPath</span><span class="p">],</span> <span class="nl">withRowAnimation</span><span class="p">:</span> <span class="p">.</span><span class="n">Automatic</span><span class="p">)</span>
 </span><span class='line'>    <span class="n">dismissViewControllerAnimated</span><span class="p">(</span><span class="nb">true</span><span class="p">,</span> <span class="nl">completion</span><span class="p">:</span> <span class="nb">nil</span><span class="p">)</span>
 </span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="k">func</span> <span class="n">addItemViewController</span><span class="p">(</span><span class="nl">controller</span><span class="p">:</span> <span class="n">AddItemViewController</span><span class="p">,</span> <span class="n">didFinishEditingItem</span> <span class="nl">item</span><span class="p">:</span> <span class="n">ChecklistItem</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>   <span class="k">func</span> <span class="n">addItemViewController</span><span class="p">(</span><span class="nl">controller</span><span class="p">:</span> <span class="n">AddItemViewController</span><span class="p">,</span> <span class="n">didFinishEditingItem</span> <span class="nl">item</span><span class="p">:</span> <span class="n">ChecklistItem</span><span class="p">)</span> <span class="p">{</span>
 </span><span class='line'>    <span class="k">if</span> <span class="k">let</span> <span class="n">indexRow</span> <span class="o">=</span> <span class="n">items</span><span class="p">.</span><span class="n">indexOf</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="p">{</span>
 </span><span class='line'>        <span class="k">let</span> <span class="n">indexPath</span> <span class="o">=</span> <span class="bp">NSIndexPath</span><span class="p">(</span><span class="nl">forRow</span><span class="p">:</span> <span class="n">indexRow</span><span class="p">,</span> <span class="nl">inSection</span><span class="p">:</span> <span class="mi">0</span><span class="p">)</span>
 </span><span class='line'>        <span class="k">if</span> <span class="k">let</span> <span class="n">cell</span> <span class="o">=</span> <span class="n">tableView</span><span class="p">.</span><span class="n">cellForRowAtIndexPath</span><span class="p">(</span><span class="n">indexPath</span><span class="p">)</span> <span class="p">{</span>
@@ -137,7 +137,7 @@
 </span><span class='line'>        <span class="p">}</span>
 </span><span class='line'>    <span class="p">}</span>
 </span><span class='line'>    <span class="n">dismissViewControllerAnimated</span><span class="p">(</span><span class="nb">true</span><span class="p">,</span> <span class="nl">completion</span><span class="p">:</span> <span class="nb">nil</span><span class="p">)</span>
-</span><span class='line'><span class="p">}</span>
+</span><span class='line'>  <span class="p">}</span>
 </span><span class='line'>  <span class="p">...</span>
 </span><span class='line'><span class="p">}</span>
 </span></code></pre></td></tr></table></div></figure>

@@ -4,7 +4,7 @@
   <title><![CDATA[Category: tech | 逆旅，行人]]></title>
   <link href="http://qiusli.github.io/blog/categories/tech/atom.xml" rel="self"/>
   <link href="http://qiusli.github.io/"/>
-  <updated>2015-12-16T22:09:59-07:00</updated>
+  <updated>2015-12-16T22:16:13-07:00</updated>
   <id>http://qiusli.github.io/</id>
   <author>
     <name><![CDATA[李秋实]]></name>
@@ -81,7 +81,7 @@ class AddItemViewController {
     tableView.insertRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
     dismissViewControllerAnimated(true, completion: nil)
 }
-func addItemViewController(controller: AddItemViewController, didFinishEditingItem item: ChecklistItem) {
+   func addItemViewController(controller: AddItemViewController, didFinishEditingItem item: ChecklistItem) {
     if let indexRow = items.indexOf(item) {
         let indexPath = NSIndexPath(forRow: indexRow, inSection: 0)
         if let cell = tableView.cellForRowAtIndexPath(indexPath) {
@@ -89,7 +89,7 @@ func addItemViewController(controller: AddItemViewController, didFinishEditingIt
         }
     }
     dismissViewControllerAnimated(true, completion: nil)
-}
+  }
     ...
 }
 </code></pre>
