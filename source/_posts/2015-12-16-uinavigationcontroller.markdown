@@ -67,7 +67,7 @@ class ChecklistViewController: AddItemViewControllerDelegate {
     tableView.insertRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
     dismissViewControllerAnimated(true, completion: nil)
 }
-func addItemViewController(controller: AddItemViewController, didFinishEditingItem item: ChecklistItem) {
+   func addItemViewController(controller: AddItemViewController, didFinishEditingItem item: ChecklistItem) {
     if let indexRow = items.indexOf(item) {
         let indexPath = NSIndexPath(forRow: indexRow, inSection: 0)
         if let cell = tableView.cellForRowAtIndexPath(indexPath) {
@@ -75,7 +75,7 @@ func addItemViewController(controller: AddItemViewController, didFinishEditingIt
         }
     }
     dismissViewControllerAnimated(true, completion: nil)
-}
+  }
 	...
 }
 ```
