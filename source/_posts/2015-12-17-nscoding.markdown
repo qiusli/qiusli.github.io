@@ -1,0 +1,99 @@
+---
+layout: post
+title: "浅析iOS通过archiver和unarchiver持久化数据的基本方法"
+date: 2015-12-17 21:52:56 -0700
+comments: true
+categories: tech
+---
+每一个iOS应用都有存储自己数据的地方，这个地方叫做Documents directory。我们可以在程序运行的时候不断向其中添加数据，这样用户数据不会随着程序结束而消失。在下一次程序启动的时候可以再到这里去读取数据。
+
+上面提到了存储数据的地方是一个文件夹，数据具体存储地是一个后缀名为.plist的文件，如果项目的名称叫做Checklists，那么这个文件就叫做Checklists.plist。plist其实是一个XML文件，它的全名叫做property list。
+
+##如何找到Documents directory和plist##
+我们可以通过下面两段代码来找到Documents directory和其中的plist文件:
+
+```swift
+func documentDirectory() -> String {
+    let paths = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)
+    return paths[0]
+}
+    
+func dataFilePath() -> String {
+    return (documentDirectory() as NSString).stringByAppendingPathComponent("Checklists.plist")
+}
+```
+
+documentDirectory方法找到文件的存储地路径，dataFilePath把存储地和plist文件名连接起来，这样它返回的就是具体plist的文件路径了。
+
+##如何向plist存储数据##
+上面我们找到了plist的路径，可以通过下面的代码来向里面存储数据:
+
+```swift
+func saveChecklistItems() {
+    let data = NSMutableData()
+    let archiever = NSKeyedArchiver(forWritingWithMutableData: data)
+    archiever.encodeObject(items, forKey: "ChecklistItems")
+    archiever.finishEncoding()
+    data.writeToFile(dataFilePath(), atomically: true)
+}
+```
+
+关于上面的代码，第一行声明一个我们要存储的数据的container，数据都存储在data中。第二行我们让这个container派出一个代表－archiever，这个代表指导如何编码数据。第三行我们就告诉这个代表去编码items，并且给它一个别名`ChecklistItems`，这个别名在解码的时候会用到。第四行告诉我们编码结束了。第五行是这个包含我们数据的container被写到plist里去。值得注意的是，plist文件由archiever对象创建。值得注意的是，如果我们想在每次用户做出改变时立即保存，那么我们需要在各个用户会做出改变的方法中调用这个方法。
+
+##如何编码对象##
+在上面的例子中，items是一个包含多个对象的数组。archiever知道如何去编码一个数组，但是它并不知道如何去编码每个对象。为了达到这个目的，我们需要让该对象实现NSCoding和其中的两个方法，一个方法编码(encodeWithCoder)，另一个方法解码(required init?)。
+
+```swift
+class ChecklistItem: NSObject, NSCoding {
+    var text = ""
+    var checked = false
+    
+    override init() {
+        super.init()
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        text = aDecoder.decodeObjectForKey("Text") as! String
+        checked = aDecoder.decodeBoolForKey("Checked")
+        super.init()
+    }
+    
+    func toggleChecked() {
+        checked = !checked
+    }
+    
+    func encodeWithCoder(aCoder: NSCoder) {
+        aCoder.encodeObject(text, forKey: "Text")
+        aCoder.encodeBool(checked, forKey: "Checked")
+    }
+}
+```
+当实现了所有必要方法之后，archiever在编码的时候就能调用具体对象中的encodeWithCoder方法。
+
+##如何从plist文件读取数据##
+存储相反，我们可以通过下面的代码读取plist里的数据:
+
+```swift
+func loadChecklistItems() {
+    let path = dataFilePath()
+    if NSFileManager.defaultManager().fileExistsAtPath(path) {
+        if let data = NSData(contentsOfFile: path) {
+            let unarchiver = NSKeyedUnarchiver(forReadingWithData: data)
+            items = unarchiver.decodeObjectForKey("ChecklistItems") as! [ChecklistItem]
+            unarchiver.finishDecoding()
+        }
+    }
+}
+```
+
+我们先找到plist的路径，如果这个路径存在，我们就读取这个路径指向的plist文件里的内容，这次我们使用与`NSKeyedArchiver`对应的`NSKeyedUnarchiver`来读取。首先把数据存储到data中，然后data派出一个代表－unarchiver，它通过某个数据的别名来读取想要的数据，最后告诉我们它解码完了。我们可以在init方法中调用这个方法:
+
+```swift
+var items: [ChecklistItem]
+    
+required init?(coder aDecoder: NSCoder) {
+    items = [ChecklistItem]()
+    super.init(coder: aDecoder)
+    loadChecklistItems()
+}
+```
