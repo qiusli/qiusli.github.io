@@ -4,7 +4,7 @@
   <title><![CDATA[逆旅，行人]]></title>
   <link href="http://qiusli.github.io/atom.xml" rel="self"/>
   <link href="http://qiusli.github.io/"/>
-  <updated>2015-12-16T22:16:13-07:00</updated>
+  <updated>2015-12-17T22:51:52-07:00</updated>
   <id>http://qiusli.github.io/</id>
   <author>
     <name><![CDATA[李秋实]]></name>
@@ -12,6 +12,166 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[浅析iOS通过archiver和unarchiver持久化数据的基本方法]]></title>
+    <link href="http://qiusli.github.io/blog/2015/12/17/nscoding/"/>
+    <updated>2015-12-17T21:52:56-07:00</updated>
+    <id>http://qiusli.github.io/blog/2015/12/17/nscoding</id>
+    <content type="html"><![CDATA[<p>每一个iOS应用都有存储自己数据的地方，这个地方叫做Documents directory。我们可以在程序运行的时候不断向其中添加数据，这样用户数据不会随着程序结束而消失。在下一次程序启动的时候可以再到这里去读取数据。</p>
+
+<p>上面提到了存储数据的地方是一个文件夹，数据具体存储地是一个后缀名为.plist的文件，如果项目的名称叫做Checklists，那么这个文件就叫做Checklists.plist。plist其实是一个XML文件，它的全名叫做property list。</p>
+
+<h2>如何找到Documents directory和plist</h2>
+
+<p>我们可以通过下面两段代码来找到Documents directory和其中的plist文件:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='swift'><span class='line'><span class="k">func</span> <span class="n">documentDirectory</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">String</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">let</span> <span class="n">paths</span> <span class="o">=</span> <span class="n">NSSearchPathForDirectoriesInDomains</span><span class="p">(.</span><span class="n">DocumentDirectory</span><span class="p">,</span> <span class="p">.</span><span class="n">UserDomainMask</span><span class="p">,</span> <span class="nb">true</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">paths</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">func</span> <span class="n">dataFilePath</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">String</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="p">(</span><span class="n">documentDirectory</span><span class="p">()</span> <span class="kt">as</span> <span class="bp">NSString</span><span class="p">).</span><span class="n">stringByAppendingPathComponent</span><span class="p">(</span><span class="s">&quot;Checklists.plist&quot;</span><span class="p">)</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>documentDirectory方法找到文件的存储地路径，dataFilePath把存储地和plist文件名连接起来，这样它返回的就是具体plist的文件路径了。</p>
+
+<h2>如何向plist存储数据</h2>
+
+<p>上面我们找到了plist的路径，可以通过下面的代码来向里面存储数据:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='swift'><span class='line'><span class="k">func</span> <span class="nf">saveChecklistItems</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">let</span> <span class="n">data</span> <span class="o">=</span> <span class="bp">NSMutableData</span><span class="p">()</span>
+</span><span class='line'>    <span class="k">let</span> <span class="n">archiever</span> <span class="o">=</span> <span class="bp">NSKeyedArchiver</span><span class="p">(</span><span class="nl">forWritingWithMutableData</span><span class="p">:</span> <span class="n">data</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">archiever</span><span class="p">.</span><span class="n">encodeObject</span><span class="p">(</span><span class="n">items</span><span class="p">,</span> <span class="nl">forKey</span><span class="p">:</span> <span class="s">&quot;ChecklistItems&quot;</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">archiever</span><span class="p">.</span><span class="n">finishEncoding</span><span class="p">()</span>
+</span><span class='line'>    <span class="n">data</span><span class="p">.</span><span class="n">writeToFile</span><span class="p">(</span><span class="n">dataFilePath</span><span class="p">(),</span> <span class="nl">atomically</span><span class="p">:</span> <span class="nb">true</span><span class="p">)</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>关于上面的代码，第一行声明一个我们要存储的数据的container，数据都存储在data中。第二行我们让这个container派出一个代表－archiever，这个代表指导如何编码数据。第三行我们就告诉这个代表去编码items，并且给它一个别名<code>ChecklistItems</code>，这个别名在解码的时候会用到。第四行告诉我们编码结束了。第五行是这个包含我们数据的container被写到plist里去。值得注意的是，plist文件由archiever对象创建。值得注意的是，如果我们想在每次用户做出改变时立即保存，那么我们需要在各个用户会做出改变的方法中调用这个方法。</p>
+
+<h2>如何编码对象</h2>
+
+<p>在上面的例子中，items是一个包含多个对象的数组。archiever知道如何去编码一个数组，但是它并不知道如何去编码每个对象。为了达到这个目的，我们需要让该对象实现NSCoding和其中的两个方法，一个方法编码(encodeWithCoder)，另一个方法解码(required init?)。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+</pre></td><td class='code'><pre><code class='swift'><span class='line'><span class="k">class</span> <span class="nl">ChecklistItem</span><span class="p">:</span> <span class="bp">NSObject</span><span class="p">,</span> <span class="bp">NSCoding</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">var</span> <span class="n">text</span> <span class="o">=</span> <span class="s">&quot;&quot;</span>
+</span><span class='line'>    <span class="k">var</span> <span class="n">checked</span> <span class="o">=</span> <span class="nb">false</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kr">override</span> <span class="k">init</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nb">super</span><span class="p">.</span><span class="k">init</span><span class="p">()</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">required</span> <span class="k">init</span><span class="o">?</span><span class="p">(</span><span class="n">coder</span> <span class="nl">aDecoder</span><span class="p">:</span> <span class="bp">NSCoder</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">text</span> <span class="o">=</span> <span class="n">aDecoder</span><span class="p">.</span><span class="n">decodeObjectForKey</span><span class="p">(</span><span class="s">&quot;Text&quot;</span><span class="p">)</span> <span class="kt">as</span><span class="o">!</span> <span class="n">String</span>
+</span><span class='line'>        <span class="n">checked</span> <span class="o">=</span> <span class="n">aDecoder</span><span class="p">.</span><span class="n">decodeBoolForKey</span><span class="p">(</span><span class="s">&quot;Checked&quot;</span><span class="p">)</span>
+</span><span class='line'>        <span class="nb">super</span><span class="p">.</span><span class="k">init</span><span class="p">()</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">func</span> <span class="n">toggleChecked</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">checked</span> <span class="o">=</span> <span class="o">!</span><span class="n">checked</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">func</span> <span class="n">encodeWithCoder</span><span class="p">(</span><span class="nl">aCoder</span><span class="p">:</span> <span class="bp">NSCoder</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">aCoder</span><span class="p">.</span><span class="n">encodeObject</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="nl">forKey</span><span class="p">:</span> <span class="s">&quot;Text&quot;</span><span class="p">)</span>
+</span><span class='line'>        <span class="n">aCoder</span><span class="p">.</span><span class="n">encodeBool</span><span class="p">(</span><span class="n">checked</span><span class="p">,</span> <span class="nl">forKey</span><span class="p">:</span> <span class="s">&quot;Checked&quot;</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>当实现了所有必要方法之后，archiever在编码的时候就能调用具体对象中的encodeWithCoder方法。</p>
+
+<h2>如何从plist文件读取数据</h2>
+
+<p>存储相反，我们可以通过下面的代码读取plist里的数据:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='swift'><span class='line'><span class="k">func</span> <span class="nf">loadChecklistItems</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">let</span> <span class="n">path</span> <span class="o">=</span> <span class="n">dataFilePath</span><span class="p">()</span>
+</span><span class='line'>    <span class="k">if</span> <span class="bp">NSFileManager</span><span class="p">.</span><span class="n">defaultManager</span><span class="p">().</span><span class="n">fileExistsAtPath</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">if</span> <span class="k">let</span> <span class="n">data</span> <span class="o">=</span> <span class="bp">NSData</span><span class="p">(</span><span class="nl">contentsOfFile</span><span class="p">:</span> <span class="n">path</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="k">let</span> <span class="n">unarchiver</span> <span class="o">=</span> <span class="bp">NSKeyedUnarchiver</span><span class="p">(</span><span class="nl">forReadingWithData</span><span class="p">:</span> <span class="n">data</span><span class="p">)</span>
+</span><span class='line'>            <span class="n">items</span> <span class="o">=</span> <span class="n">unarchiver</span><span class="p">.</span><span class="n">decodeObjectForKey</span><span class="p">(</span><span class="s">&quot;ChecklistItems&quot;</span><span class="p">)</span> <span class="kt">as</span><span class="o">!</span> <span class="p">[</span><span class="n">ChecklistItem</span><span class="p">]</span>
+</span><span class='line'>            <span class="n">unarchiver</span><span class="p">.</span><span class="n">finishDecoding</span><span class="p">()</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>我们先找到plist的路径，如果这个路径存在，我们就读取这个路径指向的plist文件里的内容，这次我们使用与<code>NSKeyedArchiver</code>对应的<code>NSKeyedUnarchiver</code>来读取。首先把数据存储到data中，然后data派出一个代表－unarchiver，它通过某个数据的别名来读取想要的数据，最后告诉我们它解码完了。我们可以在init方法中调用这个方法:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='swift'><span class='line'><span class="k">var</span> <span class="nl">items</span><span class="p">:</span> <span class="p">[</span><span class="n">ChecklistItem</span><span class="p">]</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">required</span> <span class="k">init</span><span class="o">?</span><span class="p">(</span><span class="n">coder</span> <span class="nl">aDecoder</span><span class="p">:</span> <span class="bp">NSCoder</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">items</span> <span class="o">=</span> <span class="p">[</span><span class="n">ChecklistItem</span><span class="p">]()</span>
+</span><span class='line'>    <span class="nb">super</span><span class="p">.</span><span class="k">init</span><span class="p">(</span><span class="nl">coder</span><span class="p">:</span> <span class="n">aDecoder</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">loadChecklistItems</span><span class="p">()</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[浅析UINavigationController]]></title>
@@ -3321,156 +3481,6 @@ hoist),后者不会.</p>
 <p>下面是在使用<code>less</code>浏览的时候可以使用的快捷键:</p>
 
 <p> <img src="http://qiusli.github.io/images/linux-1_15.png"></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[正则表达式必知必会 4]]></title>
-    <link href="http://qiusli.github.io/blog/2014/05/17/regex4/"/>
-    <updated>2014-05-17T23:25:00-06:00</updated>
-    <id>http://qiusli.github.io/blog/2014/05/17/regex4</id>
-    <content type="html"><![CDATA[<h2>前后查找</h2>
-
-<p>#</p>
-
-<p><code>文本</code>:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;head&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;title&gt;</span>Ben Forta&#39;s Homepage<span class="nt">&lt;/title&gt;</span>
-</span><span class='line'><span class="nt">&lt;/head&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p><code>正则表达式</code>: \&lt;[Tt][Ii][Tt][Ll][Ee]>.*?\&lt;/[Tt][Ii][Tt][Ll][Ee]></p>
-
-<p><code>结果</code>: \<title>Ben Forta&rsquo;s Homepage\</title></p>
-
-<!-- more -->
-
-
-<p>本意是想要匹配出标题里面的文字,但是结果确实连标题的tag也一起匹配出来了,尽管我们可以使用上一章讲到的子表达式来把正则表达式分成3块然后取第2块出来,但是这样不免有些麻烦,这个时候就可以使用前后查找来解决这个问题.</p>
-
-<p><code>向前查找</code>(<code>?=</code>): 指定一个必须匹配但无需在结果中返回的模式.从语法上看,向前查找就是一个以<code>?=</code>开头的子表达式,需要匹配的文本跟在=后面.</p>
-
-<p>#</p>
-
-<p><code>文本</code>:</p>
-
-<p><a href="http://www.forta.com">http://www.forta.com</a></p>
-
-<p><a href="https://mail.forta.com">https://mail.forta.com</a></p>
-
-<p><a href="ftp://ftp.forta.com">ftp://ftp.forta.com</a></p>
-
-<p><code>正则表达式</code>: .+(?=:)</p>
-
-<p><code>结果</code>: http    https     ftp</p>
-
-<p>上面列出的URL地址里,协议和主机名以冒号<code>:</code>相隔.模式<code>.+</code>匹配任意文本,子表达式<code>(?=:)</code>匹配冒号<code>:</code>.值得注意的是被匹配到的<code>:</code>并没有出现在结果中,我们用<code>?=</code>向正则表达式引擎说明只要找到<code>:</code>就行了,不要把它包含在最终的结果里.</p>
-
-<p>#</p>
-
-<p><code>文本</code>:</p>
-
-<p><a href="http://www.forta.com">http://www.forta.com</a></p>
-
-<p><a href="https://mail.forta.com">https://mail.forta.com</a></p>
-
-<p><a href="ftp://ftp.forta.com">ftp://ftp.forta.com</a></p>
-
-<p><code>正则表达式</code>: .+(:)</p>
-
-<p><code>结果</code>: <a href="http:">http:</a>    <a href="https:">https:</a>     <a href="ftp:">ftp:</a></p>
-
-<p>这里的正则表达式没有使用向前查找,在最终的结果里面则包含了冒号.</p>
-
-<h2>向后查找</h2>
-
-<p><code>向后查找</code>(<code>?&lt;=</code>): 与向前查找大同小异.只是这次匹配但不返回的字符在首部了,它必须用在一个子表达式里.</p>
-
-<p>#</p>
-
-<p><code>文本</code>:</p>
-
-<p>ABC01: $23.12</p>
-
-<p>HGG42: $122.81</p>
-
-<p>AIOS98: $981.02</p>
-
-<p>HSW92: $72.33</p>
-
-<p><code>正则表达式</code>: \$[\d.]+</p>
-
-<p><code>结果</code>: $23.12    $122.81    $981.02    $72.33</p>
-
-<p>本想要匹配具体的金额,但是连同<code>$</code>也被返回了,这里就是向后匹配大显身手的时候.</p>
-
-<p>#</p>
-
-<p><code>文本</code>:</p>
-
-<p>ABC01: $23.12</p>
-
-<p>HGG42: $122.81</p>
-
-<p>AIOS98: $981.02</p>
-
-<p>HSW92: $72.33</p>
-
-<p><code>正则表达式</code>: (?&lt;=\$)[\d.]+</p>
-
-<p><code>结果</code>: 23.12    122.81    981.02    72.33</p>
-
-<h2>把向前和向后查找结合起来</h2>
-
-<p>#</p>
-
-<p><code>文本</code>:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;head&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;title&gt;</span>Ben Forta&#39;s Homepage<span class="nt">&lt;/title&gt;</span>
-</span><span class='line'><span class="nt">&lt;/head&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p><code>正则表达式</code>: (?&lt;=\&lt;[Tt][Ii][Tt][Ll][Ee]>).*?(?=\&lt;/[Tt][Ii][Tt][Ll][Ee]>)</p>
-
-<p><code>结果</code>: Ben Forta&rsquo;s Homepage</p>
-
-<p>这里我们在两个tag之前分别使用了向后和向前查找,表明匹配两个tag,但不返回它们,所以最后的结果就只包含字符.</p>
-
-<h2>对前后查找取非</h2>
-
-<p>我们前面遇到的向前查找和向后查找都是使用某个特殊字符来定位然后向前或者向后匹配,这种查找称为正向前查找(positive lookahead)和正向后查找(positive lookbehind).下面讲到的内容与之正好想法,称为负向前查找(negative lookahead)和负向后查找(negative lookbehind),顾名思义我们可以猜到它们其实就是匹配不以某个字符开头或者结尾的模式.</p>
-
-<p> <img src="http://qiusli.github.io/images/regex-4_1.png"></p>
-
-<p>#</p>
-
-<p><code>文本</code>: I paid $30 for 100 apples, 50 oranges and 30 pears. I saved $5 on this order.</p>
-
-<p><code>正则表达式</code>: (?&lt;=\$)\d+</p>
-
-<p><code>结果</code>: 30    5</p>
-
-<p>结果返回了以$开头的数字,既钱数. 接下来,如果我们只想查找水果个数.</p>
-
-<p>#</p>
-
-<p><code>文本</code>: I paid $30 for 100 apples, 50 oranges and 30 pears. I saved $5 on this order.</p>
-
-<p><code>正则表达式</code>: \b(?&lt;!\$)\d+\b</p>
-
-<p><code>结果</code>: 100    50    30</p>
-
-<p>最后的结果只包含那些不以$开头的数字.值得注意的是我在这个正则表达式里面使用了分隔符<code>\b</code>,如果不使用这个,$30中的0也会被匹配.</p>
 ]]></content>
   </entry>
   
