@@ -58,7 +58,7 @@ if(person.hasOwnProperty("toString")) {        // false
 ```
 
 ##property的类型##
-Javascript对象property可以分为两种,分别是Data properties和Accessor properties,前者包括简单的数据条目键值对(name: "Qiushi")和值为方法的键值对(sayName: function(){...}),无论是向对象中天剑简单数据条目或者值为方法的键值对,都调用的是对象的[[Put]]方法.Accessor properties是用来读取或者写入键值对的(类似于getter和setter).
+Javascript对象property可以分为两种,分别是Data properties和Accessor properties,前者包括简单的数据条目键值对(name: "Qiushi")和值为方法的键值对(sayName: function(){...}),无论是向对象中添加简单数据条目或者值为方法的键值对,都调用的是对象的[[Put]]方法.Accessor properties是用来读取或者写入键值对的(类似于getter和setter).
 
 ``` Javascript
 var qiushi = {
@@ -158,7 +158,7 @@ console.log(descriptor.configurable); 	                          // true
 console.log(descriptor.writable);                                 // false
 ```
 
-##防止对象被修改的方法##
+##防止对象本身被修改的方法##
 我们在一开始就提到Javascript中的对象可以在创建后被修改,但是在一些情况下我们想防止这种情况的发生,系统提供了3中方法.
 ###extensible###
 顾名思义,它防止对象被extend,即不能添加新property到对象,但是能修改和删除已有property的内容.

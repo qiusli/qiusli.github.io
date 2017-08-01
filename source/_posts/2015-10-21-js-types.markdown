@@ -119,3 +119,16 @@ var name = "Qiushi"
 console.log(name instanceof String) // false
 ```
 name在这里没有被当做对象使用(obj.xxx),所以没有零时对象创立,而原始类型不是其包装类的引用,所以会返回false.
+
+###读取对象中property的方法###
+有两种方法可以实现,第一种是obj.propertyKey,另一种是obj[propertyKey].后者的好处是可以通过一个varaible动态地决定是去取obj里的哪个property,例如:
+
+``` JavaScript
+var obj = {
+   book: "gone with the wind",
+   fruit: "banana"
+}
+
+var f = "fruit";
+console.log(obj[f]); // banana
+```
