@@ -48,7 +48,7 @@
 
 
 
-<time datetime="2015-10-24T13:32:50-06:00" pubdate data-updated="true">Oct 24th, 2015</time></div>
+<time datetime="2015-10-24T12:32:50-07:00" pubdate data-updated="true">Oct 24th, 2015</time></div>
 	</div>
 	<div class="entry-content"><p>JavaScript中的对象较之于其他非动态语言的对象,最大的优势在于它能随时被改变.其他语言(例如Java)中一旦创建了class就不能再修改,而JavaScript创建对象只相当于创建了一个框架,后面随时可以往这个框架里添加东西.</p>
 
@@ -132,7 +132,7 @@
 
 <h2>property的类型</h2>
 
-<p>Javascript对象property可以分为两种,分别是Data properties和Accessor properties,前者包括简单的数据条目键值对(name: &ldquo;Qiushi&rdquo;)和值为方法的键值对(sayName: function(){&hellip;}),无论是向对象中天剑简单数据条目或者值为方法的键值对,都调用的是对象的[[Put]]方法.Accessor properties是用来读取或者写入键值对的(类似于getter和setter).</p>
+<p>Javascript对象property可以分为两种,分别是Data properties和Accessor properties,前者包括简单的数据条目键值对(name: &ldquo;Qiushi&rdquo;)和值为方法的键值对(sayName: function(){&hellip;}),无论是向对象中添加简单数据条目或者值为方法的键值对,都调用的是对象的[[Put]]方法.Accessor properties是用来读取或者写入键值对的(类似于getter和setter).</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -332,7 +332,7 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<h2>防止对象被修改的方法</h2>
+<h2>防止对象本身被修改的方法</h2>
 
 <p>我们在一开始就提到Javascript中的对象可以在创建后被修改,但是在一些情况下我们想防止这种情况的发生,系统提供了3中方法.</p>
 
@@ -428,7 +428,7 @@
 
 </div>
 
-Copyright &copy; 2015
+Copyright &copy; 2017
  李秋实 
 <br>
 Powered by Octopress.

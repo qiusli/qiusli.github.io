@@ -4,7 +4,7 @@
   <title><![CDATA[Category: tech | 逆旅，行人]]></title>
   <link href="http://qiusli.github.io/blog/categories/tech/atom.xml" rel="self"/>
   <link href="http://qiusli.github.io/"/>
-  <updated>2015-12-17T22:51:52-07:00</updated>
+  <updated>2017-07-31T23:03:10-07:00</updated>
   <id>http://qiusli.github.io/</id>
   <author>
     <name><![CDATA[李秋实]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[浅析iOS通过archiver和unarchiver持久化数据的基本方法]]></title>
     <link href="http://qiusli.github.io/blog/2015/12/17/nscoding/"/>
-    <updated>2015-12-17T21:52:56-07:00</updated>
+    <updated>2015-12-17T20:52:56-08:00</updated>
     <id>http://qiusli.github.io/blog/2015/12/17/nscoding</id>
     <content type="html"><![CDATA[<p>每一个iOS应用都有存储自己数据的地方，这个地方叫做Documents directory。我们可以在程序运行的时候不断向其中添加数据，这样用户数据不会随着程序结束而消失。在下一次程序启动的时候可以再到这里去读取数据。</p>
 
@@ -116,7 +116,7 @@ required init?(coder aDecoder: NSCoder) {
   <entry>
     <title type="html"><![CDATA[浅析UINavigationController]]></title>
     <link href="http://qiusli.github.io/blog/2015/12/16/uinavigationcontroller/"/>
-    <updated>2015-12-16T20:27:15-07:00</updated>
+    <updated>2015-12-16T19:27:15-08:00</updated>
     <id>http://qiusli.github.io/blog/2015/12/16/uinavigationcontroller</id>
     <content type="html"><![CDATA[<h2>基本原理</h2>
 
@@ -199,7 +199,7 @@ class AddItemViewController {
   <entry>
     <title type="html"><![CDATA[浅析UITableViewController]]></title>
     <link href="http://qiusli.github.io/blog/2015/12/09/uitableviewcontroller/"/>
-    <updated>2015-12-09T02:08:29-07:00</updated>
+    <updated>2015-12-09T01:08:29-08:00</updated>
     <id>http://qiusli.github.io/blog/2015/12/09/uitableviewcontroller</id>
     <content type="html"><![CDATA[<p>UITableViewController是iOS开发中最常用到的viewController类,它可以一行行地显示数据.首先介绍一些重要概念.</p>
 

@@ -48,7 +48,7 @@
 
 
 
-<time datetime="2015-10-21T20:34:58-06:00" pubdate data-updated="true">Oct 21st, 2015</time></div>
+<time datetime="2015-10-21T19:34:58-07:00" pubdate data-updated="true">Oct 21st, 2015</time></div>
 	</div>
 	<div class="entry-content"><p>JavaScript一共有两种类型,非别为原始类型和引用类型.JavaScript使用一个叫做variable object的东西来记录创建的数据类型,如果新建数据为原始类型,则直接存储在variable object中,如果为引用类型,则用variable object来存放指向引用类型的指针.</p>
 
@@ -237,6 +237,27 @@
 
 
 <p>name在这里没有被当做对象使用(obj.xxx),所以没有零时对象创立,而原始类型不是其包装类的引用,所以会返回false.</p>
+
+<h3>读取对象中property的方法</h3>
+
+<p>有两种方法可以实现,第一种是obj.propertyKey,另一种是obj[propertyKey].后者的好处是可以通过一个varaible动态地决定是去取obj里的哪个property,例如:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='JavaScript'><span class='line'><span class="kd">var</span> <span class="nx">obj</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>   <span class="nx">book</span><span class="o">:</span> <span class="s2">&quot;gone with the wind&quot;</span><span class="p">,</span>
+</span><span class='line'>   <span class="nx">fruit</span><span class="o">:</span> <span class="s2">&quot;banana&quot;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">var</span> <span class="nx">f</span> <span class="o">=</span> <span class="s2">&quot;fruit&quot;</span><span class="p">;</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">obj</span><span class="p">[</span><span class="nx">f</span><span class="p">]);</span> <span class="c1">// banana</span>
+</span></code></pre></td></tr></table></div></figure>
+
 </div>
 
 
@@ -267,7 +288,7 @@
 
 </div>
 
-Copyright &copy; 2015
+Copyright &copy; 2017
  李秋实 
 <br>
 Powered by Octopress.

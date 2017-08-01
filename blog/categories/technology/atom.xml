@@ -4,7 +4,7 @@
   <title><![CDATA[Category: technology | 逆旅，行人]]></title>
   <link href="http://qiusli.github.io/blog/categories/technology/atom.xml" rel="self"/>
   <link href="http://qiusli.github.io/"/>
-  <updated>2015-12-17T22:51:52-07:00</updated>
+  <updated>2017-07-31T23:03:10-07:00</updated>
   <id>http://qiusli.github.io/</id>
   <author>
     <name><![CDATA[李秋实]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[Spring MVC学习笔记]]></title>
     <link href="http://qiusli.github.io/blog/2015/10/15/spring-mvc/"/>
-    <updated>2015-10-15T16:55:12-06:00</updated>
+    <updated>2015-10-15T15:55:12-07:00</updated>
     <id>http://qiusli.github.io/blog/2015/10/15/spring-mvc</id>
     <content type="html"><![CDATA[<p>学习Spring很长时间了，但是一直也没有认真地总结一次，总是陷入学习了忘记的怪圈（其实也不是怪圈，就是学习了没有总结）。 今天我就写一点东西来总结我的Spring MVC学习之旅。 这个得从我的Sponsor给我布置的家庭作业讲起，在这里面我学会了很多Spring的知识。</p>
 
@@ -233,7 +233,7 @@ Welcome to the Banking System! &lt;br/&gt;  &lt;c:url value="/addCustomer" var="
   <entry>
     <title type="html"><![CDATA[Apprenticeship Pattern读书笔记]]></title>
     <link href="http://qiusli.github.io/blog/2013/07/09/apprenticeship-pattern/"/>
-    <updated>2013-07-09T19:06:00-06:00</updated>
+    <updated>2013-07-09T19:06:00-07:00</updated>
     <id>http://qiusli.github.io/blog/2013/07/09/apprenticeship-pattern</id>
     <content type="html"><![CDATA[<p>花2个星期读完了这本书，作者是一名前ThoughtWorker，所以书里谈到的很多概念还是很清楚。</p>
 

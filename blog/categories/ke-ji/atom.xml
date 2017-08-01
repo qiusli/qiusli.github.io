@@ -4,7 +4,7 @@
   <title><![CDATA[Category: 科技 | 逆旅，行人]]></title>
   <link href="http://qiusli.github.io/blog/categories/ke-ji/atom.xml" rel="self"/>
   <link href="http://qiusli.github.io/"/>
-  <updated>2015-12-17T22:51:52-07:00</updated>
+  <updated>2017-07-31T23:03:10-07:00</updated>
   <id>http://qiusli.github.io/</id>
   <author>
     <name><![CDATA[李秋实]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[javaScript中的This关键字]]></title>
     <link href="http://qiusli.github.io/blog/2015/10/31/js-this/"/>
-    <updated>2015-10-31T16:44:42-06:00</updated>
+    <updated>2015-10-31T15:44:42-07:00</updated>
     <id>http://qiusli.github.io/blog/2015/10/31/js-this</id>
     <content type="html"><![CDATA[<h2>一言以蔽之</h2>
 
@@ -201,7 +201,7 @@ console.log(appController.avgScore);   // null
   <entry>
     <title type="html"><![CDATA[JavaScript中的闭包]]></title>
     <link href="http://qiusli.github.io/blog/2015/10/27/js-closure/"/>
-    <updated>2015-10-27T19:02:20-06:00</updated>
+    <updated>2015-10-27T18:02:20-07:00</updated>
     <id>http://qiusli.github.io/blog/2015/10/27/js-closure</id>
     <content type="html"><![CDATA[<h2>为什么要用闭包</h2>
 
@@ -344,7 +344,7 @@ console.log(snoop["id"]); // 101
   <entry>
     <title type="html"><![CDATA[JavaScript中的继承]]></title>
     <link href="http://qiusli.github.io/blog/2015/10/25/js-inheritance/"/>
-    <updated>2015-10-25T16:30:11-06:00</updated>
+    <updated>2015-10-25T15:30:11-07:00</updated>
     <id>http://qiusli.github.io/blog/2015/10/25/js-inheritance</id>
     <content type="html"><![CDATA[<p>由于Javascript中的每个对象都有一个prototye,它也是对象的一个property.这个prototype也有自己的prototype,它能继承自那个prototype,而当前对象也能从自己的prototype那里继承property,这样就形成了一个prototype chain,这就是Javascript中继承的实现方式.简单来说,我们可以把当前对象的prototype(原型)看成是一个模板,当前对象继承自那个模板,然后扩充自己的方法.当前对象从其prototype那里获得一些property,而当前对象的prototype从其自身的prototype(prototype&rsquo;s prototype)那里也获得一些property.每一个通过Object literal或者new Object这种方式创建出的对象,其prototype指向object.prototype,意味着当前对象能获得object.prototype里的property.</p>
 
@@ -479,7 +479,7 @@ console.log(square instanceof Object);     // true
   <entry>
     <title type="html"><![CDATA[JavaScript中的构造器(constructor)和原型(prototype)]]></title>
     <link href="http://qiusli.github.io/blog/2015/10/24/js-prototype/"/>
-    <updated>2015-10-24T22:22:16-06:00</updated>
+    <updated>2015-10-24T21:22:16-07:00</updated>
     <id>http://qiusli.github.io/blog/2015/10/24/js-prototype</id>
     <content type="html"><![CDATA[<h2>构造器</h2>
 
@@ -632,7 +632,7 @@ computer2.quote("Whatever");        // quote of Dell is Whatever
   <entry>
     <title type="html"><![CDATA[JavaScript中的对象]]></title>
     <link href="http://qiusli.github.io/blog/2015/10/24/js-object/"/>
-    <updated>2015-10-24T13:32:50-06:00</updated>
+    <updated>2015-10-24T12:32:50-07:00</updated>
     <id>http://qiusli.github.io/blog/2015/10/24/js-object</id>
     <content type="html"><![CDATA[<p>JavaScript中的对象较之于其他非动态语言的对象,最大的优势在于它能随时被改变.其他语言(例如Java)中一旦创建了class就不能再修改,而JavaScript创建对象只相当于创建了一个框架,后面随时可以往这个框架里添加东西.</p>
 
@@ -688,7 +688,7 @@ if(person.hasOwnProperty("toString")) {        // false
 
 <h2>property的类型</h2>
 
-<p>Javascript对象property可以分为两种,分别是Data properties和Accessor properties,前者包括简单的数据条目键值对(name: &ldquo;Qiushi&rdquo;)和值为方法的键值对(sayName: function(){&hellip;}),无论是向对象中天剑简单数据条目或者值为方法的键值对,都调用的是对象的[[Put]]方法.Accessor properties是用来读取或者写入键值对的(类似于getter和setter).</p>
+<p>Javascript对象property可以分为两种,分别是Data properties和Accessor properties,前者包括简单的数据条目键值对(name: &ldquo;Qiushi&rdquo;)和值为方法的键值对(sayName: function(){&hellip;}),无论是向对象中添加简单数据条目或者值为方法的键值对,都调用的是对象的[[Put]]方法.Accessor properties是用来读取或者写入键值对的(类似于getter和setter).</p>
 
 <pre><code class="Javascript">var qiushi = {
     // Javascript中的一种convention,以下划线开始的property被当做private的,但其实还是public的
@@ -788,7 +788,7 @@ console.log(descriptor.configurable);                             // true
 console.log(descriptor.writable);                                 // false
 </code></pre>
 
-<h2>防止对象被修改的方法</h2>
+<h2>防止对象本身被修改的方法</h2>
 
 <p>我们在一开始就提到Javascript中的对象可以在创建后被修改,但是在一些情况下我们想防止这种情况的发生,系统提供了3中方法.</p>
 
