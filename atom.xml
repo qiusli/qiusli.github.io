@@ -4,7 +4,7 @@
   <title><![CDATA[逆旅，行人]]></title>
   <link href="http://qiusli.github.io/atom.xml" rel="self"/>
   <link href="http://qiusli.github.io/"/>
-  <updated>2017-08-03T00:00:18-07:00</updated>
+  <updated>2017-08-05T23:29:39-07:00</updated>
   <id>http://qiusli.github.io/</id>
   <author>
     <name><![CDATA[李秋实]]></name>
@@ -961,7 +961,26 @@
     <link href="http://qiusli.github.io/blog/2015/10/25/js-inheritance/"/>
     <updated>2015-10-25T15:30:11-07:00</updated>
     <id>http://qiusli.github.io/blog/2015/10/25/js-inheritance</id>
-    <content type="html"><![CDATA[<p>由于Javascript中的每个对象都有一个prototye,它也是对象的一个property.这个prototype也有自己的prototype,它能继承自那个prototype,而当前对象也能从自己的prototype那里继承property,这样就形成了一个prototype chain,这就是Javascript中继承的实现方式.简单来说,我们可以把当前对象的prototype(原型)看成是一个模板,当前对象继承自那个模板,然后扩充自己的方法.当前对象从其prototype那里获得一些property,而当前对象的prototype从其自身的prototype(prototype&rsquo;s prototype)那里也获得一些property.每一个通过Object literal或者new Object这种方式创建出的对象,其prototype指向object.prototype,意味着当前对象能获得object.prototype里的property.</p>
+    <content type="html"><![CDATA[<p>由于Javascript中的每个对象都有一个[[prototye]],它是当前对象的一个property(就像下面那个例子里的title一样,而这个prototype的存在可能是如下),</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='Javascript'><span class='line'><span class="kd">var</span> <span class="nx">book</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">title</span><span class="o">:</span> <span class="s2">&quot;red and black&quot;</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">prototype</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nx">key</span><span class="o">:</span> <span class="nx">value</span><span class="p">,</span>
+</span><span class='line'>      <span class="p">...</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">};</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>由于每个对象都有自己的propotype,在创建当前对象时,此对象的prototype自动指向创建它的funciton的prototpye属性,这样就形成了一个prototype chain,这就是Javascript中继承的实现方式.意味着当前对象能使用创建其的函数的prototype里的东西,例如上面我创建了book对象,我可以使用book.toString()来打印对象,但是toStirng并不是book对象自身拥有的方法,所以这时系统会到Object.prototype里去找toString方法.</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -978,7 +997,7 @@
 
 <p>所有对象都从Object.prototype那里继承了一些方法,最常见的有5个:<code>hasOwnProperty</code>, <code>propertyIsEnumerable</code>,<code>isPrototypeOf</code>,<code>valueOf</code>,<code>toString</code>.</p>
 
-<p>实现继承最简单的方式就是显式指定当前对象的prototype(原型),这样它就能从其原型那里获得方法.我们可以使用Object.create()方法来实现这个目的,它会新创建一个对象,然后这个对象可以被赋值给一个变量.create第一个参数指定了谁是当前对象的原型,第二个参数是可选的,意味着一些自定义的property和其属性.</p>
+<p>实现继承最简单的方式就是显式指定当前对象的prototype,这样它就能从那里获得方法.我们可以使用Object.create()方法来实现这个目的,它会新创建一个对象,然后这个对象可以被赋值给一个变量.create第一个参数指定了谁是当前对象的prototype指向哪里,第二个参数是可选的,意味着一些自定义的property和其属性.</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -994,7 +1013,7 @@
 </pre></td><td class='code'><pre><code class='Javascript'><span class='line'><span class="c1">// specify reference of prototypr of current object</span>
 </span><span class='line'><span class="kd">var</span> <span class="nx">person1</span> <span class="o">=</span> <span class="p">{</span><span class="nx">name</span><span class="o">:</span> <span class="s2">&quot;Qiushi&quot;</span><span class="p">};</span>
 </span><span class='line'><span class="c1">// is same as</span>
-</span><span class='line'><span class="kd">var</span> <span class="nx">person2</span> <span class="o">=</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="nb">Object</span><span class="p">.</span><span class="nx">prototype</span><span class="p">,</span> <span class="p">{</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">person1</span> <span class="o">=</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="nb">Object</span><span class="p">.</span><span class="nx">prototype</span><span class="p">,</span> <span class="p">{</span>
 </span><span class='line'>    <span class="nx">name</span><span class="o">:</span> <span class="p">{</span>
 </span><span class='line'>        <span class="nx">enumerable</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
 </span><span class='line'>        <span class="nx">configurable</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
@@ -1005,7 +1024,7 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-
+<p>person1对象的prototype指向Object.prototype,这时系统默认的指向方式,但是我们可以改变当前对象的prototype的指向:</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -1029,54 +1048,38 @@
 <span class='line-number'>20</span>
 <span class='line-number'>21</span>
 <span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
 </pre></td><td class='code'><pre><code class='Javascript'><span class='line'><span class="c1">// inherit from other objects</span>
-</span><span class='line'><span class="kd">var</span> <span class="nx">company</span> <span class="o">=</span> <span class="p">{</span>
-</span><span class='line'>    <span class="nx">name</span><span class="o">:</span> <span class="s2">&quot;Goldman Sachs&quot;</span><span class="p">,</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">person1</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">name</span><span class="o">:</span> <span class="s2">&quot;Nick&quot;</span><span class="p">,</span>
 </span><span class='line'>    <span class="nx">sayName</span><span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Company name is &quot;</span> <span class="o">+</span> <span class="k">this</span><span class="p">.</span><span class="nx">name</span><span class="p">)</span>
+</span><span class='line'>        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;My name is &quot;</span> <span class="o">+</span> <span class="k">this</span><span class="p">.</span><span class="nx">name</span><span class="p">)</span>
 </span><span class='line'>    <span class="p">}</span>
 </span><span class='line'><span class="p">};</span>
 </span><span class='line'><span class="c1">// anotherCompany自己定义了name property,它覆盖了从company那里继承来的name property.</span>
-</span><span class='line'><span class="kd">var</span> <span class="nx">anotherCompany</span> <span class="o">=</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="nx">company</span><span class="p">,</span> <span class="p">{</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">person2</span> <span class="o">=</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="nx">person1</span><span class="p">,</span> <span class="p">{</span>
 </span><span class='line'>    <span class="nx">name</span><span class="o">:</span> <span class="p">{</span>
 </span><span class='line'>        <span class="nx">enumerable</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
 </span><span class='line'>        <span class="nx">configurable</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
 </span><span class='line'>        <span class="nx">writable</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
-</span><span class='line'>        <span class="nx">value</span><span class="o">:</span> <span class="s2">&quot;ThoughtWorks&quot;</span>
+</span><span class='line'>        <span class="nx">value</span><span class="o">:</span> <span class="s2">&quot;Jeff&quot;</span>
 </span><span class='line'>    <span class="p">}</span>
 </span><span class='line'><span class="p">});</span>
-</span><span class='line'><span class="nx">company</span><span class="p">.</span><span class="nx">sayName</span><span class="p">();</span>    <span class="c1">// Company name is Goldman Sachs</span>
-</span><span class='line'><span class="nx">anotherCompany</span><span class="p">.</span><span class="nx">sayName</span><span class="p">();</span>  <span class="c1">// Company name is ThoughtWorks</span>
-</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">company</span><span class="p">.</span><span class="nx">hasOwnProperty</span><span class="p">(</span><span class="s2">&quot;sayName&quot;</span><span class="p">));</span> <span class="c1">// true</span>
-</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">anotherCompany</span><span class="p">.</span><span class="nx">hasOwnProperty</span><span class="p">(</span><span class="s2">&quot;sayName&quot;</span><span class="p">));</span> <span class="c1">// false</span>
-</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">company</span><span class="p">.</span><span class="nx">isPrototypeOf</span><span class="p">(</span><span class="nx">anotherCompany</span><span class="p">));</span> <span class="c1">// true</span>
-</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nb">Object</span><span class="p">.</span><span class="nx">getPrototypeOf</span><span class="p">(</span><span class="nx">anotherCompany</span><span class="p">)</span> <span class="o">==</span> <span class="nx">company</span><span class="p">);</span> <span class="c1">// true</span>
-</span><span class='line'><span class="kd">var</span> <span class="nx">thirdCompany</span> <span class="o">=</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="nx">anotherCompany</span><span class="p">,</span> <span class="p">{</span>
-</span><span class='line'>    <span class="nx">name</span><span class="o">:</span> <span class="p">{</span>
-</span><span class='line'>        <span class="nx">configurable</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
-</span><span class='line'>        <span class="nx">writable</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
-</span><span class='line'>        <span class="nx">enumerable</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
-</span><span class='line'>        <span class="nx">value</span><span class="o">:</span> <span class="s2">&quot;ThinkGeek&quot;</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">});</span>
-</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nb">Object</span><span class="p">.</span><span class="nx">getPrototypeOf</span><span class="p">(</span><span class="nx">thirdCompany</span><span class="p">));</span> <span class="c1">// { name: &#39;ThoughtWorks&#39; }</span>
+</span><span class='line'><span class="nx">person1</span><span class="p">.</span><span class="nx">sayName</span><span class="p">();</span>    <span class="c1">// My name is Nick</span>
+</span><span class='line'><span class="nx">person2</span><span class="p">.</span><span class="nx">sayName</span><span class="p">();</span>  <span class="c1">// My name is Jeff</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">person1</span><span class="p">.</span><span class="nx">hasOwnProperty</span><span class="p">(</span><span class="s2">&quot;sayName&quot;</span><span class="p">));</span> <span class="c1">// true</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">person2</span><span class="p">.</span><span class="nx">hasOwnProperty</span><span class="p">(</span><span class="s2">&quot;sayName&quot;</span><span class="p">));</span> <span class="c1">// false</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">person1</span><span class="p">.</span><span class="nx">isPrototypeOf</span><span class="p">(</span><span class="nx">person2</span><span class="p">));</span> <span class="c1">// true</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nb">Object</span><span class="p">.</span><span class="nx">getPrototypeOf</span><span class="p">(</span><span class="nx">person2</span><span class="p">)</span> <span class="o">==</span> <span class="nx">person1</span><span class="p">);</span> <span class="c1">// true</span>
 </span></code></pre></td></tr></table></div></figure>
 
+
+<p>这里值得注意的是,在创建person2时,它的prototype指向了person1对象本身,而不是person1对象的prototype.通常我们在使用var obj = new Book()的时候,obj指向Book函数的prototype,而上面我们显示地指定了让person的prototype指向person1对象自身.</p>
 
 <p>下面这张图解释了原型链:</p>
 
 <p><img src="http://qiusli.github.io/images/JS_inheritance/1.png"></p>
 
-<p>当一个方法被调用时,系统会首先去当前对象的own property里寻找,如果找到了就返回,否则回去当前对象的prototype里寻找,如果找到就返回,否则继续去当前对象的prototype的prototype里继续寻找,这个寻找链的终结是Obejct.prototype.</p>
+<p>当一个方法被调用时,系统会首先去当前对象的own property里寻找,如果找到了就返回,否则回去当前对象的prototype里寻找,如果找到就返回,否则继续去当前对象的prototype指向的对象里继续寻找(如果没有显示指定prototype的指向,一般是指向创建当前对象的函数.否则就到显示指定的那个对象里去找),这个寻找链的终结是Obejct.prototype.</p>
 
 <p>有时候我们会想创建一个不继承自任何原型的对象,它在一些场景下很实用,例如被当做hash来用.</p>
 
@@ -1171,7 +1174,7 @@
 </span><span class='line'>    <span class="c1">// constructor stealing, 调用父类的构造器</span>
 </span><span class='line'>    <span class="nx">Rectangle</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">size</span><span class="p">,</span> <span class="nx">size</span><span class="p">);</span>
 </span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="nx">Square</span><span class="p">.</span><span class="nx">prototype</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Rectangle</span><span class="p">();</span>
+</span><span class='line'><span class="nx">Square</span><span class="p">.</span><span class="nx">prototype</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Rectangle</span><span class="p">();</span> <span class="cm">/*explanation below*/</span>
 </span><span class='line'><span class="nx">Square</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">constructor</span> <span class="o">=</span> <span class="nx">Square</span><span class="p">;</span>
 </span><span class='line'><span class="nx">Square</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">toString</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
 </span><span class='line'>    <span class="k">return</span> <span class="s2">&quot;[Square &quot;</span> <span class="o">+</span> <span class="k">this</span><span class="p">.</span><span class="nx">length</span> <span class="o">+</span> <span class="s2">&quot;x&quot;</span> <span class="o">+</span> <span class="k">this</span><span class="p">.</span><span class="nx">width</span> <span class="o">+</span> <span class="s2">&quot;]&quot;</span><span class="p">;</span>
@@ -1192,7 +1195,7 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>Square的对象同时是Square, Rectangle和Object的对像,下面这张图解释了原因:
+<p>上面在注释了/<em>explanation below</em>/那一行是说,Square的prototype是通过Rectangle创建,所以Square.prototype里找不到的方法回到Rectangle.prototype里去找.因为Square.prototype是通过Rectangle函数创建,下面这张图解释了原因:
 <img src="http://qiusli.github.io/images/JS_inheritance/2.png"></p>
 ]]></content>
   </entry>
